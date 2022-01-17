@@ -20,7 +20,7 @@ title                    : "哞靠靠"
 title_separator          : "-"
 subtitle                 : # site tagline that appears below site title in masthead
 name                     : "mocowcow"
-description              : "紀錄雜事"
+description              : "雜事、解題紀錄"
 url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
