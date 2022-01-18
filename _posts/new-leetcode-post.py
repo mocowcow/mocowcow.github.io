@@ -1,6 +1,6 @@
 from datetime import datetime
 
-# TOPIC = '1463. Cherry Pickup II'
+# TOPIC = '1. Two Sum'
 TOPIC = input()
 
 number = TOPIC[:TOPIC.index('.')]
@@ -9,7 +9,7 @@ time = datetime.now().strftime('%Y-%m-%d')
 filename = f'{time}-leetcode-{number}-{title}.md'
 template = f"""---
 layout      : single
-title       : LeetCode {title}
+title       : LeetCode {TOPIC}
 tags 		: LeetCode
 ---
 # 題目
@@ -20,5 +20,6 @@ tags 		: LeetCode
 code here
 ```
 """
+print(template)
 f = open(filename, 'w', encoding='utf8')
 f.write(template)
