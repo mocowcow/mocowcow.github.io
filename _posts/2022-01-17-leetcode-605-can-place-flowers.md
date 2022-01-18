@@ -1,6 +1,6 @@
 ---
 layout      : single
-title       : LeetCode 605. Can Place Flowers"
+title       : LeetCode 605. Can Place Flowers
 tags 		: LeetCode Easy Greedy
 ---
 好多做過的題目經過一段時間就忘記了，回顧提交紀錄還搞不懂自己怎麼寫出來的解法，希望以此加強印象，也分享給需要的朋友。

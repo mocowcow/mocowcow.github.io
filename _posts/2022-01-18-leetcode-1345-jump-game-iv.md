@@ -1,6 +1,6 @@
 ---
 layout      : single
-title       : LeetCode 1345. Jump Game IV"
+title       : LeetCode 1345. Jump Game IV
 tags 		: LeetCode Hard BFS
 ---
 本想說很單純的題目，結果被騙了一次TLE。
