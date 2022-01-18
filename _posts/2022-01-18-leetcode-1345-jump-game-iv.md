@@ -1,12 +1,12 @@
 ---
 layout      : single
-title       : "LeetCode 1345. Jump Game IV" 
+title       : LeetCode 1345. Jump Game IV"
 tags 		: LeetCode Hard BFS
 ---
 本想說很單純的題目，結果被騙了一次TLE。
 
 # 題目
-輸入長度為N的整數陣列arr，求從arr[0]開始需幾步可到達arr[N-1]。  
+輸入長度為N的整數陣列arr，求從arr[0]需幾步可到達arr[N-1]。  
 每步可以從i移動到i+1、i-1或任何和arr[i]同數值的位置。
 
 # 解法
