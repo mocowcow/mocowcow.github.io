@@ -1,6 +1,6 @@
 ---
 layout      : single
-title       : LeetCode cherry-pickup-ii
+title       : LeetCode 1463. Cherry Pickup II
 tags 		: LeetCode
 ---
 # 題目
@@ -8,7 +8,7 @@ tags 		: LeetCode
 機器人每次移動只能往左下、正下或是右下移動。
 
 # 解法
-當初一直以為需要三維DP走兩趟，想半天也不知第二號機器人如何確認格子是否被一號機器人走過，
+當初一直以為需要走兩趟，想半天也不知第二號機器人如何確認格子是否被一號機器人走過，
 看提示才驚覺可以同時表示兩機器人的位置。  
 採top-down方式由第一列往下走，遞迴求下一層的最佳解。
 
