@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 1463. Cherry Pickup II
-tags 		: LeetCode
+tags 		: LeetCode Hard DP
 ---
 # 題目
 給一個矩陣，每格的值代表櫻桃數量，有兩個機器人分別從左上、右上角出發，求最多可以拿到多少櫻桃。  

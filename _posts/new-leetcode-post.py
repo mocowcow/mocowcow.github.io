@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 
 # TOPIC = '1. Two Sum'
 TOPIC = input()
@@ -20,6 +21,7 @@ tags 		: LeetCode
 code here
 ```
 """
-print(template)
-f = open(filename, 'w', encoding='utf8')
-f.write(template)
+if not os.path.exists(f'./{filename}'):
+    print('file created')
+    f = open(filename, 'w', encoding='utf8')
+    f.write(template)
