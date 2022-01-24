@@ -15,9 +15,9 @@ requests表示好幾個區間，在nums所有可能排列下，求出所有區�
 最後將psum和nums排序，相乘後相加即可。  
 
 requests=[[0,2],[1,3],[1,1]], psum = [1,3,2,1,0]  
-![<img src="./img/2022-01-24-leetcode-1589-maximum-sum-obtained-of-any-permutation-1.jpg"](./img/2022-01-24-leetcode-1589-maximum-sum-obtained-of-any-permutation-1.jpg)
+![示意圖](/assets/img/2022-01-24-leetcode-1589-maximum-sum-obtained-of-any-permutation-1.jpg)
 
-
+    
 ```python
 class Solution:
     def maxSumRangeQuery(self, nums: List[int], requests: List[List[int]]) -> int:
