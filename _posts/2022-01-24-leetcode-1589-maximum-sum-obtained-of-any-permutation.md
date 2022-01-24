@@ -6,8 +6,7 @@ tags 		: LeetCode Medium PrefixSum
 看到排列先嚇到一次，看內文又嚇一次，還以為要線段樹。
 
 # 題目
-requests表示好幾個區間。  
-在nums所有可能排列下，求出所有區間和最大值。
+requests表示好幾個區間，在nums所有可能排列下，求出所有區間和最大值。  
 答案必須MOD 10^9+7。
 
 # 解法
@@ -15,9 +14,8 @@ requests表示好幾個區間。
 使用psum陣列，在每個區間起點+1，終點後-1，做前綴和則可得到每個位置的次數。  
 最後將psum和nums排序，相乘後相加即可。  
 
-示意圖：  
-requests=[[0,2],[1,3],[1,1]], psum = [1,3,2,1,0]
-![image info](./img/2022-01-24-leetcode-1589-maximum-sum-obtained-of-any-permutation-1.jpg)
+requests=[[0,2],[1,3],[1,1]], psum = [1,3,2,1,0]  
+![<img src="./img/2022-01-24-leetcode-1589-maximum-sum-obtained-of-any-permutation-1.jpg"](./img/2022-01-24-leetcode-1589-maximum-sum-obtained-of-any-permutation-1.jpg)
 
 
 ```python
