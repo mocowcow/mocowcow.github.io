@@ -7,7 +7,7 @@ tags 		: LeetCode Medium PrefixSum
 
 # 題目
 requests表示好幾個區間，在nums所有可能排列下，求出所有區間和最大值。  
-答案必須MOD 10^9+7。
+答案必須mod 10^9+7。
 
 # 解法
 本想雙迴圈暴力計算每個位置的出現次數，看到測資n<=10^5直接放棄。  
