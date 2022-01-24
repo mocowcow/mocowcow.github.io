@@ -3,6 +3,8 @@ layout      : single
 title       : LeetCode 520. Detect Capital
 tags 		: LeetCode Easy String
 ---
+日檢N1合格，開心開心。
+
 # 題目
 檢查字串是否符合以下規則：
 1. 全大寫
