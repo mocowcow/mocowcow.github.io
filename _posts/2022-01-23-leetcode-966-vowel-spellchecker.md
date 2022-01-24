@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 966. Vowel Spellchecker
-tags 		: LeetCode Medium HashTable
+tags 		: LeetCode Medium HashTable String
 ---
 有點麻煩的題，比較注重題目理解及實作。
 
