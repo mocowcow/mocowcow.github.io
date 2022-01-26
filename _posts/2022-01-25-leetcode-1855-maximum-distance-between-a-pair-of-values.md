@@ -1,8 +1,10 @@
 ---
 layout      : single
 title       : LeetCode 1855. Maximum Distance Between a Pair of Values
-tags 		: LeetCode Medium BinarySearch
+tags 		: LeetCode Medium BinarySearch TwoPointers Greedy
 ---
+見山不是山，見水不是水。有鑑別度的題目。
+
 # 題目
 輸入遞減整數陣列nums1、nums2，長度分別為M、N。  
 求i和j的最大差值。(i,j)必須滿足以下條件：  
@@ -31,6 +33,25 @@ class Solution:
                 else:
                     right = mid-1
             ans = max(ans, left-i)
+
+        return ans
+```
+
+然而討論區大神看到更深層的本質，根本不需要二分搜。我太菜了。  
+因為兩個都是遞減，其實根本不會往左移，直接維護兩個指標就可以解決。
+
+```python
+class Solution:
+    def maxDistance(self, nums1: List[int], nums2: List[int]) -> int:
+        M = len(nums1)
+        N = len(nums2)
+        i = j = ans = 0
+        while i < M and j < N:
+            if nums1[i] > nums2[j]:
+                i += 1
+            else:
+                ans = max(ans, j-i)
+            j += 1
 
         return ans
 ```
