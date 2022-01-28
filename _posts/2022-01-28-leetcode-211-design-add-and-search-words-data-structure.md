@@ -3,16 +3,17 @@ layout      : single
 title       : LeetCode 211. Design Add and Search Words Data Structure
 tags 		: LeetCode Medium Design Trie DFS
 ---
-選擇每日題的人很喜歡字典樹啊，連續兩天出現。
+每日題負責人很喜歡字典樹啊，連續兩天出現。
 
 # 題目
-設計一個資料結構，可以新增單字或查詢是否存在。
+設計一個資料結構，可以新增單字或查詢是否存在。  
 實作類別WordDictionary，包含以下功能：
-1. 建構子
+1. 無參數建構子
 2. void addWord(word)，將word加入字典
 3. bool search(word)，查詢是否存在word，且可用"."代表萬用字元
 
 # 解法
+把單字拆開，對每個字元分別建立節點，並在最後一個節點標記isWord=True。  
 比普通的字典樹多支援萬用字元搜尋，但只需回傳布林值，處理起來不難。  
 在search方法裡面，如果碰到"."則對每個子節點做DFS，任一匹配成功則回傳True。
 
