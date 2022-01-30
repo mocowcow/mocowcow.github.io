@@ -49,3 +49,37 @@ class Solution:
         reverse(0, k-1)
         reverse(k, N-1)
 ```
+
+再來一種解法。使用prev及curr暫存陣列值，idx紀錄當前指針，start紀錄起點，每次將idx加k，處理完可觸及的位置後定會回到start，此時再把start、idx、curr，全部右移一格。
+
+```python
+class Solution:
+    def rotate(self, nums: List[int], k: int) -> None:
+        N = len(nums)
+        k %= N
+        if k == 0:return
+
+        start = prev = idx = 0
+        curr = nums[0]
+        for _ in range(N):
+            prev = curr
+            idx = (idx+k) % N
+            curr = nums[idx]
+            nums[idx] = prev
+            if start == idx:
+                start += 1
+                idx = start
+                curr = nums[idx]
+```
+
+還有我很久以前亂寫的解法，因為python只有list，把末項元素pop出，壓回頂端k次即可。  
+在運行時間分布圖可以看到右端有一座小山丘，全都是這種解法的兄弟，笑死我了。
+
+```python
+class Solution:
+    def rotate(self, nums: List[int], k: int) -> None:
+        N = len(nums)
+        k = k % N
+        for _ in range(k):
+            nums.insert(0, nums.pop())
+```
