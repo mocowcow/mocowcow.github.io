@@ -6,7 +6,7 @@ tags 		: LeetCode Easy DP Greedy
 初一解題格外神清氣爽。
 
 # 題目
-輸入陣列price，表示當日股價。你可以選擇任一天買入，並在之後的日期賣出，求最大利潤。
+輸入陣列prices，表示當日股價。你可以選擇任一天買入，並在之後的日期賣出，求最大利潤。
 
 # 解法
 獲利=當日價-歷史低價，很直覺的知道只要維護一個lowest變數就可以求出最大利潤。  
@@ -16,13 +16,14 @@ tags 		: LeetCode Easy DP Greedy
 ```python
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
-        lowest=math.inf
-        ans=0
+        lowest = math.inf
+        ans = 0
         for p in prices:
-            if p<lowest:
-                lowest=p
-            elif p-lowest>ans:
-                ans=p-lowest
-                
+            if p < lowest:
+                lowest = p
+            elif p-lowest > ans:
+                ans = p-lowest
+
         return ans
+
 ```
