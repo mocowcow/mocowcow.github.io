@@ -3,6 +3,8 @@ layout      : single
 title       : LeetCode 80. Remove Duplicates from Sorted Array II
 tags 		: LeetCode Medium TwoPointers Array
 ---
+昨天寫完每日題解忘記submit，將近連續200天的紀錄就炸了。太苦了。
+
 # 題目
 輸入一個有序遞增的陣列nums，同樣的數字最多只能出現2次，將多出來的數字去除掉。最後回傳去重複後的陣列長度。  
 必須使用in-place演算法。
