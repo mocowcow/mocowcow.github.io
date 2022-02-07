@@ -29,14 +29,15 @@ class Solution:
 ```python
 class Solution:
     def findTheDifference(self, s: str, t: str) -> str:
-        ctr=Counter()
+        ctr = Counter()
         for c in s:
-            ctr[c]+=1
+            ctr[c] += 1
         for c in t:
-            ctr[c]-=1
-        for k,v in ctr.items():
-            if v==-1:
+            ctr[c] -= 1
+        for k, v in ctr.items():
+            if v == -1:
                 return k
+
 ```
 
 直接將字元換成ascii也可以，改成先加入t，再扣s，將差值轉回字元回傳。
@@ -44,13 +45,14 @@ class Solution:
 ```python
 class Solution:
     def findTheDifference(self, s: str, t: str) -> str:
-        diff=0
+        diff = 0
         for c in t:
-            diff+=ord(c)
+            diff += ord(c)
         for c in s:
-            diff-=ord(c)
-            
-        return chr(diff)    
+            diff -= ord(c)
+
+        return chr(diff)
+
 ```
 
 最後是利用XOR兩兩相消的特性，上個方法改成以s和t每個字元做XOR。  
@@ -59,9 +61,10 @@ class Solution:
 ```python
 class Solution:
     def findTheDifference(self, s: str, t: str) -> str:
-        ans=0
+        ans = 0
         for c in s+t:
-            ans^=ord(c)
-            
+            ans ^= ord(c)
+
         return chr(ans)
+
 ```
