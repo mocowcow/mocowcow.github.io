@@ -44,3 +44,21 @@ class Solution:
 
         return dp(0, 0)
 ```
+
+自己做記憶化還是超時，不太確定為什麼，只好改成bottom-up方式。  
+
+```python
+class Solution:
+    def maximumScore(self, nums: List[int], multipliers: List[int]) -> int:
+        N = len(nums)
+        M = len(multipliers)
+        dp = [[0]*(M+1) for _ in range(M+1)]
+
+        for i in range(M-1, -1, -1):
+            for left in range(i, -1, -1):
+                right = N-1-(i-left)
+                dp[i][left] = max(nums[left]*multipliers[i]+dp[i+1][left+1],
+                                  nums[right]*multipliers[i]+dp[i+1][left])
+
+        return dp[0][0]
+```
