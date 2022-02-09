@@ -53,3 +53,27 @@ class Solution:
 
         return dp(d, 0)
 ```
+
+改成bottom-up版本。
+
+```python
+class Solution:
+    def minDifficulty(self, jobDifficulty: List[int], d: int) -> int:
+        N = len(jobDifficulty)
+        if N < d:
+            return -1
+        dp = [[math.inf]*(N+1) for _ in range(d+1)]
+
+        # init base cases
+        for i in range(len(dp)):
+            dp[i][N] = 0
+
+        for day in range(1, d+1):
+            for i in range(N-day+1):
+                hardest = 0
+                for j in range(i, N-day+1):
+                    hardest = max(hardest, jobDifficulty[j])
+                    dp[day][i] = min(dp[day][i], hardest+dp[day-1][j+1])
+
+        return dp[d][0]
+```
