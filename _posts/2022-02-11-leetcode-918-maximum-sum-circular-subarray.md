@@ -43,3 +43,6 @@ class Solution:
 
         return max(sum(nums)-getMin(), getMax())
 ```
+
+[lee215大神](https://leetcode.com/problems/maximum-sum-circular-subarray/discuss/178422/One-Pass)有提出類似的解法，差別在於getMin找的範圍是整個nums陣列，當陣列全為負數時，最小陣列會等於nums合，會得到錯誤的答案0，是需要特別處理的corner case。個人更喜歡本文的解法。
+
