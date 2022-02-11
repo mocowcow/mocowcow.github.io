@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 438. Find All Anagrams in a String
-tags 		: LeetCode Medium HashTable SlidingWindow
+tags 		: LeetCode Medium HashTable SlidingWindow String
 ---
 Anagram中文到底是什麼？重組字詞、易位構詞、變位字…。腦中冒出八分相似的化學術語—同分異構。
 
