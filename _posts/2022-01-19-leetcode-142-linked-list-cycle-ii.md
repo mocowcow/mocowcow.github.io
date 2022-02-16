@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 142. Linked List Cycle II
-tags 		: LeetCode Medium TwoPointers
+tags 		: LeetCode Medium TwoPointers LinkedList
 ---
 以前碰到的時候沒有仔細看，用了set硬解，這題真正想考的應該是快慢指標。
 
