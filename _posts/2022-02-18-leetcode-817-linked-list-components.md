@@ -14,9 +14,13 @@ tags 		: LeetCode Medium HashTable LinkedList
 > [0,1]和[3,4]各為一個元件
 
 # 解法
-我還是看討論區解釋才懂題目在講什麼的，結果很簡單。  
-簡單來講就是結點值若在nums中就算一個元件，直到碰到非nums值，下一節點開始才能重新計數。  
-先把nums裝入set變數d，維護布林值comp，表示是否檢測到元件。若節點值在d中且comp=false，則把comp設true，計數+1；直到某個節點值不在d中，再將comp恢復為false。
+我還是看討論區解釋才懂題目在講什麼的，結果很單純。  
+簡單來講就是把不在nums中的節點當作空氣，看最後會變成幾個區段。  
+例：
+> head = [0,1,2,3], nums = [0,1,3]  
+> 可以看成[0,1]和[3]兩段
+
+先把nums裝入set變數d，維護布林值comp，表示是否已經計入。若節點值在d中且comp=false，則把comp設true，計數+1；直到某個節點值不在d中，再將comp恢復為false。
 
 ```python
 class Solution:
