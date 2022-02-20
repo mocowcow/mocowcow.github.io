@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2135. Count Words Obtained After Adding a Letter
-tags 		: LeetCode Medium String HashTable BitManipulation 
+tags 		: LeetCode Medium String HashTable BitManipulation Sorting
 ---
 模擬周賽275。bit mask爸爸又來了。
 
@@ -51,6 +51,25 @@ class Solution:
                     if conversion in sw:
                         ans += 1
                         break
+
+        return ans
+
+```
+
+後來發現官方標籤有個sorting，原來也可以透過這方法解，而且還容易閱讀，執行又更有效率。  
+維護一個set變數sw，把所有startWords排序後放入。然後遍歷targetWords，排序後，試刪除其中一個字元，看是否在sw中，若是則ans+1。
+
+```python
+class Solution:
+    def wordCount(self, startWords: List[str], targetWords: List[str]) -> int:
+        sw = set([''.join(sorted(x)) for x in startWords])
+        ans = 0
+        for w in targetWords:
+            w = ''.join(sorted(w))
+            for i in range(len(w)):
+                if w[:i]+w[i+1:] in sw:
+                    ans += 1
+                    break
 
         return ans
 
