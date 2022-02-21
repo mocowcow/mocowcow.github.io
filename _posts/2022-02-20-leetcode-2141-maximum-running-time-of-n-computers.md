@@ -48,3 +48,19 @@ class Solution:
         return low
 
 ```
+
+之後看看lee神的解，到底是什麼想到這種神思路的。  
+將電池升冪排序，計算總電量sum。理論上的最大運行時間為sum/n，所以只要有電池電量大於sum/n，則運行失敗，因為將最大電池移除**用於固定一台電腦**，n-1，剩餘總電量-最大電池。直到最大的電量不超過sum/n，回傳sum/n。
+
+```python
+class Solution:
+    def maxRunTime(self, n: int, batteries: List[int]) -> int:
+        batteries.sort()
+        s = sum(batteries)
+        while batteries[-1] > s//n:
+            s -= batteries.pop()
+            n -= 1
+
+        return s//n
+
+```
