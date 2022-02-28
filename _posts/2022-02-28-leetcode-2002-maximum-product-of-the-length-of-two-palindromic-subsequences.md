@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2002. Maximum Product of the Length of Two Palindromic Subsequences
-tags 		: LeetCode Medium String DP Backtracking 
+tags 		: LeetCode Medium String DP Backtracking BitManipulation
 ---
 好久以前某次周賽TLE沒過的，今天又TLE好幾次才過。
 
