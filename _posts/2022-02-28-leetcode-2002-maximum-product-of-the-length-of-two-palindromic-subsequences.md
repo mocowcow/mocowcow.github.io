@@ -56,3 +56,32 @@ class Solution:
         return ans
 
 ```
+
+改用bit mask方法，順便把回文檢查方式改用內建函數，速度快了不少。試了好幾次才發現關鍵加速點是回文檢查函數，太苦了。  
+先把所有回文子序列找出來，以對應的mask儲存長度，放到雜湊表pa裡。之後再找任意兩個mask配對，如果做and運算為0，代表沒有重複到，以pa[s1]*pa[s2]更新答案。
+
+```python
+class Solution:
+    def maxProduct(self, s: str) -> int:
+        # build palindromic
+        pa = {}
+        N = len(s)
+        for mask in range(1, 1 << N):
+            # build subsequence
+            sub = ''
+            for i in range(N):
+                if mask & (1 << i):
+                    sub += s[i]
+            if sub == sub[::-1]:
+                pa[mask] = len(sub)
+
+        # check disjoint
+        ans = 0
+        for s1 in pa:
+            for s2 in pa:
+                if s1 & s2 == 0:
+                    ans = max(ans, pa[s1]*pa[s2])
+
+        return ans
+            
+```            
