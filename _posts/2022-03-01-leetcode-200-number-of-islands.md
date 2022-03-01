@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 200. Number of Islands
-tags 		: LeetCode Easy DFS Matrix
+tags 		: LeetCode Medium DFS Matrix
 ---
 Study Plan - Graph Theory - Day 1 - Matrix Related Problems。  
 
