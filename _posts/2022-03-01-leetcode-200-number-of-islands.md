@@ -6,7 +6,7 @@ tags 		: LeetCode Medium DFS Matrix
 Study Plan - Graph Theory - Day 1 - Matrix Related Problems。  
 
 # 題目
-輸入二維陣列grid，其中'0'代表水域，'1'代表陸地，求有多少個島嶼。  
+輸入矩陣grid，其中'0'代表水域，'1'代表陸地，求有多少個島嶼。  
 一個或多個'1'水平或是垂直相鄰，算做同一個島嶼。且grid四周範圍外也算是水域。
 
 # 解法
