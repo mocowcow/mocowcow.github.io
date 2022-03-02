@@ -37,11 +37,11 @@ class Solution:
         return all(c in it for c in s)
 ```
 
-follow up說如果字串s的長度k<=10^9怎麼辦，有沒有辦法加速？使用二分搜。  
+follow up說如果字串且s有k<=10^9個，長度M，但是t保持不變，有沒有辦法加速？使用二分搜。  
 維護雜湊表d，先遍歷來源字串t的字元，將index保存至d[字元]裡，例如t='aba'，d['a']=[0,2]，d['b']=[1]。  
 變數start代表字串t可以使用的範圍，初始值為0，表示整個字串都沒用過。  
 對s中的每個字串c，在d[c]裡面找到第一個大於等於start的值，並回傳其位置idx。若idx=d[c]大小則代表沒有可用的，直接回傳false，否則更新start為idx+1。  
-假設d[c]平均長度為M，整個時間複雜度會是O(k*M log N)。
+假設有k個字串s，每次需要O(M log N)，整個時間複雜度會是O(k*M log N)。
 
 ```python
 class Solution:
