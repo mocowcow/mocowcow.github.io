@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 2192. All Ancestors of a Node in a Directed Acyclic Graph
 tags 		: LeetCode Medium Graph DFS
 ---
-雙周賽76。沒看清楚要排序，吃一個WA。
+雙周賽73。沒看清楚要排序，吃一個WA。
 
 # 題目
 有n個節點組成有向圖，編號0~n-1，輸入二維陣列edges，表示單向路線[fromNone,toNode]。  

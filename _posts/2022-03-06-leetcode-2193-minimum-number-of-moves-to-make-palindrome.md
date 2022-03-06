@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 2193. Minimum Number of Moves to Make Palindrome
 tags 		: LeetCode Hard Greedy TwoPointers
 ---
-雙周賽76。一直想不到怎麼處理奇數字元，比賽結束後馬上看到別人的正確方法，自己修改後成功AC，也算是睡前的安慰吧。
+雙周賽73。一直想不到怎麼處理奇數字元，比賽結束後馬上看到別人的正確方法，自己修改後成功AC，也算是睡前的安慰吧。
 
 # 題目
 字串s，每次可以將任意兩個相鄰的字元交換位置，求最少需要幾次交換可以將s變成回文字串。
