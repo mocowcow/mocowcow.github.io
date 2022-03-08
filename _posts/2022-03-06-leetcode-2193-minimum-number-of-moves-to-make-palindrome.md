@@ -46,3 +46,30 @@ class Solution:
 
         return step
 ```
+
+2022/3/8更新list版解法。  
+
+```python
+class Solution:
+    def minMovesToMakePalindrome(self, s: str) -> int:
+        li = list(s)
+        step = 0
+        while len(li) > 1:
+            if li[0] == li[-1]:
+                li = li[1:-1]
+            else:
+                idx = 1
+                t = 1
+                while li[idx] != li[-1]:
+                    idx += 1
+                    t += 1
+                if idx == len(li)-1:
+                    li[-1], li[-2] = li[-2], li[-1]
+                    step += 1
+                else:
+                    step += t
+                    li = li[:idx]+li[idx+1:-1]
+
+        return step
+
+```
