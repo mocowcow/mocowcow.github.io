@@ -46,3 +46,39 @@ class Solution:
         return newHead
 
 ```
+
+參考[別人解法](https://leetcode.com/problems/rotate-list/discuss/22715/Share-my-java-solution-with-explanation)，加上一個dummy head會更好處理。  
+拿dummy接上head，所有遍歷都從dummy開始。  
+一樣先計算長度，只是判斷條件改為後方還有節點時才前進，這樣可以停在最後一點，而不是null上。  
+size模k跟之前一樣。  
+再來就是其中精髓：數完長度馬上把串列頭尾接上，之後就不必再跑一次了！  
+最後是找切斷點mid，從dummy開始數，多一個點，所以size-k就可以，剛好抵銷-1。最後保存newHead，切斷連結回傳即可。
+
+```python
+class Solution:
+    def rotateRight(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+        if not head or not head.next or k == 0:
+            return head
+        dummy = ListNode(next=head)
+        size = 0
+        tail = dummy
+        while tail.next:
+            size += 1
+            tail = tail.next
+
+        k %= size
+        if k == 0:
+            return head
+
+        tail.next = head
+        mid = dummy
+        for _ in range(size-k):
+            mid = mid.next
+
+        newHead = mid.next
+        mid.next = None
+
+        return newHead
+
+
+```
