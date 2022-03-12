@@ -4,7 +4,7 @@ title       : LeetCode 138. Copy List with Random Pointer
 tags 		: LeetCode Medium LinkedList HashTable
 ---
 每日題。  
-還滿有趣的題目，大部分人都是使用O(N) space-time解法，沒想到竟然會出現O(1) space[解法](https://leetcode.com/problems/copy-list-with-random-pointer/discuss/43497/2-clean-C%2B%2B-algorithms-without-using-extra-arrayhash-table.-Algorithms-are-explained-step-by-step.)，敬佩不已。晚點深入研究。
+還滿有趣的題目，大部分人都是使用space-time O(N)解法，沒想到竟然會出現space O(1)[解法](https://leetcode.com/problems/copy-list-with-random-pointer/discuss/43497/2-clean-C%2B%2B-algorithms-without-using-extra-arrayhash-table.-Algorithms-are-explained-step-by-step.)，敬佩不已。晚點深入研究。
 
 # 題目
 輸入一個linked list，比一般的節點多出一個random參照，指向此list中的隨機位置。把list深度複製一份後回傳。
@@ -42,4 +42,43 @@ class Solution:
 
         return nHead
 
+```
+
+試試sapce O(1)解法。  
+[這篇](https://leetcode.wang/leetcode-138-Copy-List-with-Random-Pointer.html)題解也寫得非常明瞭易懂。  
+
+分為三大步驟：  
+1.  把複製的新節點插入到原節點後方(一樣指向舊random)  
+2.  利用新節點的random找到舊的random，下一個就是新的random，將其更新  
+3.  把list中舊節點全部刪掉(奇數位置)
+
+```python
+class Solution:
+    def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':
+        if not head:
+            return head
+
+        # appende copied node after original node
+        curr = head
+        while curr:
+            node = Node(curr.val, curr.next, curr.random)
+            curr.next = node
+            curr = node.next
+
+        # relink random
+        curr = head
+        while curr:
+            curr = curr.next
+            if curr.random:
+                curr.random = curr.random.next
+            curr = curr.next
+
+        # spilt list
+        newHead = head.next
+        curr = newHead
+        while curr.next:
+            curr.next = curr.next.next
+            curr = curr.next
+
+        return newHead
 ```
