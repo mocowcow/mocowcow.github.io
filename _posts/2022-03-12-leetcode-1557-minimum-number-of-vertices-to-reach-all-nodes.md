@@ -3,6 +3,8 @@ layout      : single
 title       : LeetCode 1557. Minimum Number of Vertices to Reach All Nodes
 tags 		: LeetCode Easy Graph
 ---
+臭狗昨天拔牙，住院一晚，今天中午回家了。拔了二十幾顆，每個牙根都黑黑爛爛，牙周病真可怕。  
+大家都要好好刷牙，定期回診，健康最重要。
 
 # 題目
 一個有向無環圖，edges為路線，求最少要從哪幾個點出發才可以走完全部的點。
