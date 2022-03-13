@@ -42,3 +42,23 @@ class Solution:
         return max(max(nums[:k-1]), nums[min(k, N-1)])
 
 ```
+
+[這篇解法](https://leetcode.com/problems/maximize-the-topmost-element-after-k-moves/discuss/1844179/Python-or-O(N)T-O(1)S-or-Explanation)流程簡化，只留下一種corner case，思路清晰，可讀性比我的高出好幾倍。
+
+```python
+class Solution:
+    def maximumTop(self, nums: List[int], k: int) -> int:
+        N = len(nums)
+        if N == 1 and k & 1:
+            return -1
+
+        mx = -1
+        for i in range(min(k-1, N)):
+            mx = max(mx, nums[i])
+
+        if N > k:
+            mx = max(mx, nums[k])
+
+        return mx
+
+```
