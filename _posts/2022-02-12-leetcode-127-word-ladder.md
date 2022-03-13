@@ -37,3 +37,34 @@ class Solution:
 
         return 0
 ```
+
+2022-3-13二刷。改為預先處理wordList可以來自於哪幾種pattern，再由雜湊表加入所有新字串至BFS佇列。  
+
+```python
+class Solution:
+    def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
+        wd = defaultdict(list)
+        N = len(beginWord)
+        for w in wordList:
+            for i in range(N):
+                pat = (w[:i]+'*'+w[i+1:])
+                wd[pat].append(w)
+
+        q = [beginWord]
+        step = 1
+        while q:
+            t = []
+            for w in q:
+                if w == endWord:
+                    return step
+                for i in range(N):
+                    pat = w[:i]+'*'+w[i+1:]
+                    for nw in wd[pat]:
+                        t.append(nw)
+                    del wd[pat]
+            step += 1
+            q = t
+
+        return 0
+
+```
