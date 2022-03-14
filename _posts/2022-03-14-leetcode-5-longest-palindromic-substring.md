@@ -70,3 +70,48 @@ class Solution:
                 
         return s[start:start+size]
 ```
+
+再來是time O(N) space O(1)的Manacher演算法，學了兩三個小時才大致搞懂，執行時間212ms，非常噁心。  
+參考文章： 
+https://leetcode.wang/leetCode-5-Longest-Palindromic-Substring.html  
+https://leetcode.com/problems/longest-palindromic-substring/discuss/3337/Manacher-algorithm-in-Python-O(n)  
+
+大致整理一下：  
+先將原字串s以分隔符號包起來，這裡採用'_'，然後頭尾再用另外兩種符號夾住，得到新字串T。如'aba'變成'^_a_b_a_$'。  
+C代表上次處理回文子字串的中心，而R代表上次回文子字串的右邊界，陣列P[i]代表以T[i]為中心可以往左右擴展的長度；同時也代表以其為中心，可以在s得到的**最長回文子字串長度**。  
+
+假設i到C的距離為n，則C再往左走n次會抵達對稱點j。在R大於i的情況下，P[i]的值會等於P[j]，否則必須重新以i為中心點向左右擴張，停止擴張後依情況更新C和R。  
+最後遍歷P陣列，找出最大的長度並更新中心點。因為P[i]代表整個字串長度，所以P[i]/2等於半徑，子字串起點=(center-size)/2。
+
+```python
+class Solution:
+    def longestPalindrome(self, s: str) -> str:
+        #pretreatment
+        T='^_'+'_'.join(list(s))+'_$'
+        N=len(T)
+        P=[0]*N
+        C=R=0
+        for i in range(1,N-1):
+            j=2*C-i
+            if R>i:
+                P[i]=min(R-i,P[j])
+        
+            #expand from center
+            while T[i+1+P[i]]==T[i-1-P[i]]:
+                P[i]+=1
+            
+            #update r
+            if i+P[i]>R:
+                C=i
+                R=i+P[i]
+            
+        #find longest
+        size=center=0
+        for i in range(1,N-1):
+            if P[i]>size:
+                size=P[i]
+                center=i
+        
+        start=(center-size)//2
+        return s[start:start+size]
+```
