@@ -29,23 +29,24 @@ while True:
     title = '-'.join(TOPIC.split(' ')[1:]).lower()
     time = datetime.now().strftime('%Y-%m-%d')
     filename = f'{time}-leetcode-{number}-{title}.md'
-    template = f"""
-                ---
-                layout      : single
-                title       : LeetCode {TOPIC}
-                tags 		: LeetCode
-                ---
-                # 題目
+    template = f"""---
+layout      : single
+title       : LeetCode {TOPIC}
+tags 		: LeetCode
+---
+# 題目
 
-                # 解法
+# 解法
 
-                ```python
-                code here
+```python
+code here
 
-                ```
+```
 
-                """
+"""
 
     print('新建成功\n')
+    leetcode_posts.add(number)
     f = open(filename, 'w', encoding='utf8')
     f.write(template)
+    f.close()
