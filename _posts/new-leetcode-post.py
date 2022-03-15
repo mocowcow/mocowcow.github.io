@@ -47,6 +47,5 @@ code here
 
     print('新建成功\n')
     leetcode_posts.add(number)
-    f = open(filename, 'w', encoding='utf8')
-    f.write(template)
-    f.close()
+    with open(filename, 'w', encoding='utf8') as f:
+        f.write(template)
