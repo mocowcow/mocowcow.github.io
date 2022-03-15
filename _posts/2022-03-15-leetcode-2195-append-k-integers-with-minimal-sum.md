@@ -6,7 +6,7 @@ tags 		: LeetCode Medium Array Math Sorting BinarySearch Greedy
 周賽283。那時候想用兩個相鄰數區間+梯形公式求值，可惜一直搞錯邊界噴了四次，最後也沒做出來。今天找到更好的解法，開心。
 
 # 題目
-求k個不重複正整數最小值，且不可以在數列nums中出現過。  
+求k個不重複，且不在數列nums中出現過的正整數，求這k個數的和最小為多少。  
 > nums = [1,4,25,10,25], k = 2
 > ans = sum[2,3] = 5  
 > nums = [5,6], k = 6  
