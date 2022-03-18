@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 1232. Check If It Is a Straight Line
-tags 		: LeetCode Easy Array Stack MonotonicStack HashTable
+tags 		: LeetCode Easy Array Math
 ---
 Study Plan - Programming Skills。  
 小小抒發一下，討論區的解答清一色都是同時檢查三點斜率的公式： 
