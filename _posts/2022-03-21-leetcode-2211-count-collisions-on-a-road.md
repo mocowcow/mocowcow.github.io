@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2211. Count Collisions on a Road
-tags 		: LeetCode Medium Array Greedy
+tags 		: LeetCode Medium Array Greedy TwoPointers
 ---
 周賽285。本來想說終於有stack了，結果測試的時候發現不太對，果斷換方法。
 
@@ -46,3 +46,51 @@ class Solution:
         return ans
 ```
 
+別人的解法，先從左到右，只處理會撞到的R，第二次從右到左，只處理會撞到的L。
+
+```python
+class Solution:
+    def countCollisions(self, directions: str) -> int:
+        ans=0
+        t=0
+        for d in directions:
+            if d=='R':
+                t+=1
+            else:
+                ans+=t
+                t=0
+                
+        t=0
+        for d in reversed(directions):
+            if d=='L':
+                t+=1
+            else:
+                ans+=t
+                t=0
+                
+        return ans
+```
+
+最容易理解的解答來了，這人真是聰明。  
+只有靠左邊界的連續一坨L，還有靠右邊界的連續一坨R不會撞到，其他的R和L一定會撞到！  
+雙指標把左右不會撞到的車去掉，在計算中間段的R和L總和就可以。
+
+```python
+class Solution:
+    def countCollisions(self, directions: str) -> int:
+        ans=0
+        l=0
+        r=len(directions)-1
+        
+        while l<=r and directions[l]=='L':
+            l+=1
+            
+        while l<=r and directions[r]=='R':
+            r-=1
+        
+        for i in range(l,r+1):
+            if directions[i] in "LR":
+                ans+=1
+            
+        return ans
+```
