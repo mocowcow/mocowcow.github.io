@@ -53,3 +53,21 @@ class Solution:
         return ''.join(ans)
 ```
 
+另外一種思路，先建立長度n，全為1的陣列，確保字元數一定足夠，再由最後方往前，逐一將字元加大調整。  
+時間變成674ms，沒有快多少。
+
+```python
+class Solution:
+    def getSmallestString(self, n: int, k: int) -> str:
+        alp=[chr(96+i) for i in range(0,27)]
+        ans=[1]*n
+        k-=n
+        i=n-1
+        while k>0:
+            inc=min(k,25)
+            ans[i]=1+inc
+            k-=inc
+            i-=1
+            
+        return ''.join([alp[x] for x in ans])
+```            
