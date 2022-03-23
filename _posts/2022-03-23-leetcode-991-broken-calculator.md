@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 991. Broken Calculator
 tags 		: LeetCode Medium Math Greedy
 ---
-每日題。總感覺似曾相似，原來是[這題](/leetcode-2139-minimum-moves-to-reach-target-score)。
+每日題。總感覺似曾相似，原來是[2139. Minimum Moves to Reach Target Score]({% post_url 2022-02-20-leetcode-2139-minimum-moves-to-reach-target-score.md %})。
 
 # 題目
 有個壞掉的計算機，只能進行兩種動作：  
