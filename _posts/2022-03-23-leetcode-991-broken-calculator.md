@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 991. Broken Calculator
 tags 		: LeetCode Medium Math Greedy
 ---
-每日題。總感覺似曾相似，原來是[2139. Minimum Moves to Reach Target Score](https://leetcode.com/problems/minimum-number-of-moves-to-make-palindrome)。
+每日題。總感覺似曾相似，原來是2139. Minimum Moves to Reach Target Score。
 
 # 題目
 有個壞掉的計算機，只能進行兩種動作：  
