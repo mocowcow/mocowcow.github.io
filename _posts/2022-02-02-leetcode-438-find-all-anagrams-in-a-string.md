@@ -51,3 +51,41 @@ class Solution:
 
         return ans
 ```
+
+2022/3/24複習，改用start和end表示視窗起點、終點，可讀性增加，執行速度也莫名增加了。  
+
+```python
+class Solution:
+    def findAnagrams(self, s: str, p: str) -> List[int]:
+        M = len(s)
+        N = len(p)
+        if M<N:
+            return []
+        
+        target=[0]*123
+        window=[0]*123
+        ans=[]
+        
+        # init target
+        for c in p:
+            target[ord(c)]+=1
+            
+        # init window
+        start=0
+        end=N-1
+        for i in range(N):
+            window[ord(s[i])]+=1
+        if window==target:
+            ans.append(0)
+        
+        # move window
+        while end+1<M:
+            end+=1
+            window[ord(s[end])]+=1
+            window[ord(s[start])]-=1
+            start+=1
+            if window==target:
+                ans.append(start)
+                
+        return ans
+```
