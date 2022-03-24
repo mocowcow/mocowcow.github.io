@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 31. Next Permutation
 tags 		: LeetCode Medium String Math 
 ---
-半年以前看了果斷跳過的題。今天做[556題](% 2022-03-22-leetcode-556-next-greater-element-iii %)才發現是同個道理嗎，有如醍醐灌頂。
+半年以前看了果斷跳過的題。今天做[556題]({% post_url 2022-03-22-leetcode-556-next-greater-element-iii %})才發現是同個道理嗎，有如醍醐灌頂。
 
 # 題目
 輸入整數數列nums，依字典順序求其下一個較大的排列方式。如[1,2,3]的下一個排列為[1,3,2]。  
