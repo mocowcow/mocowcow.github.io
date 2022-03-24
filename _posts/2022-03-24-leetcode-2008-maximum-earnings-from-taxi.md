@@ -42,7 +42,28 @@ class Solution:
         return dp[-1]
 ```
 
-O(M+N)解法，[來源](https://leetcode.com/problems/maximum-earnings-from-taxi/discuss/1470935/C%2B%2BPython-DP-O(M%2BN)-Clean-and-Concise)。跑起來跟我的差不多快，但理論上應該要快很多，不太確定為什麼。  
+換個角度，dp(i)一樣代表第幾個站點，只是改由站點位置i作為外迴圈遞增，每次一定能先更新到dp值。  
+改用r變數紀錄是第幾個rides，只要第r個rides下車點為當前站點i，則更新dp值。
+
+```python
+class Solution:
+    def maxTaxiEarnings(self, n: int, rides: List[List[int]]) -> int:
+        dp=[0]*(n+1)
+        rides.sort(key=itemgetter(1))
+        M=len(rides)
+        r=0
+
+        for i in range(1,n+1):
+            dp[i]=dp[i-1]
+            while r<M and rides[r][1]==i:
+                a,b,tip=rides[r]
+                dp[i]=max(dp[i],dp[a]+b-a+tip)
+                r+=1
+
+        return dp[-1]
+```
+
+O(M+N)解法，[來源](https://leetcode.com/problems/maximum-earnings-from-taxi/discuss/1470935/C%2B%2BPython-DP-O(M%2BN)-Clean-and-Concise)。跑起來跟我的差不多快，但理論上應該要快很多，可能因為rides不算長，才沒有明顯改善。  
 
 不用排序，改用雜湊表以下車站點為key，保存(上車點,利潤)。從站牌1到n，每次先更新dp[i]為dp[i-1]，然後對每個在i站下車的乘客判斷要不要載他。
 
