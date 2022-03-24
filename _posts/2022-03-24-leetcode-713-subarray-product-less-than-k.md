@@ -30,3 +30,22 @@ class Solution:
         return ans
 ```
 
+雙指標版本。  
+start為視窗起點，end為視窗終點。若視窗大小為0時，start會停在end+1的位置。
+
+```python
+class Solution:
+    def numSubarrayProductLessThanK(self, nums: List[int], k: int) -> int:
+        ans=0
+        prod=1
+        start=0
+        
+        for end,n in enumerate(nums):
+            prod*=n
+            while prod>=k and start<=end:
+                prod//=nums[start]
+                start+=1
+            ans+=end-start+1
+            
+        return ans
+```
