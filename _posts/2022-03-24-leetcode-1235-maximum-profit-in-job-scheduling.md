@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 1235. Maximum Profit in Job Scheduling
-tags 		: LeetCode Hard DP Sorting
+tags 		: LeetCode Hard DP Sorting BinarySearch
 ---
 和[2008]({% post_url 2022-03-24-leetcode-2008-maximum-earnings-from-taxi %})同一個概念，只是終點可能到10^9，以地點長度開dp會MLE。要換別種做法。
 
