@@ -33,3 +33,30 @@ class Solution:
         return ans
 ```
 
+看到人家滿有趣的解法，但是速度比較慢一些。  
+首先預設全部人飛往a，並將b和a的差值存到refund裡面，當作是改飛b的價差，多退少補。  
+把refund排序後，再把前N的差額最小的加上去。  
+
+| costs     | [10,20] | [30,200] | [400,50] | [30,20] |
+| --------- | ------- | -------- | -------- | ------- |
+| 全部飛a   | 10      | 30       | 400      | 30      |
+| 改飛b差額 | 多10塊  | 多180    | 退350    | 退10    |
+ 
+ 全a成本=10+30+400+30=470，選退錢最多的前N個，退350+退10，共退360，答案為470-360=110。
+
+```python
+class Solution:
+    def twoCitySchedCost(self, costs: List[List[int]]) -> int:
+        N=len(costs)//2
+        refund=[]
+        ans=0
+        for a,b in costs:
+            ans+=a
+            refund.append(b-a)
+            
+        refund.sort()
+        for i in range(N):
+            ans+=refund[i]
+            
+        return ans
+```
