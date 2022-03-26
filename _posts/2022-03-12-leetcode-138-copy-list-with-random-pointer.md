@@ -58,7 +58,7 @@ class Solution:
         if not head:
             return head
 
-        # appende copied node after original node
+        # appened copied node after original node
         curr = head
         while curr:
             node = Node(curr.val, curr.next, curr.random)
