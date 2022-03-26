@@ -58,3 +58,30 @@ class Solution:
         #     l2=t
 ```
 
+還有人用stack來做，雖然說和塞進陣列差不多意思，不過也是很好玩，還莫名的快。  
+先把節點全部塞進stack後，計算總數，再從stack取出節點插入前方，重複size/2次。
+
+```python
+class Solution:
+    def reorderList(self, head: Optional[ListNode]) -> None:
+        # into stack
+        st=[]
+        curr=head
+        while curr:
+            st.append(curr)
+            curr=curr.next
+        size=len(st)
+        
+        # insert
+        curr=head
+        for _ in range(size//2):
+            t=curr.next
+            curr.next=st.pop()
+            curr=curr.next
+            curr.next=t
+            curr=t
+            
+        curr.next=None
+        
+        return head
+```
