@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 228. Summary Ranges
-tags 		: LeetCode Easy Array TwoPinters
+tags 		: LeetCode Easy Array TwoPointers
 ---
 每日題。沒注意到竟然會輸入空陣列，噴了WA，尷尬。
 

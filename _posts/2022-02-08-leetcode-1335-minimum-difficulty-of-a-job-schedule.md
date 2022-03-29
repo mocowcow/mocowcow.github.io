@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 1335. Minimum Difficulty of a Job Schedule
-tags 		: LeetCode Hard DP Arrays
+tags 		: LeetCode Hard DP Array
 ---
 DP教學系列。變數名稱打錯卡住半小時，好慘。
 
