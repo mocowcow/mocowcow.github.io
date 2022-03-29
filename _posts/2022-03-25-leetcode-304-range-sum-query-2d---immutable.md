@@ -34,7 +34,12 @@ class NumMatrix:
 
 更佳解法應該是做2D的前綴和，保存原點到某個點的範圍加總。  
 查詢時間為O(1)，初始化時間為O(M*N)。  
-明天再來補詳解。
+
+![示意圖](./assets/img/2d-psum.jpg)
+
+建立OD時，由公式推出：OD=OB+OC-OA+matrix[i][j]  
+查詢AD，由公式推出：AD=OD-OB-OC+OA
+
 
 ```python
 class NumMatrix:
