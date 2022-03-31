@@ -17,7 +17,7 @@ tags 		: LeetCode Medium String Stack
 2. 碰到')'，且stack頂端是'('，是空括號。彈出一個元素並押入1  
 3. 碰到')'，但stack頂端是數字。初始和為0，不斷加總數字，直到碰到'('為止，將總和*2後押入stack
 
-最後stakc中一定只剩下一堆數字，加總就是答案。
+最後stack中一定只剩下一堆數字，加總就是答案。
 
 ```python
 class Solution:
