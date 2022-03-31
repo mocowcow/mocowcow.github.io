@@ -49,7 +49,7 @@ class Solution:
 看了很多人的解法，幾乎都是先事先計算跑i圈的成本，之後再慢慢扣除圈數，這樣DP的狀態可以壓到一維去。  
 維護一個雜湊表lap，lap[i]表示不換胎跑i圈的最短時間。只要在當前時間小於changeTime+第一圈時間f，不換胎繼續跑就是更好的選擇。算完之後確認lap裡面有多少元素，就知道不換胎一次最多可以跑多少圈，記為mostLap。  
 dp(i)表示跑i圈的最短時間。  
-轉移方程式為dp(i)=min(跑j圈+換胎+dp(i-j) FOR ALL 1<=j<=min(numLaps,mostLap))。  
+轉移方程式為dp(i)=min(跑j圈+換胎+dp(i-j) FOR ALL 1<=j<=min(i,mostLap))。  
 當i=0時為base case，代表圈跑夠了，不需要再換胎，回傳-changeTime。
 
 ```python
@@ -74,7 +74,7 @@ class Solution:
             if i <= 0:
                 return -changeTime
             best = math.inf
-            for j in range(1, min(mostLap, numLaps)+1):
+            for j in range(1, min(mostLap, i)+1):
                 best = min(best, lap[j]+changeTime+dp(i-j))
             return best
 
