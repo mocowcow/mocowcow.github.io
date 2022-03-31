@@ -16,7 +16,7 @@ k<=硬幣總數<=2000，size(piles)<=1000，一眼就知道DP。
 定義dp(i,k)為到第i堆硬幣為止，總共拿了k個硬幣的最大值。答案就是回傳dp(N-1,k)。  
 在第i堆的時候，可以決定拿0~min(k,piles[i]大小)個硬幣，剩下的次數k留給i左邊的其他堆。  
 轉移方程式：dp(i,k)=max(sum(piles[i]前x項)+dp(i-1,k-x)) FOR ALL 0<=x<=size(piles[i])。  
-edge cases：  
+base cases：  
 - i小於0，沒有這種錢堆了，回傳0  
 - k等於0，沒辦法再拿了，回傳0  
 - k<0，不允許多拿，回傳inf
