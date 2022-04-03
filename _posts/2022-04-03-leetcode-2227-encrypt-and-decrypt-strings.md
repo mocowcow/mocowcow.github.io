@@ -29,7 +29,7 @@ decrypt解密方式：將word2每次讀入長度2的子字串s，找到所有i�
 root為字典樹的根節點，把dictionary所有字串加入，並在各個尾節點標記end。  
 
 加密時就跟描述一樣，不贅述。  
-解密時維護一個佇列做BFS，從根節點開始，每次以長度2的字串s到de找還原可能，試著前往下一個節點。若順利走完整個字串，且當前節點有標記end，則可能性+1。
+解密時維護一個佇列做BFS，從根節點開始，每次以長度2的字串s到de找還原可能，試著前往下一個節點。若順利走完整個字串，且當前節點有標記end，則可能性+1。執行時間6791ms。
 
 ```python
 class Node:
@@ -74,8 +74,32 @@ class Encrypter:
             for nextChar in self.de[word2[i:i+2]]:
                 if nextChar in curr.child:
                     q.append([curr.child[nextChar],i+2])
-
         return cnt
 
 ```
 
+腦筋急轉彎，聰明人的解法：直接對dictionary加密，看會變成什麼樣子，直接計數，解密的時候看看有幾種來源就可以了。  
+行數少，執行快，只要446ms。
+
+```python
+class Encrypter:
+
+    def __init__(self, keys: List[str], values: List[str], dictionary: List[str]):
+        self.possible=Counter()
+        self.en=dict()
+
+        for k,v in zip(keys,values):
+            self.en[k]=v
+            
+        for w in dictionary:
+            self.possible[self.encrypt(w)]+=1
+
+    def encrypt(self, word1: str) -> str:
+        en=[]
+        for c in word1:
+            en.append(self.en[c])
+        return ''.join(en)
+
+    def decrypt(self, word2: str) -> int:
+        return self.possible[word2]
+```
