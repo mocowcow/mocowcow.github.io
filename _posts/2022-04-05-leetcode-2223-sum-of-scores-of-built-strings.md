@@ -4,7 +4,7 @@ title       : LeetCode 2223. Sum of Scores of Built Strings
 tags 		: LeetCode Hard String 
 ---
 雙周賽75。  
-題目要的是longest common prefix，總覺得和KMP的longest suffix prefix有八成像，但是沒有成功做出來。後來才知道出題者想考z-function。  
+題目要的是longest common prefix，總覺得和KMP的longest prefix suffix有八成像，但是沒有成功做出來。後來才知道出題者想考z-function。  
 
 # 題目
 輸入長度為N的字串s。  
