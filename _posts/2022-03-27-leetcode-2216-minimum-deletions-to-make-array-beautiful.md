@@ -39,3 +39,23 @@ class Solution:
         return ans
 ```
 
+2022-4-6複習。  
+原本方法是計算需要刪除的次數，現在改為計算成功配對的字元數。  
+left紀錄要配對數字，開始遍歷nums。如果left為空，就把n裝進left；left和n不同時，配對成功，配對數+2，left清空；left和n相同時代表要刪除n，所以不動作。  
+最後長度N扣掉成功配對的數量就是要刪除的數量。
+
+```python
+class Solution:
+    def minDeletion(self, nums: List[int]) -> int:
+        matched=0
+        left=None
+        
+        for n in nums:
+            if left is None:
+                left=n
+            elif left!=n:
+                matched+=2
+                left=None
+        
+        return len(nums)-matched
+```
