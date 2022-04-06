@@ -58,3 +58,36 @@ class Solution:
         
 ```
 
+2022-4-6複習。  
+之前把問題過度複雜化，大概多走了兩三個彎路，今天重寫後變得更容易理解。  
+一樣先計算出總共幾層，還有最後一個項數。但是這次多計算首項的左半邊first，即為**1**1, **10**1, **10**01之類的。  
+可以發現第i個回文的左半邊，剛好是first+(i-1)：  
+> intLength = 4, first = 10, q = 32  
+> 左半邊 = first+(q-1) = 41  
+> 回文 = 4114  
+
+最後根據長度的奇偶來決定最內層是否重複即可。  
+從2656ms加速到585ms，擊敗98.98%。
+
+
+```python
+class Solution:
+    def kthPalindrome(self, queries: List[int], intLength: int) -> List[int]:
+        layer=(intLength+1)//2
+        mx=9*10**(layer-1)
+        first=10**(layer-1)
+        odd=intLength%2
+        ans=[]
+        
+        for q in queries:
+            if q>mx:
+                ans.append(-1)
+            else:
+                n=str(first+(q-1))
+                if odd:
+                    ans.append(n+n[:-1][::-1])
+                else:
+                    ans.append(n+n[::-1])
+                
+        return ans
+```
