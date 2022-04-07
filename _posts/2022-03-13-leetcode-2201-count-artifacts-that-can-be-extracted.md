@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2201. Count Artifacts That Can Be Extracted
-tags 		: LeetCode Medium Array Matirx HashTable
+tags 		: LeetCode Medium Array Matrix HashTable
 ---
 周賽284。經典的自己嚇死自己，題目真的要看清楚。
 
