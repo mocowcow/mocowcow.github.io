@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 189. Rotate Array
-tags 		: LeetCode Medium Array TwoPoints
+tags 		: LeetCode Medium Array TwoPointers
 ---
 聽說至少有三種解法，各位不妨先試試能想出幾種？
 
