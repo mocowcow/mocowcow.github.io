@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2191. Sort the Jumbled Numbers
-tags 		: LeetCode Medium Array Sort
+tags 		: LeetCode Medium Array Sorting
 ---
 雙周賽73。  
 昨天陪狗在醫院耗了大半天，明明在外都很正常，回家就變得神經質。至少有吃點東西了。  
