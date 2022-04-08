@@ -57,3 +57,39 @@ class Solution:
         return ''.join(st)
 ```
 
+雖然上面解法984ms，贏過96%，但是看到提交區有個457ms的怪東西，特地來學習他的作法，稍加修改。  
+
+直接算出總共要丟棄幾個字元，記做c_pop，而其中有多少可以是letter，記做l_pop。  
+遍歷s中所有字元c的時候，若c_pop還有剩餘，則繼續pop，碰到不能丟掉的letter就中斷。  
+處理完s後，如果c_pop還是有剩，代表丟的不夠，則從後方開始丟，不能丟的letter則保存到keep裡面，之後再加回。  
+最後把st加上keep數量的letter串起來就是答案。  
+452ms，勝過100%。
+
+```
+class Solution:
+    def smallestSubsequence(self, s: str, k: int, letter: str, repetition: int) -> str:
+        c_pop=len(s)-k
+        l_pop=s.count(letter)-repetition
+        st=[]
+        for c in s:
+            while c_pop and st and st[-1]>c:
+                if st[-1]==letter:
+                    if not l_pop:
+                        break
+                    l_pop-=1
+                st.pop()
+                c_pop-=1
+            st.append(c)
+            
+        keep=0
+        while c_pop:
+            c=st.pop()
+            if c==letter:
+                if not l_pop:
+                    keep+=1
+                    continue
+                l_pop-=1
+            c_pop-=1
+            
+        return ''.join(st+[letter]*keep)
+```
