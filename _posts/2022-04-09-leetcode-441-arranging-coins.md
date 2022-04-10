@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 441. Arranging Coins
 tags 		: LeetCode Easy Greedy BinarySearch 
 ---
-最近幾天在玩二分搜學系計畫，才想著這題應該會出現，今天果然碰上了。  
+最近幾天在玩二分搜學習計畫，才想著這題應該會出現，今天果然碰上了。  
 這題按爛的人還不少，不知道是不是把問題想得太複雜，明明暴力法也可以過。
 
 # 題目
