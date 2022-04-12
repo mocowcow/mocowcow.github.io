@@ -46,3 +46,31 @@ class Solution:
         return ans
 ```
 
+看大部分人都用heap解法，自己試著做了一次。這種應該就是所謂的掃描線。
+題目其實有提到，在天際線高度改變時稱為key point。我們先把每棟建物轉成上升的下降的key point，依照發生位置做排序。  
+
+heap保存的是進行中的上升key point，以及其結束時間，以高度為鍵值排序。  
+遍歷keyPoints，如果當前start已經超過heap頂端的結束時間，則此key point已經失效，將其彈出。  
+若當前的key point為上升，則將其押入heap中。這時heap頂端應該會是所有有效上升key point中高度最大者，檢查其高度是否與答案中上一個key point是否相同，若不同則將其加入答案。
+
+```python
+class Solution:
+    def getSkyline(self, buildings: List[List[int]]) -> List[List[int]]:
+        keyPoints = []
+        for start, end, h in buildings:
+            keyPoints.append((start, -h, end))
+            keyPoints.append((end, 0, 0))
+        keyPoints.sort()
+
+        ans = [(0, 0)]
+        heap = [(0, math.inf)]
+        for start, h, end in keyPoints:
+            while start >= heap[0][1]:
+                heappop(heap)
+            if h != 0:
+                heappush(heap, (h, end))
+            if ans[-1][1] != -heap[0][0]:
+                ans.append((start, -heap[0][0]))
+
+        return ans[1:]
+```
