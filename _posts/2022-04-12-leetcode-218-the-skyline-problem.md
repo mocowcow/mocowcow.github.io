@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 218. The Skyline Problem
 tags 		: LeetCode Hard Array BinarySearch 
 ---
-放在待辦清單裡面好久，今天終於拉出來寫。
+放在待辦清單裡面好久，今天終於拉出來寫。搞了好多種解法，十分快樂。
 
 # 題目
 從定點往遠處看去，所有建築物共同構成的最高點連線稱為天際線。  
@@ -53,6 +53,8 @@ heap保存的是進行中的上升key point，以及其結束時間，以高度�
 遍歷keyPoints，如果當前start已經超過heap頂端的結束時間，則此key point已經失效，將其彈出。  
 若當前的key point為上升，則將其押入heap中。這時heap頂端應該會是所有有效上升key point中高度最大者，檢查其高度是否與答案中上一個key point是否相同，若不同則將其加入答案。
 
+162ms，加速超級多。
+
 ```python
 class Solution:
     def getSkyline(self, buildings: List[List[int]]) -> List[List[int]]:
@@ -73,4 +75,43 @@ class Solution:
                 ans.append((start, -heap[0][0]))
 
         return ans[1:]
+```
+
+再來個merge sort解法。136ms，第一種解法已經看不到車尾燈。  
+
+把所有建物形成的地平線倆倆合併，最後成為一個答案。  
+當分割的大小=1時為base case，拆分成上升、下降key point各一個。  
+否則遞迴拆成左右邊，每次取出起點較早的key point，並更新對應高度；兩端起點相同時則同時取出，更新兩方高度。最後檢查高度是否有變化，若是則加入ans。
+
+```python
+class Solution:
+    def getSkyline(self, buildings: List[List[int]]) -> List[List[int]]:
+
+        def merge(l, r):
+            if l > r:
+                return []
+            if l == r:  # base case
+                return [(buildings[l][0], buildings[l][2]), (buildings[l][1], 0)]  # up and down
+            mid = (l+r)//2
+            q1 = deque(merge(l, mid))
+            q2 = deque(merge(mid+1, r))
+            h1 = h2 = 0
+            ans = []
+            while q1 or q2:
+                sl = q1[0][0] if q1 else math.inf
+                sr = q2[0][0] if q2 else math.inf
+                if sl < sr:
+                    S, h1 = q1.popleft()
+                elif sl > sr:
+                    S, h2 = q2.popleft()
+                else:  # equal
+                    S, h1 = q1.popleft()
+                    _, h2 = q2.popleft()
+                H = max(h1, h2)
+                if not ans or ans[-1][1] != H:
+                    ans.append((S, H))
+
+            return ans
+
+        return merge(0, len(buildings)-1)
 ```
