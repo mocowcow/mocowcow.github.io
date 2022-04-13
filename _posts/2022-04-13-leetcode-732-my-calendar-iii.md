@@ -71,3 +71,23 @@ class MyCalendarThree:
         return self.st.update(start, end-1, 1)
 ```
 
+官方建議解答是這樣，試想一個線性時間，對每個行程的開始時間標記+1，結束時標記-1，這樣就可以得到最大的併行數量。  
+
+```python
+class MyCalendarThree:
+
+    def __init__(self):
+        self.event=defaultdict(int)
+
+    def book(self, start: int, end: int) -> int:
+        self.event[start]+=1 # event start
+        self.event[end]-=1 # event end
+
+        overlap=0
+        k=0
+        for time in sorted(self.event.keys()):
+            overlap+=self.event[time]
+            k=max(k,overlap)
+        
+        return k
+```
