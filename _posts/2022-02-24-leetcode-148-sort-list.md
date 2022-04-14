@@ -143,3 +143,39 @@ class Solution:
         return curr
 
 ```
+
+2022-04-14更新：  
+聽說有人白板題考bubble sort排linked list，我連什麼是bubble sort都快忘記，特此複習。  
+雖然O(N^2)不出意外是太慢了些，喜聞樂見TLE。  
+
+首先遍歷一次list，找到長度N。  
+之後會進行N-1次的冒泡，第i次的冒泡會需要N-i-1次比較。例：  
+> i=0，需要N-0-1次的比較  
+> i=1，需要N-1-1次的比較  
+
+以此類推。若第節點值大於子節點值的話則兩者交換，冒泡完N-1次後完成排序。
+
+```python
+class Solution:
+    def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        # bubble sort
+        # get full size
+        size=0
+        curr=head
+        while curr:
+            size+=1
+            curr=curr.next
+            
+        #sort
+        for i in range(size):
+            last=size-i-1
+            curr=head
+            for _ in range(last):
+                if curr.val>curr.next.val:
+                    #swap
+                    curr.val,curr.next.val=curr.next.val,curr.val
+                curr=curr.next
+            
+        return head
+```
+
