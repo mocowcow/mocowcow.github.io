@@ -30,3 +30,24 @@ class Solution:
         return ans
 ```
 
+改用雙指標寫法。一樣先去0排序。  
+長邊k一定要有兩個更小的數，所以從索引2開始往右遍歷，i, j一樣代表兩個短邊。  
+若(i,j,k)可以組成三角型，因為數列是漸增的，所以i+1, i+2 .. j-1 全都可以和j, k組成三角形，故答案增加j-i個，把用過的j往左移；若無法組成三角形，需要將短邊長度調高，但我們能改的只有i，則i向右移動。
+
+```python
+class Solution:
+    def triangleNumber(self, nums: List[int]) -> int:
+        nums=sorted(x for x in nums if x>0)
+        ans=0
+        for k in range(2,len(nums)):
+            i=0
+            j=k-1
+            while i<j:
+                if nums[i]+nums[j]>nums[k]:
+                    ans+=j-i
+                    j-=1
+                else:
+                    i+=1
+                    
+        return ans
+```
