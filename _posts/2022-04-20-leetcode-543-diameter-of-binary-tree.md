@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 543. Diameter of Binary Tree
-tags 		: LeetCode Easy BinaryTree DFS
+tags 		: LeetCode Easy BinaryTree DFS DP
 ---
 和[2246. Longest Path With Different Adjacent Characters]({% post_url 2022-04-20-leetcode-2246-longest-path-with-different-adjacent-characters %})差不多的道理，只是這題只有兩個子節點。
 
