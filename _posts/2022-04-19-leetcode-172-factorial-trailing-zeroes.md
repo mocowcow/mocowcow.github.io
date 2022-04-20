@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 172. Factorial Trailing Zeroes
 tags 		: LeetCode Medeium Math
 ---
-跟[2245. Maximum Trailing Zeros in a Cornered Path]({% post_url 2022-04-18-leetcode-2245-maximum-trailing-zeros-in-a-cornered-path.md %})有點關係。  
+跟[2245. Maximum Trailing Zeros in a Cornered Path]({% post_url 2022-04-18-leetcode-2245-maximum-trailing-zeros-in-a-cornered-path %})有點關係。  
 很久以前理應看過這題，八成是因為沒什麼想法就略過不管，沒想到那時欠下的債竟在比賽的時候被催繳，太苦了。
 
 # 題目

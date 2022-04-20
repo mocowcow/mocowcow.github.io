@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 173. Binary Search Tree Iterator
 tags 		: LeetCode Medium Design BinarySearchTree DFS Stack 
 ---
-每日題。已經不知道是第幾天二元搜尋樹，這題和前幾天的[230. Kth Smallest Element in a BST]({% post_url 2022-04-18-leetcode-230-kth-smallest-element-in-a-bst.md %})有一點相關，這順序安排就有感受到管理團隊的用心。
+每日題。已經不知道是第幾天二元搜尋樹，這題和前幾天的[230. Kth Smallest Element in a BST]({% post_url 2022-04-18-leetcode-230-kth-smallest-element-in-a-bst %})有一點相關，這順序安排就有感受到管理團隊的用心。
 
 # 題目
 設計一個二元搜尋樹的疊代子，以中序遍歷的方式依序取得元素。
