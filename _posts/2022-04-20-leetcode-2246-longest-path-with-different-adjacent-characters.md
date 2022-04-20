@@ -75,3 +75,38 @@ class Solution:
         
         return ans
 ```
+
+又看看[另外一位大神的解法](https://leetcode.com/problems/longest-path-with-different-adjacent-characters/discuss/1955340/Python3-Explanation-with-pictures-BFS)，這怎麼還能用BFS？原來是把樹當作DAG，有點像是topology sort的概念。  
+從入度0的節點開始做BFS，入度為0時代表著該節點的所有子路徑都已經計算完成(或是一開始就沒有)，可以正確取得2個最長合法子路徑以更新答案。
+
+```python
+class Solution:
+    def longestPath(self, parent: List[int], s: str) -> int:
+        N=len(parent)
+        subs=[[0] for _ in range(N)]
+        dp=[1]*N
+        indegree=[0]*N
+        ans=1
+        
+        for i in range(1,N):
+            indegree[parent[i]]+=1
+            
+        q=deque()
+        for i in range(N):
+            if indegree[i]==0:
+                q.append(i)
+            
+        while q:
+            i=q.popleft()
+            p=parent[i]
+            indegree[p]-=1
+            if indegree[p]==0: # all subpaths of node p are accomplished
+                q.append(p)
+            longest2=nlargest(2,subs[i])
+            ans=max(ans,sum(longest2)+1)
+            dp[i]=max(longest2)+1
+            if s[i]!=s[p]:
+                subs[p].append(dp[i])
+            
+        return ans
+```
