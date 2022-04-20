@@ -32,7 +32,6 @@ class Solution:
         for i in range(1,len(parent)):
             child[parent[i]].append(i) 
         
-        @lru_cache(None)
         def dp(i):
             nonlocal ans
             fromPath=0 # 當前最長合法子路徑
@@ -58,7 +57,6 @@ class Solution:
         for i in range(1,len(parent)):
             child[parent[i]].append(i) 
         
-        @lru_cache(None)
         def dp(i):
             nonlocal ans
             subs=[]
