@@ -48,3 +48,32 @@ class Solution:
         return ans
 ```
 
+寫完才覺得上面邊計算、邊更新最長子路徑有點難懂，稍微修改一下，不過速度確實慢了些。  
+
+```python
+class Solution:
+    def longestPath(self, parent: List[int], s: str) -> int:
+        ans=1
+        child=defaultdict(list)
+        for i in range(1,len(parent)):
+            child[parent[i]].append(i) 
+        
+        @lru_cache(None)
+        def dp(i):
+            nonlocal ans
+            subs=[]
+            for j in child[i]:
+                sub=dp(j)
+                if s[i]!=s[j]:
+                    subs.append(sub)
+            longest2=nlargest(2,subs)
+            ans=max(ans,sum(longest2)+1)
+            if longest2: # concat longest subpath
+                return longest2[0]+1 
+            else: # base case
+                return 1
+            
+        dp(0)
+        
+        return ans
+```
