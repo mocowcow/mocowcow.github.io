@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 1898. Maximum Number of Removable Characters
-tags 		: LeetCode Medium Array Stinrg BinarySearch 
+tags 		: LeetCode Medium Array String BinarySearch 
 ---
 二分搜學習計畫。好像第一次碰到這種函數型有搭配字串，還算是挺新鮮。
 
