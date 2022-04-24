@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2249. Count Lattice Points Inside a Circle
-tags 		: LeetCode Medium Math Geometry
+tags 		: LeetCode Medium Matrix Array Math Geometry
 ---
 周賽290。看到題目差點嚇尿，想起某次Q2挖骨董的噩夢，結果還真和那次差不多慘烈，用了錯誤方法吃兩個WA。  
 不過這題給python的時間限制好像很短，看到好幾個python大老拿到TLE，很生氣的上去罵官方，剛好我的解法沒有超時而已。
