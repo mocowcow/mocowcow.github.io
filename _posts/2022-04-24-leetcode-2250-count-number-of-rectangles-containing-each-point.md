@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2250. Count Number of Rectangles Containing Each Point
-tags 		: LeetCode Medium Math Geometry Sorting BinarySearch
+tags 		: LeetCode Medium Array Math Geometry Sorting BinarySearch
 ---
 周賽290。這題難度大概也接近hard了，難點在於測資大小的分析，實作起來並不會太複雜。
 
