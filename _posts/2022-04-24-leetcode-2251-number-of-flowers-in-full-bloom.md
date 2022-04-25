@@ -51,3 +51,32 @@ class Solution:
         return ans
 ```
 
+參考[lee215大神](https://leetcode.com/problems/number-of-flowers-in-full-bloom/discuss/1977099/C%2B%2BPython-Binary-Search-and-Sweep-Line)的解法，改成自己比較能理解的版本。  
+一樣將每個開花期拆解成開花和凋謝兩個事件，分別存在start, end陣列中。  
+若要在d日賞花，就找到最後一個小於等於d日開花的索引i，這時應有i+1朵花已經開了。然後找到最後一個小於等於d日凋謝的索引j，這時應該會凋謝j+1朵花。兩者相減後就是剩下能看到的花數。  
+
+特別註解一下，upper bound(d)是第一個大於d的位置，-1之後變成最後一個小於等於d的位置，再加回去1才是小於等於d的開花數量。因為兩個都要-1又+1，可以直接化簡不寫。
+
+```python
+class Solution:
+    def fullBloomFlowers(self, flowers: List[List[int]], persons: List[int]) -> List[int]:
+        start=[]
+        end=[]
+        for s,e in flowers:
+            start.append(s)
+            end.append(e+1)
+        
+        start.sort()
+        end.sort()
+        
+        ans=[]
+        for day in persons:
+            # 同樣意思
+            # lastAlive=bisect_right(start,day)-1+1 
+            # lastDead=bisect_right(end,day)-1+1 
+            lastAlive=bisect_right(start,day) 
+            lastDead=bisect_right(end,day)
+            ans.append(lastAlive-lastDead)
+            
+        return ans
+```
