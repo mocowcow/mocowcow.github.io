@@ -43,3 +43,22 @@ class Solution:
         return ans
 ```
 
+雙指針解法，比上面的簡潔好理解，但是不知道為啥慢了一些，反正我個人更喜歡下面的解法。  
+一樣先把難度和利潤打包好，拿去排序。我們不在乎工人的指派順序，所以也拿去排序。  
+維護變數i，紀錄下一個要比較的工作索引，變數best紀錄可獲得最大利潤。  
+遍歷所有工人，如果此工人能力可以承擔工作i，則以工作i的利潤去更新best，直到工作全部處理完或是工人能力不足為止。這時候的best就是此工人能賺到的最大利潤，將best加入答案。
+
+```python
+class Solution:
+    def maxProfitAssignment(self, difficulty: List[int], profit: List[int], worker: List[int]) -> int:
+        N=len(difficulty)
+        jobs=sorted(zip(difficulty,profit),key=itemgetter(0))
+        i=best=ans=0
+        for w in sorted(worker):
+            while i<N and jobs[i][0]<=w:
+                best=max(best,jobs[i][1])
+                i+=1
+            ans+=best
+
+        return ans
+```
