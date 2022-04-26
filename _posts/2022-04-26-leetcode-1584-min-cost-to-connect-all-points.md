@@ -58,3 +58,34 @@ class Solution:
         return ans
 ```
 
+官方的解法，使用cost陣列表示連接i點的最小成本，每次連接完新的點後更新最小值。  
+複雜度一樣O(N^2)，執行起來比上面方法慢一些。
+
+```python
+class Solution:
+    def minCostConnectPoints(self, points: List[List[int]]) -> int:
+        def dis(i, j):
+            return abs(points[i][0]-points[j][0])+abs(points[i][1]-points[j][1])
+
+        N = len(points)
+        conn = [False]*N
+        cost = [math.inf]*N
+        cost[0]=0
+        ans=0
+        for _ in range(N):
+            cand=None
+            mn=math.inf
+            for i in range(N):
+                if conn[i]==False and cost[i]<mn:
+                    mn=cost[i]
+                    cand=i
+            # conncect
+            conn[cand]=True
+            ans+=mn
+            # update min costs
+            for j in range(N):
+                if conn[j]==False:
+                    cost[j]=min(cost[j],dis(cand,j))
+   
+        return ans
+```
