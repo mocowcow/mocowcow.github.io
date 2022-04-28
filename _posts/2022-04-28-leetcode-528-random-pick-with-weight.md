@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 528. Random Pick with Weight
 tags        : LeetCode Medium Design Array BinarySearch
 ---
-二分搜學習計畫。，剛開始覺得十分複雜，後來越寫越簡單。
+二分搜學習計畫。剛開始覺得十分複雜，後來越寫越簡單。
 
 # 題目
 設計一個資料結構，初始化時輸入長度N的陣列w，w[i]代表第i個位置的權重。  
