@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 1631. Path With Minimum Effort
-tags        : LeetCode Medium Array Matrix Heap BFS
+tags        : LeetCode Medium Array Matrix Heap BFS DFS BinarySearch
 ---
 每日題。開始覺得這陣子團隊是要搞併查集系列，但說實話這題真的不太適合用併查集，硬要用也沒什麼意思。
 
@@ -37,4 +37,42 @@ class Solution:
                     nef=abs(heights[r][c]-heights[nr][nc])
                     nef=max(nef,ef)
                     heappush(h,(nef,nr,nc))
+```
+
+看標籤才發現，原來這題也可以當成函數型二分搜，搜多少努力值可以成功走到終點。  
+最佳狀況整塊地高度都一樣，不用努力，下界為0。高度最高10^6，最低1，上界定為10^6。  
+如果無法以努力值mid成功走到終點，則更新下界；反之不用更努力，更新上界。  
+canDo函數就很普通的dfs就好，從起點出發，碰到沒走過而且又不超過努力限制的路就繼續dfs下去，成功到終點則回傳true。
+
+```python
+class Solution:
+    def minimumEffortPath(self, heights: List[List[int]]) -> int:
+        M,N=len(heights),len(heights[0])
+        end=(M-1,N-1)
+        
+        def canDo(ef):
+            visited=set()
+            def dfs(r,c):
+                if (r,c)==end:
+                    return True
+                visited.add((r,c))
+                for nr, nc in ((r+1, c), (r-1, c), (r, c+1), (r, c-1)):   
+                    if not (0 <= nr < M and 0 <= nc < N) or (nr,nc) in visited:
+                        continue
+                    nef=abs(heights[r][c]-heights[nr][nc])
+                    if nef<=ef and dfs(nr,nc):
+                        return True
+                return False
+            return dfs(0,0)
+        
+        lo=0
+        hi=10**6
+        while lo<hi:
+            mid=(lo+hi)//2
+            if not canDo(mid):
+                lo=mid+1
+            else:
+                hi=mid
+                
+        return lo
 ```
