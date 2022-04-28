@@ -11,6 +11,6 @@ except:
 
 template = Template('[$TITLE]({% post_url $LINK %})')
 s = template.substitute(TITLE=title, LINK=link)
-print('\n\n\n\n\n', s, '\n\n\n\n\n')
-
-
+print('\n\n\n\n\n')
+print(s)
+print('\n\n\n\n\n')
