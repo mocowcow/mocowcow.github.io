@@ -22,6 +22,11 @@ tags        : LeetCode Medium Array TwoPointers SlidingWindow
 若arr[j]<arr[i]，代表無法使arr有序，必須多刪除幾個，故將j向右移。  
 j移動停止後，以j-i-1求得刪除子陣列長度，更新答案。
 
+參考資料：  
+https://leetcode.com/problems/shortest-subarray-to-be-removed-to-make-array-sorted/discuss/833271/C%2B%2B-with-picture-O(n)  
+https://leetcode-cn.com/problems/shortest-subarray-to-be-removed-to-make-array-sorted/solution/java-jian-dan-on-by-avlgood2018/  
+https://leetcode-cn.com/problems/shortest-subarray-to-be-removed-to-make-array-sorted/solution/shan-chu-lian-xu-zi-shu-zu-by-taicailea-tp0t/  
+
 ```python
 class Solution:
     def findLengthOfShortestSubarray(self, arr: List[int]) -> int:       
