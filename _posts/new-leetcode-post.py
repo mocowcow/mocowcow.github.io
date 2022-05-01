@@ -8,6 +8,7 @@ layout      : single
 title       : LeetCode $TOPIC
 tags        : LeetCode
 ---
+$FOREWORD
 
 # 題目
 
@@ -34,6 +35,10 @@ for f in files:
     except:
         pass
 
+# 自訂前言
+print('自訂前言：')
+foreword=input()
+
 # 嘗試新建
 print('目前已寫過', len(leetcode_posts), '題')
 print('輸入題號+題目名：\n')
@@ -47,7 +52,7 @@ while True:
     title = '-'.join(topic.split(' ')[1:]).lower()
     time = datetime.now().strftime('%Y-%m-%d')
     filename = f'{time}-leetcode-{number}-{title}.md'
-    text = template.substitute(TOPIC=topic)
+    text = template.substitute(FOREWORD=foreword,TOPIC=topic)
     with open(filename, 'w', encoding='utf8') as f:
         f.write(text)
     print('新建成功\n')
