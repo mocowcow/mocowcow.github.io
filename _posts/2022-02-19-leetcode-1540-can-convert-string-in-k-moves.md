@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 1540. Can Convert String in K Moves
-tags 		: LeetCode Medium HashTalbe String Math
+tags 		: LeetCode Medium HashTable String Math
 ---
 隨便抽到的。可能測資有點太不夠意思才一堆人給爛。
 

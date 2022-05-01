@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 740. Delete and Earn
-tags 		: LeetCode Medium HashTalbe DP
+tags 		: LeetCode Medium HashTable DP
 ---
 趁著DP教學最近免費，把裡面的題目也刷一刷，也練習照著思考框架寫題解。
 

@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 202. Happy Number
-tags 		: LeetCode Easy HashTalbe Math
+tags 		: LeetCode Easy HashTable Math
 ---
 Study Plan - Programming Skills。  
 

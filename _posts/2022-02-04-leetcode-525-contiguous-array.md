@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 525. Contiguous Array
-tags 		: LeetCode Medium HashTalbe PrefixSum
+tags 		: LeetCode Medium HashTable PrefixSum
 ---
 買了個小遊戲[Vampire Survivors](https://store.steampowered.com/app/1794680/Vampire_Survivors/)，怎這會這麼好玩，尤其是開寶箱的音效歡樂到一個不行。
 
