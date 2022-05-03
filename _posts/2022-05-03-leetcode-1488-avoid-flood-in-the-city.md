@@ -56,3 +56,34 @@ class Solution:
                     
         return ans
 ```
+
+二分搜方法還不太好想，我又參考了[這篇](https://leetcode-cn.com/problems/avoid-flood-in-the-city/solution/avoid-flood-in-the-city-by-ikaruga/)。  
+
+主要思路改為以dry紀錄不下雨的的日期，在可能會遇到淹水的時候，才回去dry裡面找哪天可以抽水。  
+lastRain紀錄第n座湖上次下雨的日期，如果當前n已經滿了，則n找上一次下雨lastRain[n]後有沒有哪天可以抽水，找不到就淹水，回傳[]；找到記得把那天日期刪掉。  
+最後dry若不為空，記得全部亂填一個數字。
+
+```python
+class Solution:
+    def avoidFlood(self, rains: List[int]) -> List[int]:
+        lastRain={}
+        dry=[]
+        ans=[-1]*len(rains)
+        for i,n in enumerate(rains):
+            if n==0:
+                dry.append(i)
+            else:
+                if n in lastRain:
+                    idx=bisect_left(dry,lastRain[n])
+                    if idx==len(dry): # flood
+                        return []
+                    day=dry[idx]
+                    ans[day]=n
+                    dry.remove(day)
+                lastRain[n]=i
+        
+        for i in dry:
+            ans[i]=1
+        
+        return ans
+```
