@@ -53,6 +53,46 @@ class Solution:
                 cnt+=x-lo+1
                 
         return (sell-(cnt-orders)*lo)%MOD
-        
-        
+```
+
+雖然我一開始有想到排序的方法，但是實作有困難，參考以下兩篇後終於刻出來：  
+https://leetcode-cn.com/problems/sell-diminishing-valued-colored-balls/solution/liang-chong-si-lu-you-hua-tan-xin-suan-fa-you-hua-/  
+https://leetcode-cn.com/problems/sell-diminishing-valued-colored-balls/solution/hptu-jie-tan-xin-fang-an-tu-jie-by-hq_-2tvr/  
+
+因為先賣剩餘數量多的球總是最佳選擇，所以將inventory遞減排序。  
+對每個inventory[i]=top，找到小於其值的位置inventory[j]=bottom，最多出售top-bottom個球，使得inventory[i]和inventory[j]同值，簡單來說就是賣掉凸出來的部分。  
+每將某位置i和j切齊後，j左方的所有高度都會與j同高，可以透過這點計算出每次切齊能出售多少顆球。若球數無法滿足orders，則將指針繼續右移，直到orders足夠為止。
+
+![示意圖](assets/1648-1.jpg)
+
+再碰到球數大於orders時，先以寬度orders除ballType取整，得到height，代表能拿幾列相同價格的球。剩下的最高價的球會是top-height，缺幾顆再拿幾顆就好。
+
+```python
+class Solution:
+    def maxProfit(self, inventory: List[int], orders: int) -> int:
+        N=len(inventory)
+        inventory.sort(reverse=True)
+        i=0
+        top=inventory[0]
+        ans=0
+        while orders>0:
+            while i<N and inventory[i]==top:
+                i+=1
+            if i<N:
+                bottom=inventory[i]
+            else:
+                bottom=0
+            ballType=i
+            ballCnt=(top-bottom)*ballType
+            if orders>=ballCnt: # sell all
+                ans+=(top+bottom+1)*(top-bottom)//2*ballType # all shave to 'next'
+            else: # sell part
+                height=orders//ballType
+                remain=orders%ballType
+                ans+=(top+top-height+1)*height//2*ballType
+                ans+=(top-height)*remain
+            orders-=ballCnt
+            top=bottom
+            
+        return ans%(10**9+7)
 ```
