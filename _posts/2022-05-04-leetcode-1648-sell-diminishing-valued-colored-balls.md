@@ -63,7 +63,7 @@ https://leetcode-cn.com/problems/sell-diminishing-valued-colored-balls/solution/
 對每個inventory[i]=top，找到小於其值的位置inventory[j]=bottom，最多出售top-bottom個球，使得inventory[i]和inventory[j]同值，簡單來說就是賣掉凸出來的部分。  
 每將某位置i和j切齊後，j左方的所有高度都會與j同高，可以透過這點計算出每次切齊能出售多少顆球。若球數無法滿足orders，則將指針繼續右移，直到orders足夠為止。
 
-![示意圖](assets/1648-1.jpg)
+![示意圖](/img/assets/1648-1.jpg)
 
 再碰到球數大於orders時，先以寬度orders除ballType取整，得到height，代表能拿幾列相同價格的球。剩下的最高價的球會是top-height，缺幾顆再拿幾顆就好。
 
