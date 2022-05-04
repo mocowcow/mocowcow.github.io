@@ -56,10 +56,49 @@ class Solution:
         return lo
 ```
 
+雖然知道可以用併查集，但是起點和終點這麼多個，一下子不知道怎麼確認連通，想了好一陣子，最後發現[靈魂畫師]()題解，看到圖片馬上理解，真的是有夠精闢。  
 
-UF
+把cells反著看，從整個滿水的狀態，一格格退下來，將浮現出新的陸地。每新增一格陸地，檢查四周是否存在其他陸地，並將其連結。  
+但如何判斷最上最下方連通？試著加入兩個虛擬的節點top和bottom，在第一列新增陸地時，額外和top連結；在最後一列新增陸地時，額外和bottom連結，如此以來，檢查top和bottom是否連通即可。
 
 ```python
-code here
+class UnionFind:
+    def __init__(self) -> None:
+        self.parent = {}
+
+    def union(self, x, y):
+        px = self.find(x)
+        py = self.find(y)
+        if px != py:
+            self.parent[px] = py
+
+    def find(self, x):
+        if x != self.parent[x]:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+class Solution:
+    def latestDayToCross(self, row: int, col: int, cells: List[List[int]]) -> int:
+        M,N=row,col
+        top='top'
+        bottom='bottom'
+        uf=UnionFind()
+        uf.parent[top]=top
+        uf.parent[bottom]=bottom
+        for i in range(len(cells)-1,-1,-1):
+            r,c=cells[i]
+            r,c=r-1,c-1
+            uf.parent[(r,c)]=(r,c)
+            for nr, nc in ((r+1, c), (r-1, c), (r, c+1), (r, c-1)):
+                if (0<=nr<M and 0<=nc<N) and (nr,nc) in uf.parent:
+                    uf.union((r,c),(nr,nc))
+            if r==0:
+                uf.union((r,c),top)
+            elif r==M-1:
+                uf.union((r,c),bottom)
+                    
+            # check cross
+            if uf.find(top)==uf.find(bottom):
+                return i
 ```
 
