@@ -1,1 +1,1 @@
-![示意圖](/img/assets/xxxxxx.jpg)
+![示意圖](/assets/img/xxxxxx.jpg)
