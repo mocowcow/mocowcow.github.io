@@ -40,7 +40,7 @@ class Solution:
         hi=max(inventory)
         while lo<hi:
             mid=(lo+hi+1)//2
-            if countBalls(mid)<orders: #找第一個大於等於order的lvl
+            if countBalls(mid)<orders: #找第一個能湊滿orders的價格
                 hi=mid-1
             else:
                 lo=mid
