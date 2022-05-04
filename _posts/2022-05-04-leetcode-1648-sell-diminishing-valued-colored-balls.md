@@ -85,7 +85,7 @@ class Solution:
             ballType=i
             ballCnt=(top-bottom)*ballType
             if orders>=ballCnt: # sell all
-                ans+=(top+bottom+1)*(top-bottom)//2*ballType # all shave to 'next'
+                ans+=(top+bottom+1)*(top-bottom)//2*ballType # all shave to 'bottom'
             else: # sell part
                 height=orders//ballType
                 remain=orders%ballType
