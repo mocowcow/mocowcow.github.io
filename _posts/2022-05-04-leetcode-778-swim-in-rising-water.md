@@ -87,3 +87,25 @@ class Solution:
             
         return lo
 ```
+
+heap解法，太神了。  
+有點像是dijkstra，優先選擇日期較小的可用路徑，邊走邊更新日期最大值ans，走到終點時回傳ans。
+
+```python
+class Solution:
+    def swimInWater(self, grid: List[List[int]]) -> int:
+        N=len(grid)
+        h=[(grid[0][0],0,0)] # elevation, r, c
+        visited=set([(0,0)])
+        ans=0
+        while h:
+            t,r,c=heappop(h)
+            ans=max(ans,t)
+            if r==c==N-1:
+                return ans
+            for nr, nc in ((r+1, c), (r-1, c), (r, c+1), (r, c-1)):
+                if (0<=nr<N and 0<=nc<N) and (nr,nc) not in visited:
+                    heappush(h,(grid[nr][nc],nr,nc))
+                    visited.add((nr,nc))
+```
+        
