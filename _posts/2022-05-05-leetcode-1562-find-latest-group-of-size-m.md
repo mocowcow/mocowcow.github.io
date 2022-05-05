@@ -51,7 +51,36 @@ class Solution:
                 ctr[e-(idx+1)]+=1
             if ctr[m]:
                 return i
-            
-            
+
         return -1
+```
+
+O(N)解法真的是神奇，簡短而且不難理解，就是很難憑空想出來。  
+看這二進位字串的索引是從1開始計，不禁開始懷疑出題者是不是一開始就有想到這個解法，簡直巧妙到不行。  
+
+先列出每次將位置mid設為1時，所可能出現的狀況：  
+1. 左右都是0，群組長度1  
+2. 左右其中一個不是0，使該群組長度+1  
+3. 左右都是1，使左右兩群組合併，且總長度+1  
+
+有沒有發現其實我們只會存取到各群組的左、右邊界？如此一來，我們只需將群組大小記錄在最左、最右格子，每次更新位元時，複雜度只要O(1)。  
+遍歷arr，對其更新的位置mid，往左找一格，mid-1的值即為左方群組的大小，右邊同理。因為是檢查上一次修改，所以先看看左右群組是否有長度等於m，若是則更新答案。最後計算新群組長度=左+右群組長度+1，將新長度標記到新群組的最左右格子。
+
+```python
+class Solution:
+    def findLatestStep(self, arr: List[int], m: int) -> int:
+        N=len(arr)
+        if m==N:
+            return m
+        size=[0]*(N+2)
+        last=-1
+        
+        for i,mid in enumerate(arr):
+            left=size[mid-1]
+            right=size[mid+1]
+            if left==m or right==m:
+                last=i
+            size[mid-left]=size[mid+right]=left+right+1
+   
+        return last
 ```
