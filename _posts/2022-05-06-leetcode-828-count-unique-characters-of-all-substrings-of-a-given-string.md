@@ -26,6 +26,8 @@ tags        : LeetCode Hard String DP
 > 位於3的c左邊有3個元素，右邊有2個元素可以組成子陣列，共4*3=12  
 > 總答案為2+6+3+6+6+12=35
 
+![示意圖](/assets/img/828-1.jpg)
+
 ```python
 class Solution:
     def uniqueLetterString(self, s: str) -> int:
