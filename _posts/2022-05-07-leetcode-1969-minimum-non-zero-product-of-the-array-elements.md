@@ -48,11 +48,32 @@ class Solution:
         if p==1:
             return 1
         MOD=10**9+7
-        n=2**(p-1) #每個位元共有n個1
-        comb=(2**p)-1 #共有個數字
-        x=(comb-1)//2 #拆成x個1..10和0..01 再加上一個1..1
+        n=(2**p)-1 # n
+        x=(n-1)//2 # 拆成x個1..10和0..01 再加上一個1..1
         allOnes=int('1'*p,2) # 1..1
-        ans=int('1'*(p-1)+'0',2)     # 1..10乘0..01
-        ans=pow(ans,x,MOD)
-        return (ans*allOnes)%MOD
+        others=int('1'*(p-1)+'0',2)     # 1..10乘0..01
+        others=pow(ans,x,MOD)
+        return (others*allOnes)%MOD
+```
+
+自己做快速冪，也不用字串生成數字的版本。
+
+```python
+class Solution:
+    def minNonZeroProduct(self, p: int) -> int:
+        if p==1:
+            return 1
+        
+        def fastPow(base,p):
+            ans=1
+            while p:
+                if p&1:
+                    ans=(ans*base)%MOD
+                p//=2
+                base=(base*base)%MOD
+            return ans
+        
+        MOD=10**9+7 
+        n=fastPow(2,p)-1 #共有n個數字 同時也是最大的數字
+        return (n*fastPow(n-1,n//2))%MOD
 ```
