@@ -3,7 +3,8 @@ layout      : single
 title       : LeetCode 2264. Largest 3-Same-Digit Number in String
 tags        : LeetCode Easy String
 ---
-周賽292。網站好像是被DDOS，周賽一開始就整個卡死，過了15分鐘才看到題目，後續還是間間段段的卡，答案都送不出去。
+周賽292。網站好像是被DDOS，周賽一開始就整個卡死，過了15分鐘才看到題目，後續還是間間段段的卡，答案都送不出去。  
+![網站炸了.jpg](/assets/img/2264-1.jpg)
 
 # 題目
 輸入字串num。在nums中找到**最大**且由三個同樣數字組成的子字串，若不存在則回傳空字串。  
