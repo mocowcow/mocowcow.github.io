@@ -25,7 +25,7 @@ Alice傳訊息給Bob，由於傳輸錯誤，所有的字母都變成了數字。
 原本想用bottom up，但是處理base case超級麻煩，姑且改成top down，晚點找時間再補。  
 
 定義dp(i)：到pressedKeys[i]為止的解碼方式有幾種。  
-轉移方程式：dp(i)=dp(i-1)，若key[i-1]==key[i]則加上dp(i-2)，又若key[i-2]==key[i]則再加dp(i-3)，又又又key[i]是[7,9]且key[i-3]還是相同，最後在加dp(i-4)  
+轉移方程式：dp(i)=dp(i-1)，若**前一個數字**和當前相同，則加上dp(i-2)，又若**前兩個數字**還是相同，則再加dp(i-3)，又又又當前數字是7或9且**前三個數字**還是相同，最後在加dp(i-4)  
 
 base cases：i=0時只有一個數字，只有一種解碼方式；i<0時沒有數字，也只有空字串一種解碼方式。  
 
@@ -49,4 +49,25 @@ class Solution:
             return ans % MOD
 
         return dp(N-1)
+```
+
+補個bottom up方法。看來是我想太多了，並沒有比較難處理。  
+
+```python
+class Solution:
+    def countTexts(self, pressedKeys: str) -> int:
+        N = len(pressedKeys)
+        MOD = 10**9+7
+        dp = [0]*N
+        dp[0] = 1
+        for i in range(1, N):
+            n = pressedKeys[i]
+            rep = 4 if n in '79' else 3
+            for j in range(rep):
+                if j > i or pressedKeys[i-j] != n:
+                    break
+                dp[i] += dp[i-j-1] if i-j > 0 else 1
+            dp[i] %= MOD
+
+        return dp[-1]
 ```
