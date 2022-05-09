@@ -48,10 +48,15 @@ while True:
     x = input()
     if x == '':
         break
+    elif x == '?':
+        st.pop()
     elif x in d:
         st.append(d[x])
     else:
         print(x, 'not found')
     print(st)
 
+
+print('\n\n\n\n\n')
 print(' '.join(st))
+print('\n\n\n\n\n')
