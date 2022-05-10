@@ -14,7 +14,7 @@ tags        : LeetCode Medium Array Backtracking
 
 # 解法
 一樣沒什麼好辦法，只能用回溯暴力搜尋可能的組合。  
-從數字1開始搜尋，對1\~9的數字j分別嘗試加入，並繼續從j\~9中選數字。直到所有無法繼續加入數字後，判斷是否只用了k個數且總和為n，若是則將組合加入答案。
+從數字1開始搜尋，對1\~9的數字j分別嘗試加入，並繼續從j繼續遞迴。直湊滿k個數時，檢查總和是否為n，若是則將組合加入答案。  
 
 ```python
 class Solution:
@@ -31,6 +31,28 @@ class Solution:
                     bt(j+1,curr,val+j)
                     curr.pop()
                     
+        bt(1,[],0)
+        
+        return ans
+```
+
+改成只考慮是否加入當前數字i的版本。
+
+```python
+class Solution:
+    def combinationSum3(self, k: int, n: int) -> List[List[int]]:
+        ans=[]
+        
+        def bt(i,curr,val):
+            if len(curr)==k:
+                if val==n:
+                    ans.append(curr[:])
+            elif i<10:
+                bt(i+1,curr,val)
+                curr.append(i)
+                bt(i+1,curr,val+i)
+                curr.pop()
+                
         bt(1,[],0)
         
         return ans
