@@ -59,3 +59,23 @@ class Solution:
 
         return ans
 ```
+
+偷雞解法：使用sorted list，速度竟然比BIT還快，媽呀。  
+一樣從右方往左遍歷回來，對於每個數字n，在sl裡面找到最後一個小於等於n-1的索引位置idx，也就是bisect_right在-1。  
+該idx再加1就是小於等於n-1的元素數量，可以把-1和+1抵銷，直接變成bisect_right(n-1)。
+
+```python
+from sortedcontainers import SortedList
+
+class Solution:
+    def countSmaller(self, nums: List[int]) -> List[int]:
+        sl=SortedList()
+        N=len(nums)
+        ans=[0]*N
+        for i in reversed(range(N)):
+            n=nums[i]
+            ans[i]=sl.bisect_right(n-1)
+            sl.add(n)
+
+        return ans
+```
