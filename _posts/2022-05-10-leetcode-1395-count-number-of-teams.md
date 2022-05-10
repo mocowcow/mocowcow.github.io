@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 1395. Count Number of Teams
-tags        : LeetCode Medium Array
+tags        : LeetCode Medium Array BIT
 ---
 忘記是哪題的相似題，加入代辦清單之後就不記得了，反正就是多寫幾次。
 
@@ -37,6 +37,53 @@ class Solution:
             lbig=i-lsmall
             rbig=N-i-1-rsmall
             ans+=(lsmall*rbig)+(lbig*rsmall)
+            
+        return ans
+```
+
+使用BIT來計算較小的數。  
+lt和rt分別記錄左右方的數字，一開始要先遍歷一次rating，全部加入rt裡面做初始化。  
+之後再遍歷一次rating的每個數字n，計算出可用的組合數量後，對lt加入n，對rt扣除n。
+
+```python
+class BinaryIndexedTree:
+
+    def __init__(self, n):
+        self.bit = [0]*(n+1)
+        self.N = len(self.bit)
+
+    def update(self, index: int, val: int) -> None:
+        index += 1
+        while index < self.N:
+            self.bit[index] += val
+            index = index + (index & -index)
+
+    def prefixSum(self, index: int) -> None:
+        index += 1
+        res = 0
+        while index > 0:
+            res += self.bit[index]
+            index = index - (index & -index)
+        return res
+
+class Solution:
+    def numTeams(self, rating: List[int]) -> int:
+        N=len(rating)
+        lt=BinaryIndexedTree(10**5+5)
+        rt=BinaryIndexedTree(10**5+5)
+        ans=0
+        
+        for r in rating:
+            rt.update(r,1)
+        
+        for i,n in enumerate(rating):
+            lsmall=lt.prefixSum(n-1)
+            rsmall=rt.prefixSum(n-1)
+            lbig=i-lsmall
+            rbig=N-i-1-rsmall
+            ans+=(lsmall*rbig)+(lbig*rsmall)
+            lt.update(n,1)
+            rt.update(n,-1)
             
         return ans
 ```
