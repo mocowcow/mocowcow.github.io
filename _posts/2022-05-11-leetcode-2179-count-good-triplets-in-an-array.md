@@ -17,7 +17,10 @@ tags        : LeetCode Hard Array BIT
 同時處理兩邊的出現順序太麻煩了，可以先用雜湊表記錄下nums2裡面各元素的索引位置。  
 如此一來，我們只需要枚舉nums1的所有元素n做為中間元素，計算nums中n的左方元素有那些已經出現過、n的右方元素有哪些還沒出現過，就可以得到以n為中間點的組合數量。  
 
-最後問題剩下要用什麼資料結構，才能快速查詢區間和？線段樹、BIT或是sorted list。
+![示意圖](/assets/img/2179-1.jpg)
+
+最後問題剩下要用什麼資料結構，才能快速查詢區間和？線段樹、BIT或是sorted list。  
+附上助我良多的[優質題解](https://leetcode.cn/problems/count-good-triplets-in-an-array/solution/shu-zhuang-shu-zu-xian-duan-shu-ping-hen-knho/)。
 
 ```python
 class BinaryIndexedTree:
