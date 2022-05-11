@@ -84,3 +84,33 @@ class Solution:
         
         return dfs(0,0,0)
 ```
+
+2022-5-11更新DP解法加上剪枝。總感覺這難度比dfs高出好多，執行時間也有點抖抖。  
+因為只能往右和下走，總路徑長度一定是M+N-1。如果路徑長度是奇數，一定不可能湊成對的括號，直接回傳false；左上角非'('或右下角非')'也可以直接判斷。  
+
+先計算出路徑數path，對每個位置開出path長度的陣列，表示以多少左括號到達該點。  
+既然起點一定是左括號，就將dp[0][0][1]初始化為1，由上到下，由左到右做DP。  
+遍歷所有格子(r,c)，並更新所有可能的括號數量0到(r+c+1)。最後在右下角必須要所有括號都成對，左括號必須為0，回傳dp[M-1][N-1][0]。
+
+```python
+class Solution:
+    def hasValidPath(self, grid: List[List[str]]) -> bool:
+        M,N=len(grid),len(grid[0])
+        path=(M+N-1)
+        if path&1 or grid[0][0]==')' or grid[-1][-1]=='(':
+            return False
+        
+        dp=[[[False]*(path+5) for _ in range(N)] for _ in range(M)]
+        dp[0][0][1]=True
+        for r in range(M):
+            for c in range(N):
+                diff=1 if grid[r][c]=='(' else -1
+                for i in range(min(path,r+c+1)):
+                    if (i>0 or diff!=-1):
+                        if r>0:
+                            dp[r][c][i+diff]|=dp[r-1][c][i]
+                        if c>0:
+                            dp[r][c][i+diff]|=dp[r][c-1][i]    
+        
+        return dp[-1][-1][0]
+```
