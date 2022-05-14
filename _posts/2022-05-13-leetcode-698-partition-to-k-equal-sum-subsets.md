@@ -86,3 +86,40 @@ class Solution:
                 
         return bt(0,0,k)
 ```
+
+更新bitmask DP解法。看了中文站才發現遺漏一個重要的剪枝條件：nums中不可以有超過avg的數字。  
+
+以bitmask表示那些數字已經用過了，從0開始bottom up，每次挑一個沒用過數字試著加入。  
+當前子集合的總和記錄在val陣列裡面，對val[mask]的值模avg，可以計算出當前正在組成的子集合總和。  
+
+```python
+class Solution:
+    def canPartitionKSubsets(self, nums: List[int], k: int) -> bool:
+        sm=sum(nums)
+        if sm%k!=0: # 剪枝，必須能夠整除
+            return False
+        avg=sm//k
+        for x in nums: # 剪枝，數字不可超過avg
+            if x>avg:
+                return False
+        nums.sort()
+        N=len(nums)
+        dp=[False]*(1<<N)
+        dp[0]=True
+        val=[0]*(1<<N)
+        
+        for mask in range(1<<N):
+            if not dp[mask]: # 須以合法的組合為基礎
+                continue
+            for i in range(N):
+                newMask=mask|(1<<i)
+                if newMask!=mask: # 沒用過的數字
+                    subSum=(val[mask]%avg)+nums[i] 
+                    if subSum<=avg: # 且可以放入集合
+                        dp[newMask]=True
+                        val[newMask]=subSum
+                    else: # 剪枝，後面元素都不可用了
+                        break
+        
+        return dp[-1]
+```
