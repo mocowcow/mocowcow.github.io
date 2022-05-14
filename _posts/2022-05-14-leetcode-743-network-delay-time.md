@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 743. Network Delay Time
 tags        : LeetCode Medium Graph Heap BFS
 ---
-每日題。
+每日題。上次周賽途中網站出問題，宣布當次成績不採計，再見了我的積分。
 
 # 題目
 輸入整數n，代表n個節點，編號由1到n。另外陣列times代表有向邊，times[i]=(u,v,w)，節點u前往節點v的時間為w。  
