@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 1986. Minimum Number of Work Sessions to Finish the Tasks
-tags 		: LeetCode Medium Backtracking Array DP BitManipulation
+tags 		: LeetCode Medium Backtracking Array DP BitManipulation Bitmask
 ---
 以前某次周賽沒解完的，看討論區才知道有也可以用bit，搞不好會成為今後的趨勢。
 
