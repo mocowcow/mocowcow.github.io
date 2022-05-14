@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 698. Partition to K Equal Sum Subsets
-tags        : LeetCode Medium Array Backtracking 
+tags        : LeetCode Medium Array Backtracking BitManipulation Bitmask DP
 ---
 複習以前寫過比較難搞的回溯題。加了新測資，舊方法直接變成TLE，只好找找別的出路。
 

@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 421. Maximum XOR of Two Numbers in an Array
-tags 		: LeetCode Medium HashTable Trie BitManipulation
+tags 		: LeetCode Medium HashTable Trie BitManipulation Bitmask
 ---
 中午吃飽就在想解法，想到睡著，總算有個差強人意的答案。  
 這位論壇老哥評論深得我心：

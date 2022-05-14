@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 847. Shortest Path Visiting All Nodes
-tags 		: LeetCode Hard Graph BitManipulation BFS
+tags 		: LeetCode Hard Graph BitManipulation Bitmask BFS
 ---
 每日題。吃了一個MLE，心服口服。 
 

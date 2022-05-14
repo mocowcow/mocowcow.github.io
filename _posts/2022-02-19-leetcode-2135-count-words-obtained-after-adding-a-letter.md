@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2135. Count Words Obtained After Adding a Letter
-tags 		: LeetCode Medium String HashTable BitManipulation Sorting
+tags 		: LeetCode Medium String HashTable BitManipulation Bitmask Sorting
 ---
 模擬周賽275。bit mask爸爸又來了。
 

@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 90. Subsets II
-tags        : LeetCode Medium Array Backtracking BitManipulation HashTable
+tags        : LeetCode Medium Array Backtracking BitManipulation Bitmask HashTable
 ---
 複習回溯經典題，發現我以前竟然偷懶，全都用set去重複，沒有一次自己剪枝的。
 

@@ -23,6 +23,7 @@ d = {
     'll':  'LinkedList',
     'bit':  'BIT',
     'bm':  'BitManipulation',
+    'bmask':   'Bitmask',
     'hp':  'Heap',
     'bintree':  'BinaryTree',
     'sw':  'SlidingWindow',
