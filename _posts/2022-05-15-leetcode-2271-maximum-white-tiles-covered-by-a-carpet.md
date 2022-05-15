@@ -35,13 +35,13 @@ class Solution:
         E=[]
         ps=[]
         sm=0
+        ans=0
         for s,e in tiles:
             S.append(s)
             E.append(e)
             sm+=e-s+1
             ps.append(sm)
             
-        ans=0
         for s in S:
             e=s+carpetLen-1
             r=bisect_right(E,e)-1
@@ -54,4 +54,30 @@ class Solution:
             ans=max(ans,cover)
             
         return ans  
+```
+
+整理思路後，發現在二分搜找最後一個小於當前起點的區塊根本是多餘動作，因為對於每個tiles[i]來說，區塊tiles[i-1]一定就是前一個(廢話)。  
+順便用一些內建函數減少行數。
+
+```python
+class Solution:
+    def maximumWhiteTiles(self, tiles: List[List[int]], carpetLen: int) -> int:
+        tiles.sort()
+        N=len(tiles)
+        S,E=zip(*tiles)
+        ps=list(accumulate([e-s+1 for s,e in tiles]))
+        ans=0
+        for i,s in enumerate(S):
+            e=s+carpetLen-1
+            r=bisect_right(E,e)-1
+            R=ps[r]
+            L=ps[i-1] if i>0 else 0
+            cover=R-L
+            if r+1<N and S[r+1]<=e:
+                cover+=e-S[r+1]+1
+            ans=max(ans,cover)
+            
+        return ans
+                
+            
 ```
