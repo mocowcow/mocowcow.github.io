@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2256. Minimum Average Difference
-tags        : LeetCode Medium Array
+tags        : LeetCode Medium Array PrefixSum
 ---
 雙周賽77。誤會題目WA一次，邏輯錯誤WA一次，提交的時候手不小心敲到鍵盤RE一次，好慘。
 
