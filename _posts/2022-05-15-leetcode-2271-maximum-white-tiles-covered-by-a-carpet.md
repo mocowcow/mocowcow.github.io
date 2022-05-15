@@ -78,6 +78,31 @@ class Solution:
             ans=max(ans,cover)
             
         return ans
+```
+
+搞了半天，終於把滑動窗口寫了出來。  
+變數j指向考慮是否加入的磁磚區塊，cover為完全覆蓋磁磚格數。  
+列舉每個tiles[i]的起點s開始放地毯，計算出地毯最後尾e，在可以被e完整覆蓋情況下，盡可能加入右方的磁磚區塊。  
+窗口右邊界j停止擴展後，檢查區塊j是否能被地毯蓋住某部分，若有則cover加上部分覆蓋數量更新答案；否則只用cover更新。  
+最後縮減左邊界，將cover扣除區塊i的磁磚數。
+
+```python
+class Solution:
+    def maximumWhiteTiles(self, tiles: List[List[int]], carpetLen: int) -> int:
+        tiles.sort()
+        N=len(tiles)
+        j=cover=ans=0
+        for i in range(N):
+            s=tiles[i][0]
+            e=tiles[i][0]+carpetLen-1
+            while j<N and tiles[j][1]<=e:
+                cover+=tiles[j][1]-tiles[j][0]+1
+                j+=1
+            if j<N and e>=tiles[j][0]:
+                ans=max(ans,cover+e-tiles[j][0]+1)
+            else:
+                ans=max(ans,cover)
+            cover-=tiles[i][1]-tiles[i][0]+1
                 
-            
+        return ans
 ```
