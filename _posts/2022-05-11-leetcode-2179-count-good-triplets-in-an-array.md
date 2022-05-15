@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 2179. Count Good Triplets in an Array
 tags        : LeetCode Hard Array BIT 
 ---
-模擬雙周賽82。一開始還真是完全摸不著頭緒，看了滿多篇解答，不是解釋不清楚，就是刻意寫得很艱深，連集合論的bijection都拿出來講，好險最後是有看到幾篇正常的。
+模擬雙周賽72。一開始還真是完全摸不著頭緒，看了滿多篇解答，不是解釋不清楚，就是刻意寫得很艱深，連集合論的bijection都拿出來講，好險最後是有看到幾篇正常的。
 
 # 題目
 輸入兩個長度為N個陣列nums1, nums2，他們都是[0,1,..,n-1]的排列。  

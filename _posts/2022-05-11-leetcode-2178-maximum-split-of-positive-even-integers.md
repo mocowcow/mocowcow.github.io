@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 2178. Maximum Split of Positive Even Integers
 tags        : LeetCode Medium Greedy Math
 ---
-模擬雙周賽82。回想起來，當時練習的時候是5/7晚上10點左右，結果網站竟然炸掉快半小時！當時還想說：明天周賽最好不要給我出事，然後就真的出事了。
+模擬雙周賽72。回想起來，當時練習的時候是5/7晚上10點左右，結果網站竟然炸掉快半小時！當時還想說：明天周賽最好不要給我出事，然後就真的出事了。
 
 # 題目
 輸入一個數字finalSum，盡可能將其分割成多個**不重複正偶數**。  
