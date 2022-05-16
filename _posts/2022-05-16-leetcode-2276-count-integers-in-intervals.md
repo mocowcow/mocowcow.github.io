@@ -26,15 +26,25 @@ tags        : LeetCode Hard Array SortedList BinarySearch
 
 當天的程式碼超級醜，今天重新寫一次，真的有點懷疑當初怎麼寫出來的。  
 
-初始化size=0，大小可以在區間合併的時候順便計算，才不需要每次呼叫count都重新計算。  
-每次插入新的區間[left,right]時，先以二分搜找到第一個大於等於left的位置i。但有時候前一個區間的右邊界會和left重疊，如果重疊的話要再把i往左移一格。  
-若區間i的左邊界小於等於right，則重複以下動作：  
-1. 以左邊界更新left
-2. 以右邊界更新right
-3. 將此區間加入至toRmv，待合併結束後一次刪除  
-4. i右移一格
+初始化size=0，大小可以在區間合併的時候順便處理，才不需要每次呼叫count都重新計算。  
+每次插入新的區間[left,right]時，先以二分搜找到第一個大於等於left的位置i。
+有時候前一個區間的右邊界會和left重疊，例如：  
+> sl=[[1,7],[10,13]] add=[4,8]  
+> 第一個大於4的區間為[10,13]  
+> left包含在[1,7]中，需要更新left為1  
 
-合併完後，把遍歷toRmv，從sl中一一刪除，並扣掉其大小。最後加入新的區間[left,right]，並加上其大小。
+第二種情形：  
+> sl=[[1,9],[10,13]] add=[4,8]  
+> 第一個大於4的區間為[10,13]  
+> [4,8]整個都包含在[1,9]中，不用合併了
+
+第一種情形要先往左邊更新left，並把i-1區間加入toRmv；第二種就直接return。
+再來試著往右邊合併，若區間i的左邊界小於等於right，則重複以下動作：  
+1. 以右邊界更新right
+2. 將此區間加入至toRmv，待合併結束後一次刪除  
+3. i右移一格
+
+合併完後，遍歷toRmv，從sl中一一刪除，並扣掉其大小。最後加入新的區間[left,right]，並加上其大小。
 
 ```python
 from sortedcontainers import SortedList
@@ -46,18 +56,20 @@ class CountIntervals:
 
     def add(self, left: int, right: int) -> None:
         N=len(self.sl)
-        i=self.sl.bisect_left([left,right])
+        i=self.sl.bisect_left([left,left])
+        toRev=[]
         if i!=0 and self.sl[i-1][1]>=left:
-            i-=1
-        toRmv=[]
-        # merge
+            if self.sl[i-1][1]>=right: # full coverd
+                return
+            left=self.sl[i-1][0]
+            toRev.append(self.sl[i-1])
+        # merge side
         while i<N and right>=self.sl[i][0]:
-            left=min(left,self.sl[i][0])
             right=max(right,self.sl[i][1])
-            toRmv.append(self.sl[i])
+            toRev.append(self.sl[i])
             i+=1
         # remove merged intervals
-        for x in toRmv:
+        for x in toRev:
             self.size-=x[1]-x[0]+1
             self.sl.remove(x)
         # insert new interval
