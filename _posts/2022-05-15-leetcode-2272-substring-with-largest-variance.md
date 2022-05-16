@@ -54,3 +54,30 @@ class Solution {
     }
 }
 ```
+
+如果先遍歷一次s，找到有出現過的字元集合cs，只遍歷cs裡面的字元，就能勉強通過了。  
+值得注意的是，如果用max函數更新ans，**時間會大幅上升**，所以要用if減少賦值次數。
+
+```python
+class Solution:
+    def largestVariance(self, s: str) -> int:
+        ans=0
+        cs=set(s)
+        for a in cs:
+            for b in cs:
+                if a==b:
+                    continue
+                score=0
+                v=-math.inf
+                for c in s:
+                    if c==a:
+                        score+=1
+                        v+=1
+                    elif c==b:
+                        v=max(score,v)-1
+                        score=0                
+                    if v>ans:
+                        ans=v
+                    
+        return ans
+```
