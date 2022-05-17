@@ -59,11 +59,11 @@ class CountIntervals:
         i=self.sl.bisect_left([left,left])
         toRev=[]
         if i!=0 and self.sl[i-1][1]>=left:
-            if self.sl[i-1][1]>=right: # full coverd
+            if self.sl[i-1][1]>=right: # fully covered
                 return
             left=self.sl[i-1][0]
             toRev.append(self.sl[i-1])
-        # merge side
+        # merge right
         while i<N and right>=self.sl[i][0]:
             right=max(right,self.sl[i][1])
             toRev.append(self.sl[i])
