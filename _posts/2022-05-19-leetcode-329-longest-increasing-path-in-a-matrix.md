@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 329. Longest Increasing Path in a Matrix
-tags        : LeetCode Hard Graph Matrix DFS DP
+tags        : LeetCode Hard Graph Matrix DFS DP BFS TopologySort
 ---
 每日題。過了半年後，竟然想到和之前不同的解法，代表有進步。
 
@@ -38,4 +38,40 @@ class Solution:
                 ans=max(ans,dfs(r,c))
                 
         return ans
+```
+
+也可以以拓樸排序的角度來分析。  
+因為每個格子可以藉由四周較小的格子抵達，所以我們必須選擇從**沒有入口的點**出發，往其他高處走，並將抵達處的**入口數**扣掉1。如果該點入口處變成0了，就可以繼續從那邊前往其他點。  
+這邊所說的**入口數**，術語就叫做**入度(indegree)**。  
+
+```python
+class Solution:
+    def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
+        M,N=len(matrix),len(matrix[0])
+        indegree=defaultdict(int)
+        q=deque()
+        step=0
+
+        for r in range(M):
+            for c in range(N):
+                for nr,nc in ((r+1,c),(r-1,c),(r,c+1),(r,c-1)):
+                    if (0<=nr<M and 0<=nc<N) and matrix[nr][nc]>matrix[r][c]:
+                        indegree[(nr,nc)]+=1
+
+        for r in range(M):
+            for c in range(N):
+                if indegree[(r,c)]==0:
+                    q.append((r,c))
+
+        while q:
+            step+=1
+            for _ in range(len(q)):
+                r,c=q.popleft()
+                for nr,nc in ((r+1,c),(r-1,c),(r,c+1),(r,c-1)):
+                    if (0<=nr<M and 0<=nc<N) and matrix[nr][nc]>matrix[r][c]:
+                        indegree[(nr,nc)]-=1
+                        if indegree[(nr,nc)]==0:
+                            q.append((nr,nc))
+
+        return step
 ```
