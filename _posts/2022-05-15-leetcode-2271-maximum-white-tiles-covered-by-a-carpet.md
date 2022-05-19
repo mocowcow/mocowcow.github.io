@@ -26,7 +26,9 @@ tags        : LeetCode Medium Array PrefixSum BinarySearch
 5. 地毯末端e有可能**部分覆蓋**下一個區塊，計算第r+1區塊能夠被蓋到多少  
 6. 更新答案  
 
-> 2022-5-19更新，以下二分搜code被新增測資搞死了，現在無法通過。
+> 2022-5-19更新，以下二分搜code漏掉一個情況：  
+> 當某段磁磚長度超過carpetLen時，應直接回傳carpetLen，否則會計算出錯誤長度
+
 ```python
 class Solution:
     def maximumWhiteTiles(self, tiles: List[List[int]], carpetLen: int) -> int:
@@ -50,6 +52,8 @@ class Solution:
             R=ps[r]
             L=ps[l] if l>=0 else 0
             cover=R-L
+            if cover>=carpetLen:
+                return carpetLen
             if r+1<N and S[r+1]<=e:
                 cover+=e-S[r+1]+1
             ans=max(ans,cover)
@@ -74,6 +78,8 @@ class Solution:
             R=ps[r]
             L=ps[i-1] if i>0 else 0
             cover=R-L
+            if cover>=carpetLen:
+                return carpetLen
             if r+1<N and S[r+1]<=e:
                 cover+=e-S[r+1]+1
             ans=max(ans,cover)
