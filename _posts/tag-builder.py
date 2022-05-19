@@ -32,6 +32,7 @@ d = {
     'segtree':  'SegmentTree',
     'bst':  'BinarySearchTree',
     'trie':  'Trie',
+    'tp': 'TopologySort',
     'sim':  'Simulation',
     'count':  'Counting',
     'geo':  'Geometry',
