@@ -26,6 +26,7 @@ tags        : LeetCode Medium Array PrefixSum BinarySearch
 5. 地毯末端e有可能**部分覆蓋**下一個區塊，計算第r+1區塊能夠被蓋到多少  
 6. 更新答案  
 
+> 2022-5-19更新，以下二分搜code被新增測資搞死了，現在無法通過。
 ```python
 class Solution:
     def maximumWhiteTiles(self, tiles: List[List[int]], carpetLen: int) -> int:
@@ -104,5 +105,29 @@ class Solution:
                 ans=max(ans,cover)
             cover-=tiles[i][1]-tiles[i][0]+1
                 
+        return ans
+```
+
+改列舉每個tiles[right]為右邊界，計算出毯子往左延伸到left_most。若最左邊界的磁磚完全碰不到毯子，則收縮左邊界。  
+和上面那版還有些許不同：上方版本只計算完全覆蓋的磁磚，再加上部分覆蓋；下方是計算所有磁磚區塊，並扣掉沒蓋到的部分。
+
+```python
+class Solution:
+    def maximumWhiteTiles(self, tiles: List[List[int]], carpetLen: int) -> int:
+        N=len(tiles)
+        tiles.sort()
+        cover=ans=left=0
+        for right in range(N):
+            cover+=tiles[right][1]-tiles[right][0]+1
+            left_most=tiles[right][1]-carpetLen+1
+            while tiles[left][1]<left_most:
+                cover-=tiles[left][1]-tiles[left][0]+1
+                left+=1
+            if left_most>tiles[left][0]:
+                uncover=left_most-tiles[left][0]
+                ans=max(ans,cover-uncover)
+            else:
+                ans=max(ans,cover)
+
         return ans
 ```
