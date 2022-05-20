@@ -50,3 +50,27 @@ class Solution:
 
         return dp[-1][-1]
 ```
+
+2022-5-20更新。  
+上方的解法還有可以改進的地方，例如先檢查左上與右下角，不可以為1，否則直接回傳。  
+又因為每個dp位置只會取得上一列的狀態，所以空間可以壓縮成O(N)。
+
+```python
+class Solution:
+    def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
+        M,N=len(obstacleGrid),len(obstacleGrid[0])
+        if obstacleGrid[0][0]==1 or obstacleGrid[-1][-1]==1:
+            return 0
+        
+        dp=[0]*N
+        dp[0]=1
+        for r in range(M):
+            for c in range(N):
+                if obstacleGrid[r][c]==1:
+                    dp[c]=0
+                else:
+                    left=0 if c==0 else dp[c-1]
+                    dp[c]+=left
+            
+        return dp[-1]
+```
