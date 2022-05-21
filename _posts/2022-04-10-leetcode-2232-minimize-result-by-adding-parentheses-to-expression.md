@@ -67,3 +67,27 @@ class Solution:
         return pat
 ```
 
+2022-5-21更新。  
+善用內建的eval函數，直接得到算式的值，最後把乘法符號拔掉就好，寫起來簡單很多。  
+
+```python
+class Solution:
+    def minimizeResult(self, expression: str) -> str:
+        a,b=expression.split('+')
+        ans=None
+        mn=math.inf
+        
+        for i in range(len(a)):
+            for j in range(1,len(b)+1):
+                exp=a[:i]+'*('
+                exp+=a[i:]+'+'
+                exp+=b[:j]+')*'
+                exp+=b[j:]
+                exp=exp.lstrip('*').rstrip('*')
+                val=eval(exp)
+                if val<mn:
+                    mn=val
+                    ans=exp
+                
+        return ans.replace('*','')
+```
