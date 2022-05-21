@@ -32,3 +32,23 @@ class Solution:
         return ans
 ```
 
+2022-5-21更新。  
+用陣列表示好像更容易理解，dp[0][1]代表以0結尾、長度為1的組合數，以此類推。
+
+```python
+class Solution:
+    def numberOfWays(self, s: str) -> int:
+        dp=[[0]*4 for _ in range(2)]
+      
+        for c in s:
+            if c=='0':
+                dp[0][1]+=1
+                dp[0][2]+=dp[1][1]
+                dp[0][3]+=dp[1][2]
+            else:
+                dp[1][1]+=1
+                dp[1][2]+=dp[0][1]
+                dp[1][3]+=dp[0][2]
+        
+        return dp[0][3]+dp[1][3]
+```
