@@ -70,3 +70,30 @@ class Solution:
 
         return line
 ```
+
+使用分數表示，並以gcd做約分至最簡。
+
+```python
+class Solution:
+    def minimumLines(self, stockPrices: List[List[int]]) -> int:
+        N=len(stockPrices)
+        if N<=2:
+            return N-1
+        
+        line=1
+        p=sorted(stockPrices)
+        for i in range(1,N-1):
+            x1,y1=p[i-1]
+            x2,y2=p[i]
+            x3,y3=p[i+1]
+            dx1=x2-x1
+            a,b=x2-x1,y2-y1
+            c,d=x3-x2,y3-y2
+            ab,cd=gcd(a,b),gcd(c,d)
+            a,b=a//ab,b//ab
+            c,d=c//cd,d//cd
+            if a!=c or b!=d:
+                line+=1
+                
+        return line
+```
