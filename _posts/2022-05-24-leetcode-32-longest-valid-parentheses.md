@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 32. Longest Valid Parentheses
-tags        : LeetCode Hard String Stack
+tags        : LeetCode Hard String Stack DP
 ---
 每日題。stack的經典題，有碰到括號的題目幾乎都能用stack解決。
 
@@ -36,3 +36,32 @@ class Solution:
                     
         return ans
 ```
+
+看到有人用dp解法，來學習一下。  
+定義dp[i]：代表以s[i]結尾的最常有效括號字串長度。  
+
+左括號不可能結尾，所以s[i]為左括號時dp[i]一定是0。  
+s[i]是右括號時，有兩種狀況：  
+1. s[i-1]是左括號，剛好形成一對，所以dp[i]=dp[i-2]+2  
+2. s[i-1]是右括號，那就要根據dp[i-1]來找到上一個位置j，j=i-1-dp[i-1]，若j大於等於0且s[j]正好是左括號，則dp[i]=dp[i-1]+2+dp[j-1]  
+
+```python
+class Solution:
+    def longestValidParentheses(self, s: str) -> int:
+        if not s:
+            return 0
+        
+        N=len(s)
+        dp=[0]*N
+        for i in range(1,N):
+            if s[i]==')':
+                if s[i-1]=='(':
+                    dp[i]=dp[i-2]+2
+                else:
+                    j=i-1-dp[i-1]
+                    if j>=0 and s[j]=='(':
+                        dp[i]=dp[i-1]+2+dp[j-1]
+                        
+        return max(dp)
+```    
+                
