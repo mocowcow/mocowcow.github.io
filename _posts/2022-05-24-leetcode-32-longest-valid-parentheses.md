@@ -43,7 +43,10 @@ class Solution:
 左括號不可能結尾，所以s[i]為左括號時dp[i]一定是0。  
 s[i]是右括號時，有兩種狀況：  
 1. s[i-1]是左括號，剛好形成一對，所以dp[i]=dp[i-2]+2  
-2. s[i-1]是右括號，那就要根據dp[i-1]來找到上一個位置j，j=i-1-dp[i-1]，若j大於等於0且s[j]正好是左括號，則dp[i]=dp[i-1]+2+dp[j-1]  
+2. s[i-1]是右括號，那就要根據dp[i-1]來找到上一個位置j，j=i-1-dp[i-1]，若j大於等於0且s[j]正好是左括號，則dp[i]=dp[i-1]+dp[j-1]+2  
+
+![示意圖](/assets/img/32-dp.jpg)
+
 
 ```python
 class Solution:
@@ -60,7 +63,7 @@ class Solution:
                 else:
                     j=i-1-dp[i-1]
                     if j>=0 and s[j]=='(':
-                        dp[i]=dp[i-1]+2+dp[j-1]
+                        dp[i]=dp[i-1]+dp[j-1]+2
                         
         return max(dp)
 ```    
