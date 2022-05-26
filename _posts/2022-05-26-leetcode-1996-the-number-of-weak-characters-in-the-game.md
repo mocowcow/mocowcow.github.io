@@ -33,5 +33,30 @@ class Solution:
                 mx_def=d
         
         return weak
+```
+
+過了好一陣子，竟然有人提出O(N)的解法，沒錯，正是bucket sort！  
+首先遍歷一次所有角色，計算每個攻擊所出現的最高防禦值，儲存在mx_def中。  
+然後從最高的攻擊往下遍歷，途中維護出現過最高的防禦值mx，並以mx值更新每個攻擊力所出現的最高防禦值。  
+此時mx_def已經代表大於等於a會出現的最高防禦。  
+最後再遍歷一次所有角色，以當前角色攻擊力a+1去找會碰到的最大防禦值，若大於當前角色防禦d，則此角色是弱角色。  
+
+```python
+class Solution:
+    def numberOfWeakCharacters(self, properties: List[List[int]]) -> int:
+        mx_def=[0]*100002
+        for a,d in properties:
+            mx_def[a]=max(mx_def[a],d)
+        
+        mx=0
+        for a in reversed(range(100001)):
+            mx=max(mx,mx_def[a])
+            mx_def[a]=max(mx_def[a],mx)
             
+        weak=0
+        for a,d in properties:
+            if mx_def[a+1]>d:
+                weak+=1
+                
+        return weak
 ```
