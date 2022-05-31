@@ -44,3 +44,26 @@ class Solution:
                 else:
                     q.append([nr,nc,rmv+1])
 ```
+
+試著再寫一次dijkstra，竟然過了，速度還和上面那種差不多，大概是我多做了太多不需要的事。  
+
+```python
+class Solution:
+    def minimumObstacles(self, grid: List[List[int]]) -> int:
+        M,N=len(grid),len(grid[0])
+        DIRS=[[0,1],[0,-1],[1,0],[-1,0]]
+        visited=[[False]*N for _ in range(M)]
+        visited[0][0]=True
+        h=[(grid[0][0],0,0)]
+        
+        while h:
+            rmv,r,c=heappop(h)
+            if r==M-1 and c==N-1:
+                return rmv
+            for dx,dy in DIRS:
+                nr,nc=r+dx,c+dy
+                if not (0<=nr<M and 0<=nc<N) or visited[nr][nc]:
+                    continue
+                visited[nr][nc]=True
+                heappush(h,(rmv+grid[nr][nc],nr,nc))
+```
