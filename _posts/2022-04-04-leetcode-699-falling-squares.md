@@ -77,3 +77,32 @@ class Solution:
         return ans
 ```
 
+2022-6-2更新。  
+這幾天一直複習線段樹，又回來練這題，結果發現這題用座標壓縮執行時間更快，也更好寫ㄋ。  
+
+```python
+class Solution:
+    def fallingSquares(self, positions: List[List[int]]) -> List[int]:
+        co=set()
+        for l,size in positions:
+            co.add(l)
+            co.add(l+size-1)
+        
+        co=sorted(co)
+        ans=[]
+        height=[0]*len(co)
+        mx=0
+        for l,size in positions:
+            start=bisect_left(co,l)
+            end=bisect_right(co,l+size-1)
+            curr=0
+            for i in range(start,end):
+                curr=max(curr,height[i])
+            new_height=curr+size
+            for i in range(start,end):
+                height[i]=new_height
+            mx=max(mx,new_height)
+            ans.append(mx)
+                
+        return ans
+```
