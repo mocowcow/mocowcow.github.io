@@ -3,10 +3,10 @@ layout      : single
 title       : LeetCode 1320. Minimum Distance to Type a Word Using Two Fingers
 tags        : LeetCode Hard String DP
 ---
-隨便抽的，思路跑歪，不小心卡了一點時間。
+隨便抽到的DP，腦筋不小心卡住，花了一些時間才解出。
 
 # 題目
-![示意圖](https://assets.leetcode.com/uploads/2020/01/02/leetcode_keyboard.png)
+![示意圖](https://assets.leetcode.com/uploads/2020/01/02/leetcode_keyboard.png)  
 你有一個附圖的鍵盤，每個案件有各自的X-Y座標。  
 
 而兩個按鍵之間的**距離**，定義為abs(x1-x2)+abs(y1-y2)。  
