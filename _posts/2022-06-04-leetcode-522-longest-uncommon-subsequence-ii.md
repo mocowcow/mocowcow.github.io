@@ -39,3 +39,31 @@ class Solution:
                 
         return ans
 ```
+
+既然是要求最長的非公共子序列，我們可以先將strs以長度遞減排序，最長的放在最前面處理，找到第一個符合的子序列時直接回傳奇長度；若全部處理完還沒找到，代表不存在，回傳-1。
+
+```python
+class Solution:
+    def findLUSlength(self, strs: List[str]) -> int:
+        
+        def isSub(s,t):
+            i=j=0
+            while i<len(s) and j<len(t):
+                if s[i]==t[j]:
+                    j+=1
+                i+=1
+            return j==len(t)
+        
+
+        strs.sort(reverse=True,key=lambda x:len(x))
+        for s1 in strs:
+            cnt=0
+            for s2 in strs:
+                if isSub(s2,s1):
+                    cnt+=1
+            if cnt==1:
+                return len(s1)
+                
+        return -1
+```    
+                
