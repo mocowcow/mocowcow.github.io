@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 1425. Constrained Subsequence Sum
-tags        : LeetCode Hard Array DP SlidingWindow
+tags        : LeetCode Hard Array DP SlidingWindow Heap
 ---
 又是隨便抽到的DP，只有推出狀態轉移，但是不知道怎麼優化，看來要化簡轉移還是有點難度。
 
@@ -36,11 +36,11 @@ class Solution:
 ```
 
 看看提示說用queue來優化，多翻了幾篇文章才搞懂意思。  
-簡單來說就是維護一個單調遞減佇列q，而q的第一個元素永遠是在k距離中的最佳解。  
+簡單來說就是維護一個單調遞減佇列q，而q的第一個元素永遠是在k距離中的最佳解，如此一來可以降低複雜度至O(N)。    
 
 改從尾端進行bottom up，從後方往前對每個數字nums[i]做DP：  
 每次先將超出k距離的候選人pop掉，然後取最佳解q[0]更新dp[i]的值，將佇列尾端小於dp[i]的值移除，最後將i放入佇列末端。  
-回傳dp中最大者就是答案。  
+回傳dp中最大者就是答案。
 
 ```python
 class Solution:
@@ -59,4 +59,27 @@ class Solution:
             q.append(i)
             
         return max(dp)
+```
+
+提示還說了可以用heap優化，我就來試試。  
+個人感覺是比queue還好寫，但效能確實是差了點，應該是O(N log N)，但不知道為什麼都沒有看到用heap的題解，這至少也算個可以接受的答案。      
+
+使用max heap保證最佳解一定在頂端，我們只要排除掉超出k距離的候選人就好，不像queue維持單調遞減這麼麻煩。  
+
+```python
+class Solution:
+    def constrainedSubsetSum(self, nums: List[int], k: int) -> int:
+        N=len(nums)
+        h=[]
+        ans=-inf
+
+        for i in range(N-1,-1,-1):
+            while h and h[0][1]-i>k:
+                heappop(h)
+            best=max(0,-h[0][0]) if h else 0
+            best+=nums[i]
+            ans=max(ans,best)
+            heappush(h,[-best,i])   
+            
+        return ans
 ```
