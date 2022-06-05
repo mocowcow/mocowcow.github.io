@@ -37,3 +37,17 @@ class Solution:
             
         return nums
 ```
+
+把第一個迴圈改得pythonic，然後把第二、三個迴圈合併起來的版本。  
+
+```python
+class Solution:
+    def arrayChange(self, nums: List[int], operations: List[List[int]]) -> List[int]:
+        index={n:i for i,n in enumerate(nums)}
+        for a,b in operations:
+            index[b]=index[a]
+            nums[index[a]]=b
+            del index[a]
+            
+        return nums
+```
