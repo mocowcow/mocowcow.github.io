@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2293. Min Max Game
-tags        : LeetCode
+tags        : LeetCode Easy Array Simulation
 ---
 周賽296。模擬題，幸好腦筋轉得快，似乎不少人糾結在怎麼找規律而卡很久。
 
