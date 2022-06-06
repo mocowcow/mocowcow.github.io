@@ -58,3 +58,55 @@ class TextEditor:
         self.cs=min(len(self.text),self.cs+k)
         return self.text[max(0,self.cs-10):self.cs]
 ```
+
+看到有許多人用stack來代替linked list，但是我個人更喜歡用deque，比起stack還更加直覺。  
+
+維護兩個deque分別代表游標左右兩邊的字串，要增刪操作都直接在左半邊進行。  
+至於右移就是把L後方的字元丟到R前方，左移剛好相反。最後挑L的末端10個字元輸出。  
+
+每個操作複雜度都是O(N)，速度比純字串版本快了很多。  
+
+```python
+class TextEditor:
+
+    def __init__(self):
+        self.L=deque()
+        self.R=deque()
+        self.cs=0
+
+    def addText(self, text: str) -> None:
+        self.L+=list(text)
+        self.cs+=len(text)
+
+    def deleteText(self, k: int) -> int:
+        x=min(k,len(self.L))
+        for _ in range(x):
+            self.L.pop()
+        self.cs-=x
+        return x
+
+    def cursorLeft(self, k: int) -> str:
+        x=min(k,len(self.L))
+        self.cs-=x
+        for _ in range(x):
+            t=self.L.pop()
+            self.R.appendleft(t)
+        return self.toString()
+
+    def cursorRight(self, k: int) -> str:
+        x=min(k,len(self.R))
+        self.cs+=x
+        for _ in range(x):
+            t=self.R.popleft()
+            self.L.append(t)
+        return self.toString()
+        
+    def toString(self):
+        c=deque()
+        x=min(10,len(self.L))
+        for _ in range(x):
+            t=self.L.pop()
+            c.appendleft(t)
+        self.L+=c
+        return ''.join(c)
+```
