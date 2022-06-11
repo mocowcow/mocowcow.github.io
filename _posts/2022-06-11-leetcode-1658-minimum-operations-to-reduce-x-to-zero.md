@@ -40,3 +40,29 @@ class Solution:
                 
         return -1 if mx==0 else len(nums)-mx
 ```
+
+不用deque，改成雙指標寫法。  
+
+```python
+class Solution:
+    def minOperations(self, nums: List[int], x: int) -> int:
+        sm=sum(nums)
+        if sm<x:
+            return -1
+        if sm==x:
+            return len(nums)
+        
+        remove=sm-x
+        l=0
+        window=0
+        mx=0
+        for r,n in enumerate(nums):
+            window+=n
+            while window>remove:
+                window-=nums[l]
+                l+=1
+            if window==remove:
+                mx=max(mx,r-l+1)
+                
+        return -1 if mx==0 else len(nums)-mx
+```
