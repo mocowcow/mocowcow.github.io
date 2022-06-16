@@ -20,6 +20,7 @@ tags        : LeetCode Medium Array Backtracking
 試著把每個餅乾都分給不同的小孩，在餅乾袋全部分完之後，以當前公平性更新答案。  
 
 注意：python由於時間限制比較嚴格，必須要多加一個判斷，若某個小孩拿到第i袋餅乾不可能使最佳答案變小，則不進行遞迴。  
+2022-6-16更新：看到有人有更厲害的剪枝，在所有小孩都沒餅乾的時候，給誰都一樣，所以只給第一個。  
 
 ```python
 class Solution:
@@ -34,10 +35,12 @@ class Solution:
                 ans=min(ans,max(child))
                 return 
             for j in range(k):
-                if cookies[i]+child[j]<=ans: # pruning
+                if cookies[i]+child[j]<=ans: # 有可能使答案更小
                     child[j]+=cookies[i]
                     bt(i+1)
                     child[j]-=cookies[i] 
+                if child[j]==0: # 只給第一個
+                    break
         
         bt(0)
         
@@ -73,3 +76,4 @@ class Solution {
     }
 }
 ```
+
