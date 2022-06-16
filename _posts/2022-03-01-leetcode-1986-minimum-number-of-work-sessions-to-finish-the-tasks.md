@@ -72,5 +72,36 @@ class Solution:
             return ans
 
         return dp((1 << N)-1, 0)
+```
 
+2022-6-16更新。  
+今天回來練習這題，一樣是回溯，但是多使用了遞減排序，結果時間只花了69ms，真嚇死人。  
+
+```python
+class Solution:
+    def minSessions(self, tasks: List[int], sessionTime: int) -> int:
+        N=len(tasks)
+        ans=inf
+        ses=[]
+        tasks.sort(reverse=True)
+        
+        def bt(i):
+            nonlocal ans
+            if len(ses)>=ans:
+                return 
+            if i==N:
+                ans=min(ans,len(ses))
+                return 
+            for j in range(len(ses)):
+                if ses[j]+tasks[i]<=sessionTime:
+                    ses[j]+=tasks[i]
+                    bt(i+1)
+                    ses[j]-=tasks[i]
+            ses.append(tasks[i])
+            bt(i+1)
+            ses.pop()
+        
+        bt(0)
+        
+        return ans
 ```
