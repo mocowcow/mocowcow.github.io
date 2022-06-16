@@ -24,7 +24,7 @@ class Solution:
         N=len(jobs)
         worker=[0]*k
         ans=inf
-        jobs.sort(reverse=True)
+        jobs.sort(reverse=True) # 先分配較耗時的工作
         
         def bt(i):
             nonlocal ans
@@ -32,9 +32,9 @@ class Solution:
                 ans=min(ans,max(worker))
                 return 
             for j in range(k):
-                if j>0 and worker[j]==worker[j-1]:
+                if j>0 and worker[j]==worker[j-1]: # 相同的分支，不嘗試
                     continue
-                if worker[j]+jobs[i]>ans:
+                if worker[j]+jobs[i]>ans: # 比已知結果更差，不嘗試
                     continue
                 worker[j]+=jobs[i]
                 bt(i+1)
