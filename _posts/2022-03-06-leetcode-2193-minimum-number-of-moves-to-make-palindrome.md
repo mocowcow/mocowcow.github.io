@@ -47,7 +47,7 @@ class Solution:
         return step
 ```
 
-2022/3/8更新list版解法。  
+2022-3-8更新list版解法。  
 
 ```python
 class Solution:
@@ -72,4 +72,30 @@ class Solution:
 
         return step
 
+```
+
+2022-6-17更新。一樣用list，但是看起來乾淨多了。  
+
+```python
+class Solution:
+    def minMovesToMakePalindrome(self, s: str) -> int:
+        s=list(s)
+        ans=0
+        l=0
+        r=len(s)-1
+        while l<r:
+            rr=r
+            while s[rr]!=s[l]:
+                rr-=1
+            if rr==l:
+                ans+=1
+                s[l],s[l+1]=s[l+1],s[l]
+                continue
+            ans+=r-rr
+            t=s.pop(rr)
+            s.append(t)
+            l+=1
+            r-=1
+                
+        return ans
 ```
