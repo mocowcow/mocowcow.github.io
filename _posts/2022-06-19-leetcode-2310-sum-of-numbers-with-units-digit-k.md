@@ -47,3 +47,22 @@ class Solution:
 
         return ans
 ```
+
+看了幾個大神解答，實在很佩服他們能在短時間內歸納出這麼精簡的解法。  
+數字集合的大小只會介於1和9之間，為什麼不會是10呢？因為10個k和0個k尾數相同，11個k和一個k尾數也相同，以此類推。  
+遍歷過程中確保i個k不會超過num，否則跳出迴圈，直接回傳-1。
+
+```python
+class Solution:
+    def minimumNumbers(self, num: int, k: int) -> int:
+        if num==0:
+            return 0
+        
+        for i in range(1,11):
+            if k*i>num:
+                break
+            if (num-k*i)%10==0:
+                return i
+            
+        return -1
+```
