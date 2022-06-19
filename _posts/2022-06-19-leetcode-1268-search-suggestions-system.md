@@ -70,3 +70,23 @@ class Solution:
             
         return ans
 ```
+
+結果更神奇的解法，而且也更快。怎麼有人可以想到字串也能二分搜？  
+
+將products排序後，以searchWord的各前綴pref來找第一個大於等於pref的位置i，從i開始數3個單字，如果確實是以pref為開頭，則加入提示字中，最後再將提示字加進ans。  
+
+```python
+class Solution:
+    def suggestedProducts(self, products: List[str], searchWord: str) -> List[List[str]]:
+        products.sort()
+        ans=[]
+        pref=''
+        
+        for c in searchWord:
+            pref+=c
+            i=bisect_left(products,pref)
+            t=[x for x in products[i:i+3] if x.startswith(pref)]
+            ans.append(t)
+            
+        return ans
+```
