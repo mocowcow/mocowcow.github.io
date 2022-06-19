@@ -46,3 +46,27 @@ class Solution:
             
         return ans
 ```
+
+翻翻其他提交答案，感覺以下這種方法是最佳解。  
+
+一開始直接對products以字典順序遞增排序，之後就不用再處理。  
+遍歷searchWord中第i個字元c，從product中篩選出長度足夠，且第i個字元同樣為c的單字，保存在t裡面。  
+因為先前已經排序過，且我們也是依序遍歷，所以t中的單字同樣也是按照字典順序出現，直接將t的前三個單字加入ans，再以t更新products，重複到整個搜尋字串處理完成為止。  
+
+```python
+class Solution:
+    def suggestedProducts(self, products: List[str], searchWord: str) -> List[List[str]]:
+        products.sort()
+        ans=[]
+        
+        for i,c in enumerate(searchWord):
+            t=[]
+            for w in products:
+                if i<len(w) and w[i]==c:
+                    t.append(w)
+            
+            products=t
+            ans.append(products[:3])
+            
+        return ans
+```
