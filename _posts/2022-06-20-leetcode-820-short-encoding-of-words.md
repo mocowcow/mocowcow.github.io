@@ -53,3 +53,21 @@ class Solution:
         
         return ans
 ```
+
+大神不用字典樹的解法。  
+假設words包含"bell"，那麼"ell"、"ll"還有"l"都被包含了。  
+建立一個集合s，先裝進words中所有的單字，在遍歷words中每個單字w，排除掉w所產生的所有後綴。  
+最後s只會剩下所有合法的單字，將其加上'#'後計算長度總和。  
+
+```python
+class Solution:
+    def minimumLengthEncoding(self, words: List[str]) -> int:
+        s=set(words)
+        for w in words:
+            for i in range(1,len(w)):
+                pref=w[i:]
+                if pref in s:
+                    s.remove(pref)
+                    
+        return sum(len(w)+1 for w in s)
+```
