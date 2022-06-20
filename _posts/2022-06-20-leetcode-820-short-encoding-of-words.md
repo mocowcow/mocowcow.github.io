@@ -25,6 +25,8 @@ words陣列的**有效編碼**由字串s和索引陣列indices所組成：
 
 再寫一個輔助函數dfs來遍歷建好的字典樹，找到所有葉節點，代表已經是單字的第一個字元了，以其長度加上"#"符號的1到答案中。  
 
+![示意圖](/assets/img/820-1.jpg)  
+
 ```python
 class Node:
     def __init__(self):
@@ -42,12 +44,12 @@ class Solution:
         def dfs(node,size):
             nonlocal ans
             if not node.child:
-                ans+=size+1
+                ans+=size
                 return 
             for v in node.child.values():
                 dfs(v,size+1)
             
-        dfs(dummy,0)
+        dfs(dummy,1)
         
         return ans
 ```
