@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 1642. Furthest Building You Can Reach
-tags        : LeetCode Medium Array BinarySearch Sorting Greedy
+tags        : LeetCode Medium Array BinarySearch Sorting Greedy Heap
 ---
 每日題。今天去拜訪朋友，可愛小貓的活力真的能讓人開心一整天。 
 然後這題目的範例GIF畫風驟變，不知道從哪裡開始吐槽。   
@@ -23,6 +23,8 @@ tags        : LeetCode Medium Array BinarySearch Sorting Greedy
 開始二分搜：如果我們能無法成功抵達第mid棟建築，那麼從mid開始之後的一定也不可能抵達，更新上界為mid-1；否則mid以前的都能成功抵達，更新下界為mid。  
 
 重點是canDo函數的實作，我們要先找出從0移動到target過程中有多少**向上**移動，而最理想的的狀況，就是有足夠的梯子用來應付所有**向上**。否則只能選擇最大的幾個使用梯子，剩餘的乖乖用磚塊。最後依照磚塊的需求數needBrick是否小於bricks個，若是則回傳true，否則false。  
+
+最差情況會執行log N次二分搜，而canDo函數的複雜度主要為排序的O(N log N)，整體複雜度為O(N(log N)^2)。
 
 ```python
 class Solution:
@@ -51,4 +53,26 @@ class Solution:
                 lo=mid
                 
         return lo
+```
+
+後來看到有個heap標籤，我才想到這個更好的解法。  
+維護一個最小堆積h，最多只保存ladders個使用樓梯的元素，依序遍歷heights，如果有**向上**，則加入h中。  
+若h大小超出ladders，則彈出最小元素，改成使用磚塊，將其加入needBrick中，若超過限制的bricks則代表只能到上一棟建築為止，回傳答案。 
+
+```python
+class Solution:
+    def furthestBuilding(self, heights: List[int], bricks: int, ladders: int) -> int:
+        N=len(heights)
+        h=[]
+        needBrick=0
+        
+        for i in range(1,N):
+            if heights[i]>heights[i-1]:
+                heappush(h,heights[i]-heights[i-1])
+            if len(h)>ladders:
+                needBrick+=heappop(h)
+            if needBrick>bricks:
+                return i-1
+            
+        return N-1
 ```
