@@ -24,7 +24,7 @@ tags        : LeetCode Medium Array BinarySearch Sorting Greedy Heap
 
 重點是canDo函數的實作，我們要先找出從0移動到target過程中有多少**向上**移動，而最理想的的狀況，就是有足夠的梯子用來應付所有**向上**。否則只能選擇最大的幾個使用梯子，剩餘的乖乖用磚塊。最後依照磚塊的需求數needBrick是否小於bricks個，若是則回傳true，否則false。  
 
-最差情況會執行log N次二分搜，而canDo函數的複雜度主要為排序的O(N log N)，整體複雜度為O(N(log N)^2)。
+最差情況會執行log N次二分搜，而canDo函數的複雜度主要為排序的O(N log N)，整體複雜度為O(N(log N)^2)，耗時1035ms。
 
 ```python
 class Solution:
@@ -59,6 +59,8 @@ class Solution:
 維護一個最小堆積h，最多只保存ladders個使用樓梯的元素，依序遍歷heights，如果有**向上**，則加入h中。  
 若h大小超出ladders，則彈出最小元素，改成使用磚塊，將其加入needBrick中，若超過限制的bricks則代表只能到上一棟建築為止，回傳答案。 
 
+雖然有點醜，但是複雜度降到O(N log N)，執行時間只要588ms，勝過98.16%。
+
 ```python
 class Solution:
     def furthestBuilding(self, heights: List[int], bricks: int, ladders: int) -> int:
@@ -67,12 +69,13 @@ class Solution:
         needBrick=0
         
         for i in range(1,N):
-            if heights[i]>heights[i-1]:
-                heappush(h,heights[i]-heights[i-1])
-            if len(h)>ladders:
-                needBrick+=heappop(h)
-            if needBrick>bricks:
-                return i-1
-            
+            diff=heights[i]-heights[i-1]
+            if diff>0:
+                heappush(h,diff)
+                if len(h)>ladders:
+                    needBrick+=heappop(h)
+                    if needBrick>bricks:
+                        return i-1
+
         return N-1
 ```
