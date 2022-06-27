@@ -30,6 +30,8 @@ base cases：當i=0時，沒有骰過半次，當然只有空序列一種結果�
 - 當pprev為空時，只要判斷當前選擇的數字j和prev不同，且gcd為1即可。  
 - 否則為一般情形，prev、pprev必須不同於j，且j和prev的gcd為1。  
 
+prev和pprev的狀態各有6種，而當前可選的數字6種，計算成本為6^3。共要計算n次，故整體時間複雜度為O(n*(6^3))，可簡化為O(n)。  
+
 ```python
 class Solution:
     def distinctSequences(self, n: int) -> int:
@@ -51,6 +53,26 @@ class Solution:
                 for j in range(1,7):
                     if j!=pprev and j!=prev and gcd(j,prev)==1:
                         ans+=dp(i-1,j,prev)
+            return ans%MOD
+            
+        return dp(n,None,None)
+```
+
+把三個邏輯合併起來，看起來稍微簡潔一些。
+
+```python
+class Solution:
+    def distinctSequences(self, n: int) -> int:
+        MOD=10**9+7
+        
+        @cache
+        def dp(i,prev,pprev):
+            if i==0:
+                return 1
+            ans=0
+            for j in range(1,7):
+                if prev==None or (pprev!=j and prev!=j and gcd(prev,j)==1):
+                    ans+=dp(i-1,j,prev)
             return ans%MOD
             
         return dp(n,None,None)
