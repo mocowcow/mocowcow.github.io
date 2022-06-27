@@ -53,3 +53,13 @@ print(type(text)) # <class 'str'>
 ```
 
 ![示意圖](/assets/img/brotli-3.jpg)
+
+2022-6-27更新：  
+昨天更新了windows 10，連帶把python版本也更上3.10，才發現新版只需要安裝brotli套件，而request會自動選擇解碼器。  
+
+```python
+url = # some url
+res = requests.get(url)
+res.encoding=('utf-8')
+print(res.text) # data
+```
