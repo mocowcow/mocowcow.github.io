@@ -3,6 +3,10 @@ layout      : single
 title       : Python爬蟲亂碼"content-encoding:br"
 tags        : Python
 ---
+# 懶人包
+使用python 3.7版本請更新到3.10，安裝brotli套件後就沒事了。  
+無法更新的朋友請繼續往下看。  
+
 # 前言
 幫朋友寫遊戲戰績爬蟲，順便練習API串接。  
 
@@ -54,8 +58,8 @@ print(type(text)) # <class 'str'>
 
 ![示意圖](/assets/img/brotli-3.jpg)
 
-2022-6-27更新：  
-昨天更新了windows 10，連帶把python版本也更上3.10，才發現新版只需要安裝brotli套件，而request會自動選擇解碼器。  
+2022-6-27補充：  
+昨天更新系統到windows 10，連帶把python版本也更上3.10，才發現新版只需要安裝brotli套件，而request會自動選擇解碼器。  
 
 ```python
 url = # some url
