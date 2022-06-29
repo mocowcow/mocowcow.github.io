@@ -82,3 +82,60 @@ class Solution:
             
         return ans
 ```
+
+[這篇文](https://leetcode.cn/problems/minimum-score-after-removals-on-a-tree/solution/dfs-shi-jian-chuo-chu-li-shu-shang-wen-t-x1kk/)提供另一種判斷子樹關係的方法，叫做時間戳(timestamp)。在dfs的過程中，紀錄每個子樹的進入時間，以及離開時間。  
+
+維護長度N的陣列tin和tout，代表每個子樹的進入時間戳，以及離開時間戳。  
+dfs每進入一個新節點時，timestamp遞增一。然後更新tin，對所有子節點遞迴，最後才更新tout。  
+
+![示意圖](/assets/img/2322-2.jpg)  
+
+根據dfs的特性，當我們處理節點i時，一定會先遞迴處理完i的所有子節點，之後才離開i。  
+因此，若某節點j為i的子孫節點，則[j進入時間點, j離開時間點]一定會被[i進入時間點, i離開時間點]所完全包含。  
+
+```pytyon
+class Solution:
+    def minimumScore(self, nums: List[int], edges: List[List[int]]) -> int:
+        N=len(nums)
+        v=nums[:]
+        tin=[0]*N
+        tout=[0]*N
+        timestamp=0
+        ans=inf
+        g=defaultdict(list)
+        for a,b in edges:
+            g[a].append(b)
+            g[b].append(a)
+            
+        def dfs(i,prev):
+            nonlocal timestamp
+            timestamp+=1
+            tin[i]=timestamp
+            for adj in g[i]:
+                if adj==prev:continue
+                v[i]^=dfs(adj,i)
+            tout[i]=timestamp
+            return v[i]
+        
+        dfs(0,None)
+       
+        for i in range(1,N):
+            for j in range(i+1,N):
+                if tin[i]<=tin[j]<=tout[j]<=tout[i]: # i is parent
+                    g1=v[0]^v[i]
+                    g2=v[i]^v[j]
+                    g3=v[j]
+                elif tin[j]<=tin[i]<=tout[i]<=tout[j]: # j is parent
+                    g1=v[0]^v[j]
+                    g2=v[j]^v[i]
+                    g3=v[i]
+                else:
+                    g1=v[0]^v[i]^v[j]
+                    g2=v[i]
+                    g3=v[j]
+                ans=min(ans,max(g1,g2,g3)-min(g1,g2,g3))
+            
+        # print(c)
+        # print(v)
+        return ans
+```
