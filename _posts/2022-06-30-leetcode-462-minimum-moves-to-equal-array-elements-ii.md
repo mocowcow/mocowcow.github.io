@@ -24,3 +24,30 @@ class Solution:
         median=nums[mid]
         return sum(abs(x-median) for x in nums)
 ```
+
+使用quick select找中位數，不需要排序，整體複雜度降低到O(N)。但還是比不過內建函數，執行起來反而更慢。  
+
+```python
+class Solution:
+    def minMoves2(self, nums: List[int]) -> int:
+        
+        def k_smallest(a,k):
+            ls,eq,gt=[],[],[]
+            x=random.choice(a)
+            for n in a:
+                if n<x:
+                    ls.append(n)
+                elif n>x:
+                    gt.append(n)
+                else:
+                    eq.append(n)
+            if k<=len(ls):
+                return k_smallest(ls,k)
+            elif k>len(ls)+len(eq):
+                return k_smallest(gt,k-len(ls)-len(eq))
+            else:
+                return x
+                
+        median=k_smallest(nums,len(nums)//2+1)
+        return sum(abs(median-n) for n in nums)
+```
