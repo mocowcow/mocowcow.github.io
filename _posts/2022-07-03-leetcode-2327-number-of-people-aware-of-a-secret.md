@@ -27,6 +27,9 @@ n最多和delay最多到1000，方便起見將陣列長度開到2005，保證能
 - 這inc[i]個人在forget天之後會忘記，know[i+forget]扣掉inc[i]  
 - 在[i+delay, i+forget)區間每天會多增加inc[i]人，inc[i+delay]加上inc[i]，inc[i+forget]扣掉inc[i]  
 
+如附圖，藍色代表當天人數，黃色代表當天新增的人數，紅色代表當天會忘記的人數。  
+![示意圖](/assets/img/2327-1.jpg)
+
 最後回傳know[n]就是答案，超出n之後的部分不管。  
 
 ```python
