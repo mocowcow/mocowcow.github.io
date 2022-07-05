@@ -53,3 +53,20 @@ class Solution:
             
         return ans
 ```
+
+史帝芬大神提供[另一種思路](https://leetcode.com/problems/longest-consecutive-sequence/discuss/41057/Simple-O(n)-with-Explanation-Just-walk-each-streak)：先把所有數字裝進set中去重複，並在其中找到每個連續子序列的最左方，開始往右走到結束。  
+
+```python
+class Solution:
+    def longestConsecutive(self, nums: List[int]) -> int:
+        s=set(nums)
+        ans=0
+        for l in nums:
+            if l-1 not in s: # l is the left most element of sequence
+                r=l+1
+                while r in s:
+                    r+=1
+                ans=max(ans,r-l)
+                
+        return ans
+```
