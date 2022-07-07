@@ -69,3 +69,24 @@ class Solution:
 
 ```
 
+改成bottom up的寫法，dp[0][0]表示空字串的base case，初始化為1。  
+因為多了這一個位置，所以每個i和j都必須遞增1。  
+
+```python
+class Solution:
+    def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
+        M,N,O=len(s1),len(s2),len(s3)
+        if M+N!=O:
+            return False
+        
+        dp=[[0]*(N+1) for _ in range(M+1)]
+        dp[0][0]=True
+        for i in range(M+1):
+            for j in range(N+1):
+                if i>0 and s1[i-1]==s3[i+j-1] and dp[i-1][j]:
+                    dp[i][j]=True
+                if j>0 and s2[j-1]==s3[i+j-1] and dp[i][j-1]:
+                    dp[i][j]=True
+                    
+        return dp[-1][-1]
+```
