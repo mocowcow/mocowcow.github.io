@@ -27,9 +27,7 @@ base case：當k小於0，代表s3已經全部滿足了，直接回傳true。
 ```python
 class Solution:
     def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
-        M=len(s1)
-        N=len(s2)
-        O=len(s3)
+        M,N,O=len(s1),len(s2),len(s3)
         
         @cache
         def dp(i,j,k):
@@ -46,3 +44,28 @@ class Solution:
             return False
         return dp(M-1,N-1,O-1)
 ```
+
+其實k的位置可以透過i和j計算出來，減少一個狀態，記憶體也節省一些。  
+
+```python
+class Solution:
+    def isInterleave(self, s1: str, s2: str, s3: str) -> bool:
+        M,N,O=len(s1),len(s2),len(s3)
+
+        @cache
+        def dp(i,j):
+            if i<0 and j<0:
+                return True
+            ans=False
+            if i>=0 and s1[i]==s3[i+j+1] and dp(i-1,j):
+                ans=True
+            if j>=0 and s2[j]==s3[i+j+1] and dp(i,j-1):
+                ans=True
+            return ans
+        
+        if M+N!=O:
+            return False
+        return dp(M-1,N-1)
+
+```
+
