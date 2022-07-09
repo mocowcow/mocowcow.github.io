@@ -36,3 +36,32 @@ class Solution:
             
         return dp[-1]
 ```
+
+核心思想一樣是保存可用的最大的出發點，使用單調遞減佇列代替max heap，可以將整體複雜度降低至O(N)。  
+
+我曾看過一個關於單調佇列的比喻，十分傳神：如果新來的員工比能力等於/大於老員工，那麼老員工就可以被開除了。  
+試想我們原本有以下dp[j]選擇作為dp[i]的參考索引：  
+> q = [5,4,3,3]  
+> nums[i] = -1  
+> dp[i] = -1+5 = 4  
+> 將4押入q中，這時前方[4,3,3]都不會比dp[i]得到更佳結果，故直接刪除  
+> q = [5,~~4,3,3~~,4] = [5,4]
+
+```python
+class Solution:
+    def maxResult(self, nums: List[int], k: int) -> int:
+        N=len(nums)
+        dp=[0]*N
+        dp[0]=nums[0]
+        q=deque([0])
+        
+        for i in range(1,N):
+            while q[0]<i-k:
+                q.popleft()
+            dp[i]=nums[i]+dp[q[0]]
+            while q and dp[i]>=dp[q[-1]]:
+                q.pop()
+            q.append(i)
+            
+        return dp[-1]
+```
