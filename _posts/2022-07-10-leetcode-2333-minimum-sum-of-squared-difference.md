@@ -23,6 +23,11 @@ tags        : LeetCode Medium Array Heap BinarySearch
 
 這時二分搜就派上用場了，所有元素的值介於0和10^5之間，我們可以找出一個適當的臨界點x，將所有超過x的差降低為x，且總降低的數值不超過k。這時k剩下的大小就減少很多，繼續使用heap找最大差慢慢減小，最後算出**平方差和**即可。  
 
+提供一個簡陋的證明k為什麼會變得夠小：  
+1. 若k足夠消除所有差，那答案為0  
+2. 每次將臨界點降低1，k的使用量變化值最多為nums的長度，也就是10^5  
+3. 故k剩餘不會超過10^5  
+
 ```python
 class Solution:
     def minSumSquareDiff(self, nums1: List[int], nums2: List[int], k1: int, k2: int) -> int:
@@ -39,7 +44,7 @@ class Solution:
                     cnt+=n-x
             return cnt<=k
         
-        # find level
+        # find critical
         lo=0
         hi=10**5
         while lo<hi:
