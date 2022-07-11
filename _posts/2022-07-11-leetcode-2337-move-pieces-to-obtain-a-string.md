@@ -60,3 +60,34 @@ class Solution:
             
         return True
 ```
+
+換個簡單點的方式判斷字元的相對關係，只要把輸入字串中所有空白符號刪除直接比對就行。  
+之後使用雙指針，i代表start的索引，j代表target的索引。  
+找到兩兩成對的L或是R。若是L則i必須大於等於j；若是R則i必須小於等於j。  
+
+```python
+class Solution:
+    def canChange(self, start: str, target: str) -> bool:
+        N=len(start)
+        if start.replace('_','')!=target.replace('_',''):
+            return False
+        
+        i=j=0
+        while i<N and j<N:
+            if start[i]=='_':
+                i+=1
+                continue
+            if target[j]=='_':
+                j+=1
+                continue
+            if start[i]=='L':
+                if i<j:
+                    return False
+            else:
+                if i>j:
+                    return False
+            i+=1
+            j+=1
+            
+        return True
+```
