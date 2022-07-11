@@ -75,3 +75,32 @@ class Solution:
         
         return ans
 ```
+
+這位朋友的[解法](https://leetcode.com/problems/minimum-sum-of-squared-difference/discuss/2259475/Python-or-Heap-or-O(nlogn))也是很神奇。  
+
+他指出：有N個差值時，最差的狀況是N個差都都相等，要把k平分給N個，那麼先把每次只對heap頂端的差扣除k/N是一個比較保險的方法。  
+這種方法執行起來雖然慢，但是比較好實現出來。
+
+```python
+class Solution:
+    def minSumSquareDiff(self, nums1: List[int], nums2: List[int], k1: int, k2: int) -> int:
+        N=len(nums1)
+        k=k1+k2
+        h=[]
+        for a,b in zip(nums1,nums2):
+            heappush(h,-abs(a-b))
+
+        while k:
+            if h[0]==0:
+                break
+            temp=-heappop(h)
+            x=max(1,min(k//N,temp))
+            k-=x
+            heappush(h,-(temp-x))
+        
+        ans=0
+        for x in h:
+            ans+=x*x
+        
+        return ans
+```
