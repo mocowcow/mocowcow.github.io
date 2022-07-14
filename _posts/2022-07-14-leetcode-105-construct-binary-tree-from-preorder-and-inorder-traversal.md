@@ -32,3 +32,26 @@ class Solution:
         
         return node
 ```
+
+上述方法是切割子陣列，每次切割區要O(N)，如果N測資太大的話效率不佳，可以改成以雙指針表示子陣列範圍。  
+而且每個元素也只會出現一次，可以把索引值先裝進雜湊表，每次取值只要O(1)。  
+
+```python
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+        N=len(preorder)
+        d={n:i for i,n in enumerate(inorder)}
+        
+        def f(l1,r1,l2,r2):
+            if l1>r1 or l2>r2:
+                return None
+            val=preorder[l1]
+            node=TreeNode(val)
+            idx=d[val]
+            leftcnt=idx-l2
+            node.left=f(l1+1,l1+leftcnt,l2,idx-1)
+            node.right=f(l1+leftcnt+1,r1,idx+1,r2)
+            return node
+            
+        return f(0,N-1,0,N-1)
+```
