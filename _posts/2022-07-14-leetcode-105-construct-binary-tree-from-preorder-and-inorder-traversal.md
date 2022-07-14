@@ -14,6 +14,10 @@ preorder順序為[根節點, 左子樹, 右子樹]，只能知道每個節點作
 
 但是兩個一起看，先從preorder中找到根節點，拿到inorder中找到出現位置idx，左半邊為左子樹，右半邊則為右子樹。  
 
+![示意圖](/assets/img/105-1.jpg)
+
+不斷遞迴下去，直到陣列為空，回傳null。  
+
 ```python
 class Solution:
     def buildTree(self, preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
