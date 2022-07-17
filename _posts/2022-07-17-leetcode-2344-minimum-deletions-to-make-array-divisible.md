@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2344. Minimum Deletions to Make Array Divisible
-tags        : LeetCode
+tags        : LeetCode Hard Array Math Greedy Sorting
 ---
 周賽302。似乎是史上最簡單的的Q4，同時也是我第一次在30分鐘內完成四題，開心開心。  
 
@@ -37,6 +37,20 @@ class Solution:
             else:
                 ans+=1
                 
-        return -1
+        return -1        
+```
+
+其實根本不用ans計算刪除次數，因為nums的索引i正好就是刪除次數。  
+
+```python
+class Solution:
+    def minOperations(self, nums: List[int], numsDivide: List[int]) -> int:
+        x=reduce(gcd,numsDivide)
+        nums.sort()
         
+        for i,n in enumerate(nums):
+            if x%n==0:
+                return i
+                
+        return -1
 ```
