@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 2342. Max Sum of a Pair With Equal Sum of Digits
 tags        : LeetCode Medium Array HashTable Sorting
 ---
-周賽302。
+周賽302。一開始被nums[i]上限的10^9嚇到，結果只是虛驚一場。  
 
 # 題目
 輸入整數陣列nums。你可以選擇兩個索引i和j，其中i!=j，且nums[i]的位數和等於nums[j]的位數和。  
@@ -38,4 +38,18 @@ class Solution:
                 ans=max(ans,v[0]+v[1])
         
         return ans
+```
+
+雜湊函數也可以換成以下的寫法，看起來比較短，但不一定比較好理解。  
+
+```python
+def f(n):
+    h=0
+    while n>0:
+        n,r=divmod(n,10)
+        h+=r
+    return h
+
+def f(n):
+    return sum(map(int,str(n)))
 ```
