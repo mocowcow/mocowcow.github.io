@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2343. Query Kth Smallest Trimmed Number
-tags        : LeetCode
+tags        : LeetCode Medium Array String HashTable Sorting
 ---
 周賽302。有點麻煩的題目，花了一些時間才搞懂意思。  
 
@@ -45,6 +45,23 @@ class Solution:
 
         for k,t in queries:
             ans.append(d[t][k-1][1])
+            
+        return ans
+```
+
+上面提到不建表直接暴力法，執行時間差不多，寫起來倒是省了很多時間。  
+
+```python
+class Solution:
+    def smallestTrimmedNumbers(self, nums: List[str], queries: List[List[int]]) -> List[int]:
+        ans=[]
+        
+        for k,t in queries:
+            trim=[]
+            for i,n in enumerate(nums):
+                trim.append([int(n[-t:]),i])
+            trim.sort()
+            ans.append(trim[k-1][1])
             
         return ans
 ```
