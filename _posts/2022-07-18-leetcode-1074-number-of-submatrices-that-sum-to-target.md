@@ -45,6 +45,11 @@ class Solution:
 對於每個r1和r2，我們將c1固定為0，只列舉c2，並將(r1,0,r2,c2)的前綴和記做sm。一開始雜湊表都是空的，且空矩陣總和是0，故將0的計數初始化為1。
 而target-sm記為diff，表示當前前綴和sm需要加上多少才能滿足target。所以回到雜湊表d中，查找總合為-diff的左方子矩陣有幾種可能，將d[-diff]更新到答案中，並將sm的計數+1。  
 
+![示意圖](/assets/img/1074-1.jpg)
+> matrix=[[0,5]], target=5
+> c2=0，子矩陣[[0]]總和為0，不管怎樣都沒辦法滿足5  
+> c2=1，子矩陣[[0,5]]總和為5，可以扣掉出現過的[[0]]或是空矩陣[[]]滿足target=5  
+
 ```python
 class PrefixSum2D:
     def __init__(self, matrix):
