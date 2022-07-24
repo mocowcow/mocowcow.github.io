@@ -25,7 +25,7 @@ tags        : LeetCode Medium Array HashTable SortedList
 每次find找到number對應的list，若為空則回傳-1，否則回傳第一個索引。  
 每次change先檢查index是否已經被占用，若有則先清除舊的索引。將index對應的值設為number，再將index放入number對應的ist中。  
 
-change清除舊索引、插入新索引複雜度都為O(N log N)，整體O(N log N)。  
+change清除舊索引、插入新索引複雜度都為O(log N)，整體O(N log N)。  
 find直接取用第一個索引，複雜度O(1)。
 雖然number和index可達10^9，但總共只會呼叫API最多10^5次，就算change全部集中在同一個值，最多也只會是10^5代入O(N log N)，算是可以接受的範圍。  
 
