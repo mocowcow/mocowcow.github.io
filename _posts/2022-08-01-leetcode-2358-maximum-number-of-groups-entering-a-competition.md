@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2358. Maximum Number of Groups Entering a Competition
-tags        : LeetCode
+tags        : LeetCode Medium Array Greedy
 ---
 周賽304。這題跟我電波比較合拍，應該算是很快就寫出來。  
 
