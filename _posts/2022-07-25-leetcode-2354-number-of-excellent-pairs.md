@@ -37,6 +37,9 @@ tags        : LeetCode Hard Array BitManipulation HashTable
 講這麼複雜，其實就是num1的1位元個數+num2的1位元各數加總而已。  
 問題簡化，以1位元數將nums中的各數字n進行分類計數，裝進雜湊表d中。列舉所有位元數的組合(i,j)，若i+j可以滿足k，代表是**超讚數對**。i位元的數有d[i]個，j位元的數有d[j]個，共可以產生d[i]\*d[j]個答案。  
 
+20220806更新：原來把位元操作畫成圖會這麼好理解，沒想法真的該隨手畫畫。  
+![示意圖](/assets/img/2354-1.jpg)
+
 ```python
 class Solution:
     def countExcellentPairs(self, nums: List[int], k: int) -> int:
