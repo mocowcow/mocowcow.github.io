@@ -31,3 +31,27 @@ class Solution:
         
         return ans
 ```
+
+看了別人的想法，發現我終究是繞了遠路，根本不用畫圖。    
+只要把不等式移項就一目了然：  
+> j-i != nums[j]-nums[i]  
+> j-nums[j] != i-nums[i]  
+
+題目直接簡化成找到j-nums[j] != i-nums[i]的索引對數。  
+也可以預先計算出所有索引對數量，在遍歷過程中刪除**正確的**索引對，最後只會剩下**錯誤的**索引對。  
+
+```python
+class Solution:
+    def countBadPairs(self, nums: List[int]) -> int:
+        N=len(nums)
+        total=N*(N-1)//2
+        good=0
+        d=Counter()
+        
+        for i,n in enumerate(nums):
+            offset=i-n
+            good+=d[offset]
+            d[offset]+=1
+        
+        return total-good
+```
