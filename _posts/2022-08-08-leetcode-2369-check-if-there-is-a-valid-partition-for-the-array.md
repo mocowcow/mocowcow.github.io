@@ -45,3 +45,37 @@ class Solution:
         
         return dp(0)
 ```
+
+試著改成bottom up的寫法，這邊索引太多加加減減，頭腦不夠清晰真的很難一次寫對，只好先用沒效率的方法處理base case，之後再來改進。  
+對比賽中直接寫出bottom up的大神表達尊重。  
+
+```python
+class Solution:
+    def validPartition(self, nums: List[int]) -> bool:
+        N=len(nums)
+        dp=[False]*(N)
+        
+        for i in range(1,N):
+            if (i-2<0 or dp[i-2]) and nums[i]==nums[i-1]:dp[i]=True
+            if i>1 and (i-3<0 or dp[i-3]) and nums[i]==nums[i-1]==nums[i-2]:dp[i]=True
+            if i>1 and (i-3<0 or dp[i-3]) and nums[i]==nums[i-1]+1==nums[i-2]+2:dp[i]=True
+            
+        return dp[-1]
+```
+
+把dp陣列長度加上1，讓dp[0]表示base case，所以狀態轉移中的每個dp索引都要遞增1。  
+
+```python
+class Solution:
+    def validPartition(self, nums: List[int]) -> bool:
+        N=len(nums)
+        dp=[False]*(N+1)
+        dp[0]=True
+        
+        for i in range(1,N):
+            if dp[i-1] and nums[i]==nums[i-1]:dp[i+1]=True
+            if i>1 and dp[i-2] and nums[i]==nums[i-1]==nums[i-2]:dp[i+1]=True
+            if i>1 and dp[i-2] and nums[i]==nums[i-1]+1==nums[i-2]+2:dp[i+1]=True
+            
+        return dp[-1]
+```
