@@ -28,6 +28,8 @@ tags        : LeetCode Hard Array DP Greedy Heap
 - 選擇最多油的站點來加油，次數+1；沒有站點則回傳-1  
 - 繼續移動
 
+最多需要將N個加油站放入heap，每次O(log N)，整體時間複雜度O(N log N)，空間(N)。  
+
 ```python
 class Solution:
     def minRefuelStops(self, target: int, startFuel: int, stations: List[List[int]]) -> int:
@@ -46,4 +48,34 @@ class Solution:
             ans+=1
         
         return ans
+```
+
+雖然說DP可以解這題，但複雜度O(N^2)，而且個人認為不太直觀，基於學習心態還是來做做看。  
+
+定義dp(i,refuel)：到第i個加油站為止，共加refuel次油可以抵達的最遠距離。  
+轉移方程式：每個加油站可以選擇加或不加。不加的話就是dp(i-1,refuel)；加的話要確認上次位置dp(i-1,refuel-1)，能夠抵達第i站才加上第i站的油料。  
+base cases：加油次數為0，代表初始油量，回傳startFuel；加油次數大於加油站數，為非法狀態，回傳-inf確保答案不被使用。  
+
+總共有N個站點，所以可以選擇加0次\~N次油。遍歷0\~N，若可以抵達target則回傳該加油次數；都沒辦法的話回傳-1。  
+
+```python
+class Solution:
+    def minRefuelStops(self, target: int, startFuel: int, stations: List[List[int]]) -> int:
+        N=len(stations)
+        
+        @cache
+        def dp(i,refuel):
+            if refuel==0:return startFuel
+            if refuel>i+1:return -inf
+            best=dp(i-1,refuel)
+            last=dp(i-1,refuel-1)
+            if last>=stations[i][0]:
+                best=max(best,last+stations[i][1])
+            return best
+        
+        for i in range(N+1):
+            if dp(N-1,i)>=target:
+                return i
+            
+        return -1
 ```
