@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2379. Minimum Recolors to Get K Consecutive Black Blocks
-tags        : LeetCode
+tags        : LeetCode Easy Array SlidingWindow
 ---
 雙周賽85。老實說看到這題有嚇到，一時想不到怎麼暴力解，難道Q1就要求滑動窗口？感覺這次比賽有點可怕。  
 雖然後來確定能用暴力解，但是討論區有人說做出Q4確做不出這題，有點誇張。  
