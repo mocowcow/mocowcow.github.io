@@ -93,4 +93,17 @@ class Solution:
 ```
 
 最後附上懶人解法：使用內建函數replace all。  
-比賽中覺得這東西很危險，不太敢隨便用，沒想到真的可以過，而且前幾名的人很多都這樣寫。
+比賽中覺得這東西很危險，不太敢隨便用，沒想到真的可以過，而且前幾名的人很多都這樣寫。  
+
+
+```python
+class Solution:
+    def secondsToRemoveOccurrences(self, s: str) -> int:
+        ans=0
+        
+        while '01' in s:
+            s=s.replace('01','10')
+            ans+=1
+            
+        return ans
+```
