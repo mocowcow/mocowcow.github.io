@@ -38,3 +38,59 @@ class Solution:
 
         return ans
 ```
+
+在來是O(N)的DP作法。  
+首先必須觀察出01替換為10的動作，實際上是把**1往左邊推**。對於每個1來說，左邊有多少個0，最終他便會向左移動多少次。  
+
+考慮以下的例子：  
+> s = "0011"  
+> 對於第一個1來說，要移到左方至少需要2秒，變成"1001"
+> 但第二個1也一樣要往左邊移動兩次，但是要等到第一個1移動完，才輪到他  
+> 所以需要2+1秒  
+
+實際上過程為：  
+> s = "0011"  
+> 第一秒 "0101"  
+> 第二秒 "1010"  
+> 第三秒 "1100"  
+
+定義dp[i]：到s[i]為止的子字串，全部移動完需要幾秒。  
+轉移方程式：若s[i]為0，則dp[i]=dp[i-1]；若為1且前方有出現過0，則dp[i]=max(dp[i-1]+1,zero)
+base case：當i等於0時，dp[i-1]不合法，應直接設成0。但是python負數索引會往後方找，剛好也是0，所以沒問題。  
+
+```python
+class Solution:
+    def secondsToRemoveOccurrences(self, s: str) -> int:
+        N=len(s)
+        dp=[0]*N
+        zero=0
+        
+        for i,c in enumerate(s):
+            if c=='0':
+                zero+=1
+                dp[i]=dp[i-1]
+            elif zero>0:
+                dp[i]=max(dp[i-1]+1,zero)
+
+        return dp[-1]
+```
+
+每次dp只會取到前一次的狀態，所以可以把一維陣列壓縮成常數。  
+
+```python
+class Solution:
+    def secondsToRemoveOccurrences(self, s: str) -> int:
+        N=len(s)
+        dp=zero=0
+        
+        for c in s:
+            if c=='0':
+                zero+=1
+            elif zero>0:
+                dp=max(dp+1,zero)
+
+        return dp
+```
+
+最後附上懶人解法：使用內建函數replace all。  
+比賽中覺得這東西很危險，不太敢隨便用，沒想到真的可以過，而且前幾名的人很多都這樣寫。
