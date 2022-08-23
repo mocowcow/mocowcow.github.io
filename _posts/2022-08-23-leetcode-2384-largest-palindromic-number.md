@@ -30,12 +30,12 @@ class Solution:
         one=''
         pair=''
         
-        for k in range(10,-1,-1):
-            k=str(k)
-            v=d[k]
-            if v&1 and one=='':
+        for i in range(9,-1,-1):
+            c=str(i)
+            cnt=d[c]
+            if cnt&1 and one=='':
                 one=k
-            pair+=k*(v//2)
+            pair+=c*(cnt//2)
             
         while pair and pair[0]=='0':
             pair=pair[1:]
@@ -44,4 +44,47 @@ class Solution:
             return '0'
             
         return pair+one+pair[::-1]
+```
+
+看到別人很聰明的解法，善用strip函數來處理前導零，再利用or運算排除空字串。  
+
+```python
+class Solution:
+    def largestPalindromic(self, num: str) -> str:
+        d=Counter(num)
+        pair=''
+        one=''
+        
+        for i in range(9,-1,-1):
+            c=str(i)
+            cnt=d[c]
+            if one=='' and cnt&1:
+                one=c
+            pair+=c*(cnt//2)
+
+        ans=pair+one+pair[::-1]
+        
+        return ans.strip('0') or '0'
+```
+
+或是將兩端和中心分開處理，邏輯更佳清晰。  
+
+```python
+class Solution:
+    def largestPalindromic(self, num: str) -> str:
+        d=Counter(num)
+        pair=''
+        one=''
+        
+        for c in reversed(digits):
+            pair+=c*(d[c]//2)
+            
+        for c in reversed(digits):
+            if d[c]&1:
+                one=c
+                break
+                
+        ans=pair+one+pair[::-1]
+        
+        return ans.strip('0') or '0'
 ```
