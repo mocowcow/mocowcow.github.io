@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2385. Amount of Time for Binary Tree to Be Infected
-tags        : LeetCode
+tags        : LeetCode Medium Array Graph BFS DFS BinaryTree
 ---
 周賽307。
 
