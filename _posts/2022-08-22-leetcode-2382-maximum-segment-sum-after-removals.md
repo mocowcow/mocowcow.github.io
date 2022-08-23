@@ -104,3 +104,53 @@ class Solution:
             
         return ans
 ```
+
+同樣是逆向操作，可以使用併查集，將時間複雜度降低至O(N)。  
+
+對於每個要插入的點idx，初始化段總合為nums[i]，檢查左右是否存在，若存在則將其root指向idx，並將總和加到idx上。  
+
+```python
+class UnionFind:
+    def __init__(self):
+        self.parent = {}
+        self.sm = {}
+
+    def union(self, x, y):
+        px = self.find(x)
+        py = self.find(y)
+        if px != py:
+            self.sm[py]+=self.sm[px]
+            self.parent[px] = py
+
+    def find(self, x):
+        if x != self.parent[x]:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+class Solution:
+    def maximumSegmentSum(self, nums: List[int], removeQueries: List[int]) -> List[int]:
+        N=len(nums)
+        ans=[0]*N
+        uf=UnionFind()
+        mx=0
+        i=N-1
+        
+        while i>0:
+            idx=removeQueries[i]
+            uf.parent[idx]=idx
+            uf.sm[idx]=nums[idx]
+            # merge left
+            if idx-1 in uf.parent:
+                uf.union(idx-1,idx)
+            # merge right
+            if idx+1 in uf.parent:
+                uf.union(idx+1,idx)
+            mx=max(mx,uf.sm[idx])
+            i-=1
+            ans[i]=mx
+                
+        return ans
+```    
+            
+
+        
