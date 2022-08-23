@@ -66,3 +66,41 @@ class Solution:
             
         return ans
 ```
+
+要照順序刪除其實也是可以，只是二分搜找區間調整起來很麻煩，一個不小心就出錯。  
+至於最大區間總和的部分可以搭配前綴和以O(1)計算新的段總合，放到sortedlist裡面就可以快速得到最大值。  
+
+```python
+from sortedcontainers import SortedList
+
+class Solution:
+    def maximumSegmentSum(self, nums: List[int], removeQueries: List[int]) -> List[int]:
+        N=len(nums)
+        psum=[0]+list(accumulate(nums))
+        ans=[0]*N
+        segment_sum=SortedList()
+        segment_sum.add(psum[-1])
+        sl=SortedList() # [l,r,sum]
+        sl.add([0,N-1,psum[-1]])
+
+        for i in range(N-1):
+            idx=removeQueries[i]
+            j=sl.bisect_left([idx+1])-1
+            l,r,sm=sl[j]
+            # remove old
+            sl.pop(j)
+            segment_sum.remove(sm)
+            # add left
+            if l<idx:
+                sm=psum[idx]-psum[l]
+                sl.add([l,idx-1,sm])
+                segment_sum.add(sm)
+            # add right
+            if r>idx:
+                sm=psum[r+1]-psum[idx+1]
+                sl.add([idx+1,r,sm])
+                segment_sum.add(sm)
+            ans[i]=segment_sum[-1]
+            
+        return ans
+```
