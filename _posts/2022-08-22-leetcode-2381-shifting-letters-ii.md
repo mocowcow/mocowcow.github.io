@@ -43,3 +43,49 @@ class Solution:
         
         return ''.join(ans)
 ```
+
+後來才想通其實用樹狀陣列也可以做這題，而且就算要在任意次修改間查詢某索引的字元也沒問題。  
+樹狀陣列的query查的就是前i項元素的前綴和，所以在進行區間修改時，一樣也是做差分的修改。  
+再次強調：差分的前綴和=原陣列。  
+
+總共需要N次區間修改，每次複雜度O(log N)，之後的N次區間查詢也是O(log N)，整體複雜度O(N log N)。
+
+```python
+class BinaryIndexedTree:
+    def __init__(self, n):
+        self.bit = [0]*(n+1)
+        self.N = len(self.bit)
+
+    def update(self, index, val):
+        index += 1
+        while index < self.N:
+            self.bit[index] += val
+            index = index + (index & -index)
+
+    def prefixSum(self, index):
+        index += 1
+        res = 0
+        while index > 0:
+            res += self.bit[index]
+            index = index - (index & -index)
+        return res
+
+class Solution:
+    def shiftingLetters(self, s: str, shifts: List[List[int]]) -> str:
+        N=len(s)
+        BIT=BinaryIndexedTree(N+5)
+        ans=[0]*N
+        
+        for a,b,dir in shifts:
+            x=1 if dir==1 else -1
+            BIT.update(a,x)
+            BIT.update(b+1,-x)
+            
+        for i,c in enumerate(s):
+            offset=BIT.prefixSum(i)
+            x=ord(c)-97+offset
+            x%=26
+            ans[i]=chr(x+97)
+            
+        return ''.join(ans)
+```
