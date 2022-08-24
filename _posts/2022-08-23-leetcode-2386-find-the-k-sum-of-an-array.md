@@ -34,6 +34,8 @@ tags        : LeetCode Hard Array Heap Sorting
 
 最後拿最大子序列mx扣掉第k-1個最小的子序列，得到答案。排序複雜度為O(N log N)，建構子序列複雜度O(k log k)，整體為O(N log N + k log k)。  
 
+其實我對於子序列的構造方法有點疑惑，還是不確定到底怎樣的情況下才能憑空想出這種作法。[這篇文](https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/by-asdfasdf-1-syv0/)對構造方法有比較詳細的討論。  
+
 ```python
 class Solution:
     def kSum(self, nums: List[int], k: int) -> int:
@@ -51,11 +53,4 @@ class Solution:
                 heappush(h,[sm+abs_nums[i+1],i+1])
         
         return mx-sm
-```
-
-
-
-```python
-code here
-
 ```
