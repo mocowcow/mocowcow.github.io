@@ -31,6 +31,9 @@ tags        : LeetCode Hard Array Matrix HashTable Graph TopologySort
 所以我們分別對行、列的限制做拓樸排序後，先檢查的到的順序是不是都為k。若否，則代表條件不合法， 直接回傳空矩陣。  
 最後只要建立各數字和出現索引的映射，填入矩陣中即可。  
 
+拓樸排序的時間複雜度是O(V+E)，V是頂點數量，也就是k，而E是邊的數量。E的上限是10^4，而k是400。  
+主要成本是在於產生矩陣，要建立k\*k的矩陣，所以整體複雜度應該是O(k^2)。  
+
 ```python
 class Solution:
     def buildMatrix(self, k: int, rowConditions: List[List[int]], colConditions: List[List[int]]) -> List[List[int]]:
