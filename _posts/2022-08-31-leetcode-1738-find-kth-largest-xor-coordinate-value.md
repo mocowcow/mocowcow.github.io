@@ -16,7 +16,9 @@ tags        : LeetCode Medium Array Matrix BitManipulation PrefixSum Heap
 差別在於XOR的特性，相同的數字會相消，所以四個區塊互相做XOR就好。  
 計算出每個位置的XOR總和之後，排序並回傳第k大的值。  
 
-記算XOR總和矩陣的複雜度為O(M\*N)，共有MN個元素。排序複雜度為O(MN log MN)，整體複雜度為O(MN log MN)。  
+![示意圖](/assets/img/1738-1.jpg)
+
+XOR總和矩陣的複雜度為O(M\*N)，共有MN個元素。排序複雜度為O(MN log MN)，整體複雜度為O(MN log MN)。  
 
 ```python
 class Solution:
@@ -61,6 +63,8 @@ class Solution:
 看到別人有更簡單的做法，雖然複雜度一樣是O(MN log k)，但是實作起來方便很多。  
 先遍歷每一列，向右方做前綴和(前綴XOR?)。再遍歷每一行，往下方最前綴和，這樣正好是對於所有元素都做一次XOR。  
 最後一樣使用heap找出第k大的元素。  
+
+![示意圖](/assets/img/1738-2.jpg)
 
 ```python
 class Solution:
