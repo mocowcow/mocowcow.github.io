@@ -57,3 +57,31 @@ class Solution:
                         
         return h[0]
 ```
+
+看到別人有更簡單的做法，雖然複雜度一樣是O(MN log k)，但是實作起來方便很多。  
+先遍歷每一列，向右方做前綴和(前綴XOR?)。再遍歷每一行，往下方最前綴和，這樣正好是對於所有元素都做一次XOR。  
+最後一樣使用heap找出第k大的元素。  
+
+```python
+class Solution:
+    def kthLargestValue(self, matrix: List[List[int]], k: int) -> int:
+        M,N=len(matrix),len(matrix[0])
+        h=[]
+             
+        for r in range(M):
+            for c in range(1,N):
+                matrix[r][c]^=matrix[r][c-1]
+                    
+        for c in range(N):
+            for r in range(1,M):
+                matrix[r][c]^=matrix[r-1][c]
+                    
+        for r in range(M):
+            for c in range(N):
+                if len(h)==k:
+                    heappushpop(h,matrix[r][c])
+                else:
+                    heappush(h,matrix[r][c])
+                        
+        return h[0]
+```
