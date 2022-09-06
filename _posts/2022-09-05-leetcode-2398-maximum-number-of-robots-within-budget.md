@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2398. Maximum Number of Robots Within Budget
-tags        : LeetCode
+tags        : LeetCode Hard Array SlidingWindow SortedList MonotonicQueue
 ---
 雙周賽86。一開始想到了單調堆疊來找到各個chargeTimes[i]的左右邊界，後來發現是錯的。  
 後來及時想到二分搜+滑動窗口，但是二分搜寫到一半突然開竅：直接滑動不就得了嗎？  
