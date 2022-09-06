@@ -53,3 +53,23 @@ class Solution:
             
         return ans
 ```
+
+其實只要用XOR相消的特性，就可以簡單的把某個數字對應的所有1位元給去掉。  
+因為只有在新元素n和已選擇的所有數字沒有衝突之下，才會將新的1位元加入(OR運算)。那麼之後將此元素在做一次XOR時，必定能夠還原到原本的狀態。  
+
+```python
+class Solution:
+    def longestNiceSubarray(self, nums: List[int]) -> int:
+        sm=0
+        ans=1
+        left=0
+        
+        for right,n in enumerate(nums):
+            while sm&n!=0:
+                sm^=nums[left]
+                left+=1
+            sm|=n
+            ans=max(ans,right-left+1)
+        
+        return ans
+```
