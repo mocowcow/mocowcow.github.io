@@ -33,3 +33,22 @@ class Solution:
             
         return True
 ```
+
+不使用雜湊表，只用陣列紀錄索引位址也是可以，但是感覺比較醜。  
+如果是第一次出現，則將索引寫入first；否則當前i和first中的索引檢查是否合法。  
+
+```python
+class Solution:
+    def checkDistances(self, s: str, distance: List[int]) -> bool:
+        first=[-1]*26
+        
+        for i,c in enumerate(s):
+            x=ord(c)-97
+            if first[x]==-1:
+                first[x]=i
+            else:
+                if i-first[x]-1!=distance[x]:
+                    return False 
+                
+        return True
+```
