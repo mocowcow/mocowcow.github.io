@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2382. Maximum Segment Sum After Removals
-tags        : LeetCode Hard Array SortedList
+tags        : LeetCode Hard Array SortedList UnionFind
 ---
 雙周賽85。這次拿到了383名，刷新個人最佳紀錄。雖然客觀來說這題偏難，不過剛好對上我的電波，就輕鬆AC了。  
 
