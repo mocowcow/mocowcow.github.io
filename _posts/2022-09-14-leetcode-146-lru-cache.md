@@ -4,7 +4,8 @@ title       : LeetCode 146. LRU Cache
 tags        : LeetCode Medium LinkedList Design HashTable
 ---
 面試常考題，終於找到時間來做個詳解。  
-中文叫做**最近最不常使用快取**，但是**常使用**是指使用次數還是使用時間？要記住LRU關注點是**上次的使用時間**，而非次數，每次被使用到的資源都要拉到最前端。    
+中文叫做**最近最不常使用**快取，但是**常使用**是指使用次數還是使用時間？要記住LRU重點是**上次的使用時間**，把最久沒用的踢出去。    
+乾脆叫他**太久沒上會被踢**快取。  
 
 # 題目
 設計Least Recently Used (LRU) cache。  
