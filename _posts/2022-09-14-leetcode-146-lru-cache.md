@@ -13,9 +13,9 @@ tags        : LeetCode Medium LinkedList Design HashTable
 實作LRUCache類別：  
 - LRUCache(int capacity)：初始化快取容量為capacity  
 - int get(int key)：如果key存在則回傳key的值，否則回傳-1  
-- void put(int key, int value)：如果key存在，則以value更新值，否則將key加入快取中。若容量超過限制，則刪除最近最不常使用的key  
+- void put(int key, int value)：如果key存在，則以value更新值，否則將key加入快取中。若容量超過限制，則刪除**最久未使用**者
 
-函數get和put的複雜度必須是O(1)。  
+函數get和put的時間複雜度必須是O(1)。  
 
 # 解法
 LRU是使用doubly linked list搭配hash map來達成O(1)時間複雜度。  
