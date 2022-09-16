@@ -62,3 +62,72 @@ class Solution:
 
         return dp[0][0]
 ```
+
+2022-09-17更新。  
+今天每日題又輪到這，一看到我按過爛就知道這題有點問題。  
+雖然python做top down還是一樣會TLE，但這次定義的dp狀態和之前有些許不同。  
+之前是紀錄**第i次動作中，有幾次left次是選擇左邊**，借而推算出右邊界。而今天變成**紀錄左右選擇的次數**來推算出是第i次動作。  
+而base case是：總共完成M次動作之後，無法繼續選擇，故回傳0。  
+
+```python
+class Solution:
+    def maximumScore(self, nums: List[int], multipliers: List[int]) -> int:
+        N,M=len(nums),len(multipliers)
+        
+        @cache
+        def dp(left,right):
+            if left+right==M:
+                return 0
+            return max(nums[left]*multipliers[left+right]+dp(left+1,right),
+                    nums[N-1-right]*multipliers[left+right]+dp(left,right+1))
+            
+        return dp(0,0)
+```        
+
+同樣的概念換到java做記憶化則可以順利AC。  
+
+```java
+class Solution {
+    int M,N;
+    Integer memo[][];
+    int nums[];
+    int mul[];
+    
+    public int maximumScore(int[] nums, int[] multipliers) {
+        this.N=nums.length;
+        this.M=multipliers.length;
+        this.nums=nums;
+        this.mul=multipliers;
+        this.memo=new Integer[this.M+5][this.M+5];
+        return dp(0,0);
+    }
+    
+    int dp(int left, int right){
+        if(left+right==M){
+            return 0;
+        }        
+        if(memo[left][right]==null){
+            int l=nums[left]*mul[left+right]+dp(left+1,right);
+            int r=nums[N-1-right]*mul[left+right]+dp(left,right+1);
+            memo[left][right]=Math.max(l,r);
+        }
+        return memo[left][right];
+    }
+}
+```
+
+我還是不死心，試著把python改成bottom up的方式，總算是順利通過，還勝過98%的提交。  
+
+```python
+class Solution:
+    def maximumScore(self, nums: List[int], multipliers: List[int]) -> int:
+        N,M=len(nums),len(multipliers)
+        dp = [[0]*(M+5) for _ in range(M+5)]
+        
+        for left in range(M-1,-1,-1):
+            for right in range(M-left-1,-1,-1):
+                dp[left][right]=max(nums[left]*multipliers[left+right]+dp[left+1][right],
+                    nums[N-1-right]*multipliers[left+right]+dp[left][right+1])
+        
+        return dp[0][0]
+```
