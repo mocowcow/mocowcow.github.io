@@ -15,6 +15,8 @@ tags        : LeetCode Medium String Greedy
 只要每個字元c都接在ascii碼前一位的字元後面，那他就是連續的。  
 遍歷s中每一個字元c，和前一個字元prev比較ascii值，如果正好是下一位則使字串長度遞增1，否則重置連續字串。  
 
+時間複雜度為O(N)，空間複雜度為O(1)。  
+
 ```python
 class Solution:
     def longestContinuousSubstring(self, s: str) -> int:
