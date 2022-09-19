@@ -14,6 +14,8 @@ tags        : LeetCode Medium BinaryTree BFS DFS TwoPointers
 prefect二元樹整個節點塞滿滿，非常友好，而且反轉是整層倒過來，沒有任何意外。  
 先進行一次dfs把所有節點依照深度分類，之後對所有奇數層使用雙指針將數值反轉。  
 
+時空間複雜度皆為O(N)。  
+
 ```python
 class Solution:
     def reverseOddLevels(self, root: Optional[TreeNode]) -> Optional[TreeNode]:
