@@ -22,6 +22,8 @@ tags        : LeetCode Hard Array Greedy
 但是還漏掉一個可能性：虧本的交易中也可能有超大成本、超大收益，例如cost=10^9，back=10^9-1，實際上只虧一塊錢，但卻是所有交易的最大門檻。  
 所以我們碰到虧本交易時，需要假設他為**最後一筆的虧錢交易**，先求出除了當筆交易以外的總虧本額，然後才加上當筆的cost。  
 
+遍歷兩次，時間複雜度O(N)，空間複雜度O(1)。  
+
 ```python
 class Solution:
     def minimumMoney(self, transactions: List[List[int]]) -> int:
@@ -39,4 +41,22 @@ class Solution:
                 ans=max(ans,sm+cost)   
         
         return ans
+```
+
+可以發現上面公式相消之後，虧錢交易為sm+back，而賺錢交易為sm+cost，可以把兩項壓縮成同一個變數，而加總sm的部分也可以放進同一次迴圈。  
+
+```python
+class Solution:
+    def minimumMoney(self, transactions: List[List[int]]) -> int:
+        sm=0
+        mx=0
+
+        for cost,back in transactions:
+            if cost>back:
+                sm+=cost-back
+                mx=max(mx,back)
+            else:
+                mx=max(mx,cost)   
+        
+        return sm+mx
 ```
