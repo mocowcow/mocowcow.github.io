@@ -60,3 +60,67 @@ class Solution:
         
         return sm+mx
 ```
+
+看見[zerotrac大神](https://leetcode.cn/problems/minimum-money-required-before-transactions/solution/fen-bie-kao-lu-mei-bi-jiao-yi-suo-dui-yi-t5ry/1758961)的評論，才知道原來可以排序，只是很難排而已。  
+主要要拆成兩大部分：虧錢的交易擺前面，賺錢的交易擺後面。然後虧錢部分back小排前面；賺錢部分cost大排前面。  
+最後再以貪心法不斷更新初始資金即可。  
+
+使用到排序，時間複雜度上升至O(N log N)，空間複雜度維持O(1)。  
+
+```python
+class Solution:
+    def minimumMoney(self, transactions: List[List[int]]) -> int:
+        
+        def compare(a,b):
+            cost1,back1=a
+            profit1=back1-cost1
+            cost2,back2=b
+            profit2=back2-cost2
+            if profit1<0 and profit2<0:
+                return -1 if back1<back2 else 1
+            if profit1>0 and profit2>0:
+                return -1 if cost1>cost2 else 1
+            return profit1-profit2
+        
+        transactions.sort(key=cmp_to_key(compare))
+        ans=0
+        money=0
+        for cost,back in transactions:
+            if cost>money:
+                ans+=cost-money
+                money=cost
+            money=money-cost+back
+            
+        return ans
+```
+
+comparator真的很難寫，不如分開把虧錢、賺錢部份各自排好再合起來，也得到一樣的效果。  
+使用到額外空間保存交易，空間複雜度上升至O(N)。  
+
+```python
+class Solution:
+    def minimumMoney(self, transactions: List[List[int]]) -> int:
+        
+        def compare(a,b):
+            cost1,back1=a
+            profit1=back1-cost1
+            cost2,back2=b
+            profit2=back2-cost2
+            if profit1<0 and profit2<0:
+                return -1 if back1<back2 else 1
+            if profit1>0 and profit2>0:
+                return -1 if cost1>cost2 else 1
+            return profit1-profit2
+        
+        transactions.sort(key=cmp_to_key(compare))
+        ans=0
+        money=0
+        for cost,back in transactions:
+            if cost>money:
+                ans+=cost-money
+                money=cost
+            money=money-cost+back
+            
+        return ans
+```
+
