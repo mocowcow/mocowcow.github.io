@@ -100,27 +100,18 @@ comparator真的很難寫，不如分開把虧錢、賺錢部份各自排好再�
 ```python
 class Solution:
     def minimumMoney(self, transactions: List[List[int]]) -> int:
+        lose=[[c,b] for c,b in transactions if c>b]
+        lose.sort(key=lambda x:x[1])
+        earn=[[c,b] for c,b in transactions if c<=b]
+        earn.sort(key=lambda x:-x[0])
         
-        def compare(a,b):
-            cost1,back1=a
-            profit1=back1-cost1
-            cost2,back2=b
-            profit2=back2-cost2
-            if profit1<0 and profit2<0:
-                return -1 if back1<back2 else 1
-            if profit1>0 and profit2>0:
-                return -1 if cost1>cost2 else 1
-            return profit1-profit2
-        
-        transactions.sort(key=cmp_to_key(compare))
         ans=0
         money=0
-        for cost,back in transactions:
-            if cost>money:
+        for cost,back in lose+earn:
+            if money<cost:
                 ans+=cost-money
                 money=cost
             money=money-cost+back
             
-        return ans
+        return ans       
 ```
-
