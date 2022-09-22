@@ -44,3 +44,24 @@ class Solution:
             
         return ans
 ```
+
+後來才發現逆向處理比較方便又簡潔。  
+可以簡單的用長度30的陣列bits代表各1 bit的最後出現位置，而對其取最大值，即為子陣列的右邊界，而左邊界為i。  
+需要注意的是子陣列長度最小為1，算出來的長度要記得和1取max。  
+
+```python
+class Solution:
+    def smallestSubarrays(self, nums: List[int]) -> List[int]:
+        N=len(nums)
+        ans=[0]*N
+        bits=[0]*30
+        
+        for i in range(N-1,-1,-1):
+            n=nums[i]
+            for j in range(30):
+                if n&(1<<j):
+                    bits[j]=i
+            ans[i]=max(1,max(bits)-i+1)
+            
+        return ans
+```
