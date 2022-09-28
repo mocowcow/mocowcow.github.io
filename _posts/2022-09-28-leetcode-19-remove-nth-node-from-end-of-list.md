@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 19. Remove Nth Node From End of List
 tags        : LeetCode Medium LinkedList TwoPointers
 ---
-每日題。滿經典的雙指針應用
+每日題。滿經典的雙指針應用。  
 
 # 題目
 輸入linked list的首節點，刪除倒數第n個節點後回傳。  
