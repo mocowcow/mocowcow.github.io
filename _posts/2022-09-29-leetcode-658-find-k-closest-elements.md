@@ -57,7 +57,7 @@ class Solution:
 
 左邊界left初始為0，右邊界right初始為N-1。如果left小，就踢掉右邊的；否則踢掉左邊的。重複以上動作直到剩下k個元素為止。  
 
-時間複雜度O(N)，空間複雜度O(1)。  
+時間複雜度O(N)，空間複雜度O(k)。  
 
 ```python
 class Solution:
@@ -72,5 +72,29 @@ class Solution:
             else:
                 left+=1
         
+        return arr[left:left+k]
+```
+
+再次回到二分搜，這次把可以想像有一個長度k的滑動窗口，我們要用二分搜找到窗口的左邊界。  
+陣列總共有N個元素，要找長度k的窗口，所以左邊界的範圍從0\~N-k都有可能。  
+
+二分搜的邊界更新原則，當mid為窗口左端時，窗口範圍是[mid:mid+k-1]。若mid與x的距離大於mid+k與x的距離，則代表最佳解一定在右方，故直接更新left為mid+1；否則更新right為mid。  
+
+時間複雜度O(log N)，空間複雜度O(k)。  
+
+```python
+class Solution:
+    def findClosestElements(self, arr: List[int], k: int, x: int) -> List[int]:
+        N=len(arr)
+        left=0
+        right=N-k
+        
+        while left<right:
+            mid=(left+right)//2
+            if x-arr[mid]<=arr[mid+k]-x:
+                right=mid
+            else:
+                left=mid+1
+            
         return arr[left:left+k]
 ```
