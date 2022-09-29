@@ -40,7 +40,7 @@ class Solution:
         return sorted(ans)
 ```
 
-反正既然都要排序了，不如多排幾次，反正複雜度差不多，還比較好寫。  
+反正既然都要排序了，不如多排幾次，反正複雜度差不多，還比較好寫。這個方法同樣適用於未排序的輸入。  
 先把原陣列轉換成[標準差,索引,元素]的格式，排序後可以保證符合題目的規範，抽取出前k個最靠近的結果在排序一次後就是答案。  
 
 時間複雜度O(N log N + k log k)，空間複雜度O(N)。  
@@ -52,3 +52,25 @@ class Solution:
         return sorted([x[2] for x in sorted(ans)[:k]])
 ```
 
+回想最初的雙指針作法，是從中心點開始往左右找k個最近的元素。  
+那如果從左右開始刪除N-k個最遠的元素不也是同樣道理？  
+
+左邊界left初始為0，右邊界right初始為N-1。如果left小，就踢掉右邊的；否則踢掉左邊的。重複以上動作直到剩下k個元素為止。  
+
+時間複雜度O(N)，空間複雜度O(1)。  
+
+```python
+class Solution:
+    def findClosestElements(self, arr: List[int], k: int, x: int) -> List[int]:
+        N=len(arr)
+        left=0
+        right=N-1
+        
+        while right-left+1>k:
+            if x-arr[left]<=arr[right]-x:
+                right-=1
+            else:
+                left+=1
+        
+        return arr[left:left+k]
+```
