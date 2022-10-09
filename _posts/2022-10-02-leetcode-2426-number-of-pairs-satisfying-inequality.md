@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 2426. Number of Pairs Satisfying Inequality
 tags        : LeetCode Hard Array Math BinarySearch SortedList
 ---
-雙周賽88。要不是Q1罰我15分鐘，本來應該會有400名左右，可惜了。  
+雙周賽88。~~要不是Q1罰我15分鐘，本來應該會有400名左右，可惜了~~。Q1被rejudge掉，噴到1800名，好慘。    
 
 # 題目
 輸入兩個長度為n的整數陣列nums1和nums2，以及一個整數diff。  
