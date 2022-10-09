@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2427. Number of Common Factors
-tags        : LeetCode Easy Math
+tags        : LeetCode Easy Math Simulation
 ---
 周賽313。才開始上班電腦就壞掉，上次雙周賽不好容易四題，結果Q1還被rejude掉，多災多難。  
 
@@ -11,6 +11,8 @@ tags        : LeetCode Easy Math
 
 # 解法
 照個題目做就行，可以取a和b較小值，也可以直接取測資範圍1000。只要某數i同時整除，則答案+1。  
+
+時空間複雜度O(min(a,b))。  
 
 ```python
 class Solution:
