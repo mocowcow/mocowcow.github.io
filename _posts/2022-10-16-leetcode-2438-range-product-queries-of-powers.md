@@ -19,6 +19,8 @@ tags        : LeetCode Medium Array BitManipulation PrefixSum
 
 queries的部分就很簡單，只是變形的前綴和。先對power做乘法的前綴和ps，每次查詢只要拿0\~right的乘積，除0\~left-1的乘積，就可以得到left\~right的乘積。  
 
+建立powers和其前綴和固定為O(30)，主要成本在於長度M的queries，所以時空間複雜度都是O(M)。  
+
 ```python
 class Solution:
     def productQueries(self, n: int, queries: List[List[int]]) -> List[int]:
