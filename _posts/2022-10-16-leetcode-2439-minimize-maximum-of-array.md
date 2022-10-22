@@ -26,6 +26,8 @@ tags        : LeetCode Medium Array PrefixSum BinarySearch Greedy
 
 每次canDo的時間是O(N)，二分搜需要進行log(10^9)次，時間複雜度為O(N log 10^9)。因為要計算nums前綴和，空間複雜度O(N)。  
 
+根據[靈神的說法](https://www.bilibili.com/video/BV1cV4y157BY/)，題目出現**最大值最小化**，其實就是二分答案。  
+
 ```python
 class Solution:
     def minimizeArrayValue(self, nums: List[int]) -> int:
