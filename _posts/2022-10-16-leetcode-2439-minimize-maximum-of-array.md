@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2439. Minimize Maximum of Array
-tags        : LeetCode Medium Array PrefixSum BinarySearch
+tags        : LeetCode Medium Array PrefixSum BinarySearch Greedy
 ---
 雙周賽89。挺難的，可能比某些簡單的Q4還難，雖然我有做出來，但不是最佳解。  
 
@@ -48,4 +48,22 @@ class Solution:
                 hi=mid
         
         return lo
+```
+
+當初想說如果前i項的平均值大於目前最大值，要計算出最大值的變化量。
+後來才發現是我想得太複雜，直接把最大值更新成平均值無條件進位即可。  
+當位於索引i時，共有i+1個數字，總和為n。向上取整公式為(n+(i+1)-1)/(i+1)，簡化為(n+i)/(i+1)。  
+
+時間複雜度O(N)，空間複雜度O(1)。  
+
+```python
+class Solution:
+    def minimizeArrayValue(self, nums: List[int]) -> int:
+        ps=list(accumulate(nums))
+        ans=0
+        
+        for i,n in enumerate(ps):
+            ans=max(ans,(n+i)//(i+1))
+        
+        return ans
 ```
