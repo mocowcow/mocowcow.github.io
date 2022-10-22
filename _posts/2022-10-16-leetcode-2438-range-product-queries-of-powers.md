@@ -42,3 +42,29 @@ class Solution:
             
         return ans
 ```
+
+如果是python之外的語言，前綴積肯定會溢位。  
+10^9的範圍下，powers長度最多13，也就是說每次查詢最多連乘13次，還可以接受。  
+
+建構powers的部分也可以使用lowbit，每次找到n中的最小1位元，加入powers後再把該位元消掉。  
+
+```python
+class Solution:
+    def productQueries(self, n: int, queries: List[List[int]]) -> List[int]:
+        pw=[]
+        MOD=10**9+7
+        
+        while n:
+            lb=n&(-n)
+            pw.append(lb)
+            n^=lb
+            
+        ans=[]
+        for l,r in queries:
+            x=1
+            for i in range(l,r+1):
+                x=(x*pw[i])%MOD
+            ans.append(x)
+            
+        return ans
+```
