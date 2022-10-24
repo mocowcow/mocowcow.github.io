@@ -9,9 +9,12 @@ tags        : LeetCode Medium Array Math Greedy
 輸入整數陣列nums和整數k，回傳nums子陣列中有幾個陣列gcd為k。  
 
 # 解法
-陣列長度才1000而已，直接暴力法窮舉每個子陣列，當gcd正好為k時答案加一；gcg小於k，之後不可能合法，直接跳出迴圈。  
+陣列長度才1000而已，直接暴力法窮舉每個子陣列，當gcd正好為k時答案加一；gcd小於k，之後不可能合法，直接跳出迴圈。  
 
-時間複雜度O(N^2)，空間複雜度O(1)。  
+2022-10-24更新。  
+只要nums[i]不為k的倍數，則gcd不可能為k，可以直接剪枝加速。  
+
+因為gcd的時間複雜度為log(n)，故整體時間複雜度O(N^2 * log(n))。空間複雜度O(1)。  
 
 ```python
 class Solution:
@@ -20,6 +23,7 @@ class Solution:
         ans=0
         
         for i in range(N):
+            if nums[i]%k:continue
             x=0
             for j in range(i,N):
                 x=gcd(x,nums[j])
