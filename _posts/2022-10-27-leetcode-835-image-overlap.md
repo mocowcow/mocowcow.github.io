@@ -76,3 +76,49 @@ class Solution:
                     
         return ans
 ```
+
+附上golang版本，原來struct是可以放進map中的，算是意外小收穫。  
+
+```go
+func largestOverlap(img1 [][]int, img2 [][]int) int {
+     
+    type cood struct{
+        x int
+        y int
+    }
+    
+    N:=len(img1)
+    mp:=make(map[cood]int)
+    a:=make([]cood,0)
+    b:=make([]cood,0)
+    ans:=0
+    
+    for r:=0;r<N;r++{
+        for c:=0;c<N;c++{
+            if img1[r][c]==1{a=append(a,cood{r,c})}
+            if img2[r][c]==1{b=append(b,cood{r,c})}
+        }
+    }
+    
+    for _,co1:=range a{
+        for _,co2:=range b{
+            dx:=co1.x-co2.x
+            dy:=co1.y-co2.y
+            mp[cood{dx,dy}]++
+        }
+    }
+    
+    for _,v:=range mp{
+        ans=max(ans,v)
+    }
+    
+    return ans
+}
+
+func max(a,b int)int{
+    if a>b{
+        return a
+    }
+    return b
+}
+```
