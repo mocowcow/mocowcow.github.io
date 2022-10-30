@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2454. Next Greater Element IV
-tags        : LeetCode Hard Array BinarySearch Sorting SortedList
+tags        : LeetCode Hard Array BinarySearch Sorting SortedList HashTable
 ---
 雙周賽90。眼殘到不行，明明範例一和我的答案不同，還是交了出去，好冤枉的WA。即使總共吃了4個BUG，還是拿到600名，也不算太差。  
 
@@ -43,6 +43,29 @@ class Solution:
             # add all elements
             for i in d[k]:
                 sl.add(i)
+        
+        return ans
+```
+
+或是先將整個nums重新排序，值較大者放前面，值同等的以索引小的優先。這樣加入相同的元素保證可以先將較左的加入sorted list，不影響二分搜結果。  
+
+```python
+from sortedcontainers import SortedList
+
+class Solution:
+    def secondGreaterElement(self, nums: List[int]) -> List[int]:
+        N=len(nums)
+        ans=[-1]*N
+            
+        sl=SortedList()
+        a=[[i,n] for i,n in enumerate(nums)]
+        a.sort(key=lambda x:(-x[1],x[0]))
+        
+        for i,_ in a:
+            idx=sl.bisect_left(i)+1
+            if idx<len(sl):
+                ans[i]=nums[sl[idx]]
+            sl.add(i)
         
         return ans
 ```
