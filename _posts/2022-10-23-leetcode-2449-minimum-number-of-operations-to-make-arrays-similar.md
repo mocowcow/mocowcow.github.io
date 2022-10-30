@@ -29,7 +29,7 @@ tags        : LeetCode Hard Array Greedy
 
 所以我們只要開一個陣列統計各元素出現頻率的差。最後遍歷每個元素i，將差值cnt[i]取絕對值加入答案中，然後將差值加入到cnt[i+2]中。我們把原本一次操作拆成兩次，所以記得答案要除2再回傳。  
 
-時空間複雜度都是O(N)，其中N為target[i]的上限10^6。  
+時空間複雜度都是O(N+M)，其中，N為nums長度，M為target[i]的上限10^6。  
 當然python還是TLE。  
 
 ```python
@@ -81,4 +81,30 @@ func abs(a int) int {
     }
     return a
 }
+```
+
+2022-10-24更新。  
+大神們的想法果然和我不同，從+2這個動作中可以得到**分成奇數偶數**的結論；同理，若改成+k，則可以分成k組。  
+
+我們先依照奇偶數將元素分組，問題就簡化成如同例題1單純的狀態。  
+將分組後的nums和target排序，兩兩成對，其絕對差除2就是移動次數。這邊改成差值不除2，留到答案時一次全部除2，還有原本拆成兩次運算的部分，總共是除4。  
+
+時間複雜度主要成本在於排序，為O(N log N)。空間複雜度O(N)。  
+
+```python
+class Solution:
+    def makeSimilar(self, nums: List[int], target: List[int]) -> int:
+        n_odd=sorted(n for n in nums if n%2)
+        n_even=sorted(n for n in nums if n%2==0)
+        t_odd=sorted(n for n in target if n%2)
+        t_even=sorted(n for n in target if n%2==0)
+        ans=0
+        
+        for a,b in zip(n_odd,t_odd):
+            ans+=abs(a-b)
+        
+        for a,b in zip(n_even,t_even):
+            ans+=abs(a-b)
+        
+        return ans//4
 ```
