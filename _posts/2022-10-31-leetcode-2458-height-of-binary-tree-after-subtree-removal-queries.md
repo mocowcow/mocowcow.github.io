@@ -65,3 +65,37 @@ class Solution:
             
         return ans
 ```
+
+後來總算搞懂[兩次dfs預處理](https://leetcode.cn/problems/height-of-binary-tree-after-subtree-removal-queries/solution/liang-bian-dfspythonjavacgo-by-endlessch-vvs4/)的的寫法。  
+
+只看文字和程式碼搞得很抽象，完全不知道在幹什麼，怎麼可能用O(1)時間來查詢？自己畫了圖才恍然大悟。  
+第一次dfs和之前一樣，計算以各節點為子樹的最大高度。第二次dfs，用來計算刪除當前node後，剩餘的最大高度，其參數有d和thoer，d指的是層數，也就是從root到達此節點的邊數；重點在於這個other。  
+假設你在節點node，不包含node的最大高度為other，當繼續dfs處理node子節點的時候，當然不會使other減少。假設要刪除的是左節點，那麽右子樹有可能比other更大，兩者取max；同理，刪除右節點，左子樹可能更高，以other和左子樹高度取max。  
+
+兩次dfs為O(N)，查詢為O(M)，時間複雜度O(N+M)。空間複雜度O(N)。  
+
+```python
+class Solution:
+    def treeQueries(self, root: Optional[TreeNode], queries: List[int]) -> List[int]:
+        heights=defaultdict(int)
+        rest=defaultdict(int)
+        
+        def dfs1(node):
+            if not node:
+                return 0
+            heights[node]=1+max(dfs1(node.left),dfs1(node.right))
+            return heights[node]
+        
+        dfs1(root)
+        
+        def dfs2(node,d,other):
+            if not node:
+                return 
+            rest[node.val]=other
+            dfs2(node.left,d+1,max(other,d+heights[node.right]))
+            dfs2(node.right,d+1,max(other,d+heights[node.left]))
+        
+        dfs2(root,0,0)
+        
+        return [rest[q] for q in queries]
+```
