@@ -94,3 +94,27 @@ class Solution:
         return ans
 ```
         
+自己手動做記憶化也可以通過，真的搞不懂這個cache有什麼魔法。  
+
+```python
+class Solution:
+    def minimumTotalDistance(self, robot: List[int], factory: List[List[int]]) -> int:
+        robot.sort()
+        factory.sort()
+        f=[]
+        for a,b in factory:
+            f+=[a]*b
+            
+        N=len(robot)
+        M=len(f)
+        memo=[[None]*M for _ in range(N)]
+        
+        def dp(i,j):
+            if i==N:return 0
+            if j==M:return inf
+            if memo[i][j]==None:
+                memo[i][j]=min(dp(i,j+1),abs(robot[i]-f[j])+dp(i+1,j+1))
+            return memo[i][j]
+        
+        return dp(0,0)
+```
