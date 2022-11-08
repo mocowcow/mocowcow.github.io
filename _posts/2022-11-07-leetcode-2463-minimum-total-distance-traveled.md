@@ -38,24 +38,59 @@ X軸上有一些機器人和工廠。輸入一個整數陣列robot，其中robot
 轉移方程式：如果還有修理次數，則第i個機器人可以在工廠j修；否則只能到下一個工廠修。dp(i,j,k)=min(dp(下一個工廠),dp(此工廠修理+1)+機器人到工廠距離)
 base cases：如果i等於機器人總數，代表全部修理完成，不會再有任何移動，回傳0；如果j等於工廠總數，代表沒工廠可以修了，但機器人還沒修完，回傳inf令此結果不被使用。  
 
-時空間複雜度皆為O(MNK)，其中M為機器人總數，N為工廠總數，K為工廠修理次數上限。  
+時空間複雜度皆為O(NMK)，其中N為機器人總數，M為工廠總數，K為工廠修理次數上限。  
 
 ```python
 class Solution:
     def minimumTotalDistance(self, robot: List[int], factory: List[List[int]]) -> int:
         robot.sort()
         factory.sort()
-        M=len(robot)
-        N=len(factory)
+        N=len(robot)
+        M=len(factory)
         
         @cache
         def dp(i,j,k):
-            if i==M:return 0
-            if j==N:return inf
+            if i==N:return 0
+            if j==M:return inf
             best=dp(i,j+1,0)
             if factory[j][1]>k:
                 best=min(best,abs(robot[i]-factory[j][0])+dp(i+1,j,k+1))
             return best
     
         return dp(0,0,0)
+        
+        
 ```
+
+三維DP看起來很可怕，轉移起來也很麻煩。可以把位於x且有y次修理機會的工廠變成y個位於x的工廠，將factory陣列攤平。  
+每個工廠修理次數都剩下1次，轉移方程式就只要考慮修或不修就好。  
+
+理論上時空間複雜度都一樣，就不知道為什麼會噴MLE：
+> 40 / 40 test cases passed, but took too much memory.  
+
+但是回傳答案之前把cache清空就沒事了，真是神奇。  
+
+```python
+class Solution:
+    def minimumTotalDistance(self, robot: List[int], factory: List[List[int]]) -> int:
+        robot.sort()
+        factory.sort()
+        f=[]
+        for a,b in factory:
+            f+=[a]*b
+            
+        N=len(robot)
+        M=len(f)
+        
+        @cache
+        def dp(i,j):
+            if i==N:return 0
+            if j==M:return inf
+            return min(dp(i,j+1),abs(robot[i]-f[j])+dp(i+1,j+1))
+        
+        ans=dp(0,0)
+        dp.cache_clear() # important
+        
+        return ans
+```
+        
