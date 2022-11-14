@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2465. Number of Distinct Averages
-tags        : LeetCode Medium Array Sorting TwoPointers
+tags        : LeetCode Easy Array Sorting TwoPointers
 ---
 雙周賽91。
 
