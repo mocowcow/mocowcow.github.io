@@ -23,8 +23,8 @@ tags        : LeetCode Hard Array String PrefixSum
 
 現在我們可以在常數時間內得到拆成part個部分的符號所佔據的長度了，又因為每個部分至少要有包含一個來自message的符號，所以總長度limit\*part = total扣掉符號長度token後，至少要有剩餘N個空位來放message。若符合則直接組成字串陣列回傳；否則在最後回傳空陣列。  
 
-message長度為N，預計算分子前綴和時空間皆O(N)。每次使用計算part字數為O(1)，part數不可能超過N，故最多計算N次，時間複雜度O(N)，不計算答案輸出的空間複雜度O(1)。  
-整體時空間都是O(N)，如果在窮舉過程中才計算前綴和，可以把空間也壓到O(1)。  
+message長度為N，每次將整數轉成字串為O(log N)，預計算分子前綴和時空間皆O(N log N)。每次使用計算part字數為O(1)+O(log N)，part數不可能超過N，故最多計算N次，時間複雜度O(N log N)，不計算答案輸出的空間複雜度O(1)。  
+整體時空間都是O(N log N)，如果在窮舉過程中才計算前綴和，可以把空間也壓到O(1)。  
 
 ```python
 psum=[0]*100005
