@@ -34,9 +34,8 @@ for i in range(1,100005):
 class Solution:
     def splitMessage(self, message: str, limit: int) -> List[str]:
         N=len(message)
-        part=0
-        while part<N:
-            part+=1
+        
+        for part in range(1,N+1):
             total=limit*part
             token=psum[part]+(len(str(part))+3)*part
             
