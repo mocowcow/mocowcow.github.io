@@ -48,3 +48,38 @@ class Solution:
         
         return dfs(0)
 ```
+
+再來是中心擴展法找回文，再用dp求最大回文數。  
+
+中心擴展法是窮舉每個索引i作為回文字串的中心，不斷向兩端增加子字串，直到子字串不是回文為止。但是回文的中心可能是一或二個字元，例如"abba"和"aba"，所以每個中心都要分別處理兩種情形。  
+
+定義dp[i]：子字串s[:i]的最大回文數量。  
+轉移方程式：dp[i]=max(dp[j] FOR ALL 0<=j<i)  
+base case：f[0]為空字串，不特別處理。  
+
+和原版中心擴展不同的是：我們一旦找到滿足k的回傳子字串，便立即停止擴張，所以實際上最多只會k/2次。  
+窮舉了N個中心點，各擴張k次，時間複雜度O(Nk)，空間複雜度O(N)。  
+
+```python
+class Solution:
+    def maxPalindromes(self, s: str, k: int) -> int:
+        N=len(s)
+        dp=[0]*(N+1)
+        
+        for i in range(N):
+            dp[i+1]=max(dp[i+1],dp[i])
+            l=r=i
+            while l>=0 and r<N and s[l]==s[r]:
+                if r-l+1>=k:
+                    dp[r+1]=max(dp[r+1],dp[l]+1)
+                    break
+                l,r=l-1,r+1
+            l,r=i,i+1
+            while l>=0 and r<N and s[l]==s[r]:
+                if r-l+1>=k:
+                    dp[r+1]=max(dp[r+1],dp[l]+1)
+                    break
+                l,r=l-1,r+1
+                
+        return dp[-1]
+```
