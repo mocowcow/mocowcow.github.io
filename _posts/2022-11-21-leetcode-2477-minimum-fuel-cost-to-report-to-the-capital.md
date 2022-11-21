@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2477. Minimum Fuel Cost to Report to the Capital
-tags        : LeetCode Medium Array Graph Tree DFS Greedy HashTable
+tags        : LeetCode Medium Array Graph Tree DFS Greedy HashTable BFS TopologySort
 ---
 周賽320。最近出現很多次這種無向無環樹，把不需要visited紀錄的寫法學起來真是太好了。  
 
@@ -48,5 +48,42 @@ class Solution:
             car=(ppl[i]+seats-1)//seats
             ans+=car
         
+        return ans
+```
+
+另外提供topology的bfs解法。上面的dfs是遞回求出每個城市會有多少人，而bfs方法是從最邊緣的城市將人群移動到下一個城市，直到最後全部集中到首都為止。  
+
+以indegree陣列計算各城市的連通道路數，若等於1時代表剩下一個出口，將當前的人口全部移動到剩下的城市去，並計算出需要多少車輛耗油。  
+
+時空間複雜度一樣是O(N)。  
+
+```python
+class Solution:
+    def minimumFuelCost(self, roads: List[List[int]], seats: int) -> int:
+        N=len(roads)+1
+        ans=0
+        ppl=[1]*N
+        indegree=[0]*N
+        g=defaultdict(list)
+        for a,b in roads:
+            g[a].append(b)
+            g[b].append(a)
+            indegree[a]+=1
+            indegree[b]+=1
+       
+        q=deque()
+        for i in range(1,N):
+            if indegree[i]==1:q.append(i)
+        
+        while q:
+            i=q.popleft()
+            if i==0:continue
+            ans+=(ppl[i]+seats-1)//seats
+            for j in g[i]:
+                indegree[j]-=1
+                ppl[j]+=ppl[i]
+                if indegree[j]==1:
+                    q.append(j)
+                    
         return ans
 ```
