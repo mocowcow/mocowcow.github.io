@@ -16,6 +16,8 @@ tags        : LeetCode Easy Math
 從最小的方案數開始往上窮舉，1等分不用切、2等分切1刀，這兩個都是n-1。  
 再來看3等分要切3刀、4等分切2刀、5等5刀、6等3刀等，開始以此規律循環，得到規律：奇數需要n刀；偶數則需要n/2刀。  
 
+時空間都是O(1)。  
+
 ```python
 class Solution:
     def numberOfCuts(self, n: int) -> int:
