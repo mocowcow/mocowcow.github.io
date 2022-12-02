@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 460. LFU Cache
 tags        : LeetCode Hard LinkedList Design HashTable
 ---
-[LRU]({% post_url 2022-09-14-leetcode-146-lru-cache %})的好兄弟，打鐵陣熱一起做掉，但是花了好多時間才整理成好看的樣子。  
+[LRU]({% post_url 2022-09-14-leetcode-146-lru-cache %})的好兄弟，打鐵趁熱一起做掉，但是花了好多時間才整理成好看的樣子。  
 中文叫做**最少使用**快取，這次真的是把使用次數最少的踢掉，有多個次數相同就踢最久沒用過那個(也就是LRU)。  
 
 # 題目
