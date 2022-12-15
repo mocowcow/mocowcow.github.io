@@ -34,7 +34,7 @@ tags        : LeetCode Hard Array Matrix Heap BFS
 m\*n<=10^5，如果矩陣元素排列方式非常極端的狀況下，會有將近一半的元素都塞在heap中，如此一來heap單次操作時間為O(log mn)。然後每個元素都要出入heap各一次，時間複雜度為O(mn log mn)。  
 查詢範圍k<=10^6，只要將預處理結果寫入，時間複雜度O(k)。  
 
-整題時間複雜度為O(mn log mn + max(k))，空間為O(mn + max(k))。   
+整題時間複雜度為O(mn log mn + max(queries))，空間為O(mn + max(queries))。   
 
 ```python
 class Solution:
