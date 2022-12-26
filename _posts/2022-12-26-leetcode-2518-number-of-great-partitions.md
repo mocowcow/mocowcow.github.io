@@ -34,21 +34,15 @@ class Solution:
     def countPartitions(self, nums: List[int], k: int) -> int:
         MOD=10**9+7
         N=len(nums)
-        sm=sum(nums)
         
-        if sm<k*2:return 0
+        if sum(nums)<k*2:return 0
         
         dp=[0]*k
         dp[0]=1
-        total=1
         for n in nums:
-            total=(total*2)%MOD
             for i in reversed(range(k)):
                 if i>=n:
-                    dp[i]+=dp[i-n]
-        
-        for i in range(k):
-                total-=dp[i]*2
+                    dp[i]=(dp[i]+dp[i-n])%MOD
 
-        return total%MOD
+        return (pow(2,N,MOD)-sum(dp)*2)%MOD
 ```
