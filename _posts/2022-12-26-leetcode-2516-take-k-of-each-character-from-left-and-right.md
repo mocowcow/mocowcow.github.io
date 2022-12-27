@@ -103,3 +103,49 @@ class Solution:
 
         return ans
 ```
+
+剛才提到答案符合**單調性**，有些朋友可能想問能不能二分答案？  
+當然可以！  
+
+定義函數ok(size)，代表是否能以左右共size個元素滿足條件。  
+abc都要找k個，至少要有k\*3個元素，下界定為k\*3。最差情況下整個字串都要用到，上界定為N。  
+開始二分，若mid無法滿足條件，代表mid以下也都不可能，更新下界為mid+1；否則代表mid以上也都符合條件，更新上界為mid。  
+
+判斷size是否合法的部分，初始化可以先加入左邊size個元素，逐次刪除左邊一個，同時右邊加入一個，途中滿足條件則直接回傳true。  
+其實也可以想像成一個N-size的滑動窗口，窗口內包含的是不選的元素。  
+
+每次判斷答案需要遍歷s，共要log N次，時間複雜度O(N log N)。最差同時保存整個陣列，空間複雜度O(N)。  
+
+```python
+class Solution:
+    def takeCharacters(self, s: str, k: int) -> int:
+        N=len(s)
+        d=Counter(s)
+        if any(d[x]<k for x in "abc"):return -1
+        
+        def ok(size):
+            window=Counter()
+            l=0
+            r=N-1
+            for _ in range(size):
+                window[s[l]]+=1
+                l+=1
+            while l>0:
+                if all(window[x]>=k for x in "abc"):return True
+                l-=1
+                window[s[l]]-=1
+                window[s[r]]+=1
+                r-=1
+            return all(window[x]>=k for x in "abc")
+        
+        lo=k*3
+        hi=N
+        while lo<hi:
+            mid=(lo+hi)//2
+            if not ok(mid):
+                lo=mid+1
+            else:
+                hi=mid
+        
+        return lo
+```
