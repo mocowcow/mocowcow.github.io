@@ -52,3 +52,65 @@ class Solution:
 
         return (pow(2,N,MOD)-sum(dp)*2)%MOD
 ```
+
+一直很好奇如果沒有判定sum<k\*2會怎樣，所以花了一些時間研究其中奧妙，順便換個語言當練習。  
+01背包DP的部分也使用原汁原味的二維陣列，如果上面那種空間壓縮的版本看不懂，可以先從這版本開始理解。  
+
+舉個例子：  
+> nums = [2,3], k = 4  
+> 要求0\~3的分割方法數量  
+> dp[0] = 1, dp[2] = 1, dp[3] = 1  
+
+如果直接照著上面sum(dp)\*2的話會得到6種壞的分割，某些地方重複計算到使得答案不正確。來看看哪邊算錯：  
+> 全部的分割方式有4種：  
+> [] + [2,3]  
+> [2] + [3]  
+> [3] + [2]  
+> [2,3] + []  
+
+原來是[2]+[3]和[3]+[2]分別被重複計算到了。因為我們窮舉dp[2]時，另一邊剩餘的數為5-2=3，比k還要小，其實已經算在裡面了。  
+當sum-i\<k時，他的反向組合已經包含在dp中，只要計算一次就夠了。  
+
+```go
+func countPartitions(nums []int, k int) int {
+    MOD:=int(1e9+7)
+    N:=len(nums)
+    
+    // get all partitions and sum of nums
+    total:=1
+    sum:=0
+    for i:=0;i<N;i++{
+        total=(total*2)%MOD
+        sum=(sum+nums[i])%MOD
+    }
+        
+    // bad partitions using knapsack DP
+    dp:=make([][]int,N+1)
+    for i:=0;i<=N;i++{
+        dp[i]=make([]int,k)   
+    }
+    dp[0][0]=1
+    for i:=1;i<=N;i++{
+        n:=nums[i-1]
+        for j:=0;j<k;j++{
+            if j>=n{
+                dp[i][j]=(dp[i-1][j]+dp[i-1][j-n])%MOD
+            }else{ 
+                dp[i][j]=dp[i-1][j]
+            }
+        }
+    }
+    
+    // total - bad
+    for i:=0;i<k;i++{
+        if sum-i>=k{
+            total=(total-dp[N][i]*2)%MOD            
+        }else{
+            total=(total-dp[N][i])%MOD
+        }
+        total=(total+MOD)%MOD
+    }
+    
+    return total
+}
+```
