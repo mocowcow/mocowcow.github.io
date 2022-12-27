@@ -46,4 +46,81 @@ class Solution:
         return ans
 ```
 
-正統的解法之後再補。  
+爬完一些文，幾乎都是什麼費馬小定理，模反元素之類的，強制離散數學補課。  
+總而言之MOD運算只支援加減乘，如果除法要求餘的話要改用反元素，例如：  
+> a/b % p  
+> 等價於 a*(b^-1)  
+
+詳細原理就不管了，只要記得某數x的模反元素為x的p-2次方模p，其中p為取餘用的質數，在這裡等同10^9+7。  
+
+先預處理所有可能會用到的階乘，把分子和分母分開計算，最後將分母換成模反元素後相乘就是答案。  
+python內建pow就是快速冪，又可以取餘數，真的是有夠噁心。  
+順帶一題，pow(x, -1, p)可以直接求模反元素，等價於pow(x, p-2, p)。  
+
+時間複雜度O(N + log(M) + log(p))，其中N為s長度，M為單字最大長度，p為質數10^9+7。字串只有26種字元，空間複雜度O(1)。
+
+```python
+class Solution:
+    def countAnagrams(self, s: str) -> int:
+        MOD=10**9+7
+        f=[0]*100005
+        f[1]=1
+        
+        for i in range(2,100005):
+            f[i]=(f[i-1]*i)%MOD
+            
+        up=down=1
+        for w in s.split():
+            d=Counter(w)
+            up=(up*f[len(w)])%MOD
+            for k in d.values():
+                down=(down*f[k])%MOD
+                
+        inv=pow(down,MOD-2,MOD)
+        ans=(up*inv)%MOD
+        return ans
+```
+
+換成golang自己手刻一次快速冪。  
+
+```go
+const MOD = 1e9+7
+
+func countAnagrams(s string) int {
+    ans:=1
+    fact:=make([]int,100005)
+    
+    // precompute factorial table
+    fact[0]=1
+    for i:=1;i<100005;i++{
+        fact[i]=(fact[i-1]*i)%MOD
+    }
+    
+    words:=strings.Split(s," ")
+    for _,w:=range words{
+        ans=(ans*fact[len(w)])%MOD
+        mp:=make(map[rune]int)
+        for _,c:=range w{
+            mp[c]+=1
+        }
+        for _,v:=range mp{
+            ans=(ans*pow(fact[v],MOD-2))%MOD
+        }
+    }
+    
+    return ans
+}
+
+func pow(base,exp int) int {
+    ans:=1
+    for exp>0{
+        if exp%2==1{
+            ans=(ans*base)%MOD
+        }
+        exp/=2
+        base=(base*base)%MOD
+    }
+    
+    return ans
+}
+```
