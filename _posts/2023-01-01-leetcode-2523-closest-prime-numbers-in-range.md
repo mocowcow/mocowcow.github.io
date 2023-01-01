@@ -46,3 +46,30 @@ class Solution:
                 
         return ans
 ```
+
+也可以把只做一次預處理，之後分別取出介於left和right之間的值來使用就好。  
+執行時間降低到595ms，比上面的5296ms降低許多。  
+
+```python
+ok=[True]*1000005     
+primes=[]
+for i in range(2,1000005):
+    if ok[i]:
+        primes.append(i)
+        j=i*i
+        while j<=1000000:
+            ok[j]=False
+            j+=i
+
+class Solution:
+    def closestPrimes(self, left: int, right: int) -> List[int]:
+        p=[x for x in primes if left<=x<=right]
+        mn=inf
+        ans=[-1,-1]
+        for a,b in pairwise(p):
+            if b-a<mn:
+                mn=b-a
+                ans=[a,b]
+                
+        return ans
+```
