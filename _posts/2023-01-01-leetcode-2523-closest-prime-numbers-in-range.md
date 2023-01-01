@@ -73,3 +73,34 @@ class Solution:
                 
         return ans
 ```
+
+也可以用二分搜找到第一個符合left的位置，從該點開始向後遍歷。  
+
+令MX=max(right)，預處理時間複雜度O(MX)，每次二分搜為O(log MX + len(primes))。空間複雜度O(right)。  
+
+```python
+ok=[True]*1000005     
+primes=[]
+for i in range(2,1000005):
+    if ok[i]:
+        primes.append(i)
+        j=i*i
+        while j<=1000000:
+            ok[j]=False
+            j+=i
+
+class Solution:
+    def closestPrimes(self, left: int, right: int) -> List[int]:
+        ans=[-1,-1]
+        mn=inf
+        
+        i=bisect_left(primes,left)
+        while i+1<len(primes) and primes[i+1]<=right:
+            diff=primes[i+1]-primes[i]
+            if diff<mn:
+                mn=diff
+                ans=[primes[i],primes[i+1]]
+            i+=1
+                
+        return ans
+```
