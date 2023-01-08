@@ -36,3 +36,24 @@ class Solution:
             
         return ans
 ```
+
+[這位老哥](https://leetcode.com/problems/maximal-score-after-applying-k-operations/discuss/3016995/Python3-priority-queue)實在睿智：  
+> // 運算是向下取整  
+> 而我們透過負數來將min heap轉為max heap  
+> 所以對負數使用//運算，等價於對原本的數值向上取整  
+
+```python
+class Solution:
+    def maxKelements(self, nums: List[int], k: int) -> int:
+        h=[]
+        for n in nums:
+            heappush(h,-n)
+            
+        ans=0
+        for _ in range(k):
+            x=heappop(h)
+            ans-=x
+            heappush(h,x//3)
+            
+        return ans
+```
