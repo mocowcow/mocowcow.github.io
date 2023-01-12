@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2528. Maximize the Minimum Powered City
-tags        : LeetCode
+tags        : LeetCode Hard Array BinarySearch Greedy PrefixSum
 ---
 雙周賽95。用線段樹寫半天一直TLE，比賽結束後洗完澡才恍然大悟，根本不需要線段樹。  
 
