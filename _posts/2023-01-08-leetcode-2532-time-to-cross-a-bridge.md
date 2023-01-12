@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 2532. Time to Cross a Bridge
 tags        : LeetCode Hard Array Simulation Heap
 ---
-周賽327。這題是真的麻煩，拖到最後10分鐘才解決。  
+周賽327。這題是真的麻煩，~~拖到最後10分鐘才解決~~。又被rejudge掉，好慘啊。  
 
 # 題目
 有k個工人要將n個箱子從舊倉庫搬到新倉庫。有一條河將倉庫分隔，新倉庫在左側，舊倉庫在右側，中間只有一座橋能夠通行。  
@@ -44,8 +44,7 @@ tags        : LeetCode Hard Array Simulation Heap
 2. 在右側倉庫忙完的工人，讓他回去右側排隊  
 3. 如果右側有人在排隊，則讓右側**最低效率者**先走  
 4. 如果右側沒人，左側有，就讓左側**最低效率者**先走    
-5. 如果兩側都沒人排隊，代表所有工人都在倉庫裡面忙，直接把時間快進，讓右側**最早忙完**的人出來  
-6. 否則代表全部人都在左側忙，時間快進，讓左側第**最早忙完**的人出來  
+5. 如果兩側都沒人排隊，代表所有工人都在倉庫裡面忙，直接把時間快進，讓兩側**最早忙完**的人出來  
 
 在工人過橋時，直到他抵達為止，橋都是不可用的，直接把當前直接快進到其**抵達時間**。  
 而左側往右邊走時，需直接將箱子數減一，避免多餘的人走過去；右側往回走時，直接以抵達時間更新答案。  
@@ -95,12 +94,9 @@ class Solution:
                 heappush(right_busy,[busy_time,worker])
                 continue
             
-            if right_busy:
-                curr_time=max(curr_time,right_busy[0][0])
-                continue
-                
-            if left_busy:
-                curr_time=max(curr_time,left_busy[0][0])
+            r_time=right_busy[0][0] if right_busy else inf
+            l_time=left_busy[0][0] if left_busy else inf
+            curr_time=min(r_time,l_time)
 
         return ans
 ```
