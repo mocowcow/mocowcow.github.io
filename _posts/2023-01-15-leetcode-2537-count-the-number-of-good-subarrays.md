@@ -13,6 +13,8 @@ tags        : LeetCode Medium Array SlidingWindow TwoPointers HashTable
 # 解法
 當某個子陣列滿足k個數對後，不管是從左方還是右方加入新的元素，一定也至少擁有k個數對。  
 
+![示意圖](/assets/img/2537.jpg)
+
 因此可以窮舉每個索引right作為右邊界，依序加入子陣列中。如果索引數對pair滿足k，則代表以left為左邊界，搭配right\~N-1為右邊界都是**好的子陣列**，將N-right個好的子陣列加入答案，並收縮左邊界。  
 
 時間複雜度O(N)。空間複雜度O(N)。  
