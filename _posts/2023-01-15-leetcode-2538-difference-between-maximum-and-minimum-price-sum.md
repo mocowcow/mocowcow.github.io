@@ -51,18 +51,18 @@ class Solution:
                 leaf.append([t[0],j])
                 noleaf.append([t[1],j])
                 
-            if len(root)==0:
+            if len(leaf)==0:
                 return [p,0]
             
             leaf.sort(reverse=True)
             noleaf.sort(reverse=True)
             
-            if len(root)==1:
+            if len(leaf)==1:
                 ans=max(ans,
                         leaf[0][0],
                         noleaf[0][0]+p
                        )
-            elif root[0][1]==noleaf[0][1]:
+            elif leaf[0][1]==noleaf[0][1]:
                 ans=max(ans,
                         leaf[0][0]+noleaf[1][0]+p,
                         leaf[1][0]+noleaf[0][0]+p
