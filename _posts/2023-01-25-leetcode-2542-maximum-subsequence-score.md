@@ -50,3 +50,24 @@ class Solution:
             
         return ans
 ```
+
+也可以直接把nums1和nums2綁定成數對pair，依nums2[i]的值遞減排序，直接遍歷排序好的pair，依序加入heap中。  
+
+```python
+class Solution:
+    def maxScore(self, nums1: List[int], nums2: List[int], k: int) -> int:
+        pair=sorted(zip(nums1,nums2),key=lambda x:-x[1])
+        ans=0
+        h=[]
+        sm=0
+        
+        for val,mn in pair:
+            heappush(h,val)
+            sm+=val
+            if len(h)>k:
+                sm-=heappop(h)
+            if len(h)==k:
+                ans=max(ans,sm*mn)
+                
+        return ans
+```
