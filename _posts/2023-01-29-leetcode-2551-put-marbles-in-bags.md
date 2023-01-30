@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2551. Put Marbles in Bags
-tags        : LeetCode Hard Array Sorting
+tags        : LeetCode Hard Array Sorting Greedy Heap
 ---
 周賽330。只想得到dp解，沒想到是腦筋急轉彎。  
 
@@ -47,4 +47,26 @@ class Solution:
             ans+=cut[i]-cut[-1-i]
             
         return ans
+```
+
+也可以用heap來做，在k比較小的情況下可以有效降低複雜度。  
+維護min heap保存最大的成本，max heap保存最小的成本，最後求和相減。  
+
+時間複雜度O(N log k)。空間複雜度O(k)。  
+
+```python
+class Solution:
+    def putMarbles(self, weights: List[int], k: int) -> int:
+        N=len(weights)
+        min_heap=[]
+        max_heap=[]
+        for i in range(1,N):
+            cost=weights[i]+weights[i-1]
+            heappush(min_heap,cost)
+            heappush(max_heap,-cost)
+            if len(min_heap)>=k:
+                heappop(min_heap)
+                heappop(max_heap) 
+                
+        return sum(min_heap)+sum(max_heap)
 ```
