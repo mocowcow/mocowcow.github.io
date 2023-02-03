@@ -40,3 +40,21 @@ class Solution:
                         
         return sum(table)
 ```
+
+看了其他人題解才發現，這題原來很吃觀察！  
+
+根據題意，桌上的每個數字x都會拿1\~n的所有數字取餘數，若餘數為1則把該數字放到桌上。  
+仔細想想，如果以x對x-1求餘，那餘數不就一定是1嗎？直到1為止，1只能對1取餘數，餘數為0，不會增加其他數字。  
+
+所以當n初始就是1時，就只有一個數字；否則2\~n的數字都會出現。  
+
+時間複雜度O(1)。空間複雜度O(1)。  
+
+```python
+class Solution:
+    def distinctIntegers(self, n: int) -> int:
+        if n==1:
+            return 1
+        else:
+            return n-1
+```
