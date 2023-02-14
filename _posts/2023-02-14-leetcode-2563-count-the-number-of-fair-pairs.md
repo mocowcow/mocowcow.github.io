@@ -77,3 +77,43 @@ class Solution:
             
         return ans
 ```
+
+直接在nums中自訂上下界來搜索，可以達到O(1)空間複雜度。  
+
+```python
+class Solution:
+    def countFairPairs(self, nums: List[int], lower: int, upper: int) -> int:
+        nums.sort()
+        ans=0
+        a=[]
+        
+        def lower_bound(lo,hi,target):
+            while lo<hi:
+                mid=(lo+hi)//2
+                if nums[mid]<target:
+                    lo=mid+1
+                else:
+                    hi=mid
+            return lo
+        
+        def upper_bound(lo,hi,target):
+            while lo<hi:
+                mid=(lo+hi)//2
+                if nums[mid]<=target:
+                    lo=mid+1
+                else:
+                    hi=mid
+            return lo
+        
+        for i,n in enumerate(nums):
+            mx=upper-n
+            mn=lower-n
+            right=upper_bound(0,i,mx)-1
+            # right=bisect_right(nums,mx,lo=0,hi=i)-1
+            left=lower_bound(0,i,mn)
+            # left=bisect_left(nums,mn,lo=0,hi=i)
+            ans+=right-left+1
+            a.append(n)
+            
+        return ans
+```
