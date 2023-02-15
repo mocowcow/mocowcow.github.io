@@ -21,7 +21,7 @@ tags        : LeetCode Medium Array String BitManipulation SlidingWindow HashTab
 
 預處理完所有子陣列值之後，對於每個查詢分別至雜湊表內取值，若查詢值不存在則為[-1, -1]。  
 
-需要遍歷s共30次，常數可忽略。查詢每次O(1)，共O(M)。時間複雜度O(N + M)，其中N為s長度，M為qeuries長度。空間複雜度O(MX)，其中MX為所有first^second中的最大值，在此處為(10^10)-1。  
+需要遍歷s共30次，常數可忽略。查詢每次O(1)，共O(M)。時間複雜度O(N + Q)，其中N為s長度，Q為qeuries長度。空間複雜度O(MX)，其中MX為所有first^second中的最大值，在此處為(10^10)-1。  
 
 ```python
 class Solution:
@@ -50,4 +50,30 @@ class Solution:
                 ans.append([-1,-1])
                 
         return ans
+```
+
+滑動窗口寫起來挺麻煩的，不如直接窮舉每個索引i作為子陣列的左邊界，共有30個子陣列。  
+
+不同於上面的作法，因為這次改成從左到右窮舉長度為1\~30的子字串，所以有可能會先找到較長的子字串，例如：  
+> s = "01"  
+> 要找val = 1時，i = 0會先以"01"配對成功  
+> 但是i = 1時，會以"1"配對成功，這才是正確答案  
+
+所以更新子字串的條件要多檢查子字串長度。  
+
+```python
+class Solution:
+    def substringXorQueries(self, s: str, queries: List[List[int]]) -> List[List[int]]:
+        N=len(s)
+        seen={}
+        
+        for i in range(N):
+            val=0
+            for j in range(i,i+30):
+                if j>=N:break
+                val=(val<<1)+(s[j]=="1")
+                if val not in seen or j-i<seen[val][1]-seen[val][0]:
+                    seen[val]=[i,j]
+
+        return [seen.get(a^b,[-1,-1]) for a,b in queries]
 ```
