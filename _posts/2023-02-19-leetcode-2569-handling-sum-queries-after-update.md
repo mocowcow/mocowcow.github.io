@@ -27,6 +27,8 @@ tags        : LeetCode Hard Array BitManipulation SegmentTree
 3. 同理，2^l減掉1，可以使0\~l-1的位元都變成1，也就是00001  
 4. 兩者XOR，01111^00001=01110  
 
+如果大數位移依然是O(1)，那麼查詢1時間複雜度為O(1)，查詢2為O(N)，查詢3為O(1)。空間複雜度就不知道了。  
+
 ```python
 class Solution:
     def handleQuery(self, nums1: List[int], nums2: List[int], queries: List[List[int]]) -> List[int]:
