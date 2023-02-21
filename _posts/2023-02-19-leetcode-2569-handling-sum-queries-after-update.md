@@ -52,3 +52,68 @@ class Solution:
  
         return ans
 ```
+
+正規解法還是靠懶標記線段樹。  
+
+以往的懶標記是記錄每個索引所增加的值，但這次是記錄節點值**是否翻轉過**。  
+如果翻轉區間[i,j]時，節點[L,R]剛好被完全覆蓋，則直接透過公式求出翻轉後的1數量；否則**下放懶標記**，繼續向下遞迴處理，最後更新翻轉後的值。  
+
+而根節點正好是[0\~N-1]，代表整個nums1所擁有的1數量，查詢時直接取根節點的值即可。  
+
+時間複雜度O(N + Q log N)，其中N為nums1, nums2長度，Q為qeuries長度。空間複雜度O(N)。  
+
+```python
+class Solution:
+    def handleQuery(self, nums1: List[int], nums2: List[int], queries: List[List[int]]) -> List[int]:
+        N=len(nums1)
+        sm=sum(nums2)
+        ans=[]
+        tree=[0]*(N*4)
+        lazy=[False]*(N*4)
+        
+        def build(id,L,R):
+            if L==R:
+                tree[id]=nums1[L]
+                return
+            M=(L+R)//2
+            build(id*2,L,M)
+            build(id*2+1,M+1,R)
+            push_up(id)
+        
+        def update(id,L,R,i,j):
+            if i<=L and R<=j:
+                flip(id,L,R)
+                return
+            M=(L+R)//2
+            push_down(id,L,R)
+            if i<=M:
+                update(id*2,L,M,i,j)
+            if M<j:
+                update(id*2+1,M+1,R,i,j)
+            push_up(id)
+            
+        def flip(id,L,R):
+            tree[id]=(R-L+1)-tree[id]
+            lazy[id]=not lazy[id]
+        
+        def push_down(id,L,R):
+            if lazy[id]:
+                M=(L+R)//2
+                flip(id*2,L,M)
+                flip(id*2+1,M+1,R)
+                lazy[id]=False
+            
+        def push_up(id):
+            tree[id]=tree[id*2]+tree[id*2+1]
+        
+        build(1,0,N-1)
+        for q,l,r in queries:
+            if q==1:
+                update(1,0,N-1,l,r)
+            elif q==2:
+                sm+=tree[1]*l
+            else:
+                ans.append(sm)
+ 
+        return ans
+```
