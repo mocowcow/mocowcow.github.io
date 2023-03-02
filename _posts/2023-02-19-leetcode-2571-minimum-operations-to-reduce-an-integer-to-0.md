@@ -40,3 +40,21 @@ class Solution:
             
         return ans
 ```
+
+上述方法可以使用lowbit技巧優化，用O(1)時間找到最後方的1位元。  
+有時候會比較快，但複雜度不變。  
+
+```python
+class Solution:
+    def minOperations(self, n: int) -> int:
+        ans=0
+        while n>0:
+            lb=n&(-n)
+            if n&(lb<<1):
+                n+=lb
+            else:
+                n-=lb
+            ans+=1
+        
+        return ans
+```
