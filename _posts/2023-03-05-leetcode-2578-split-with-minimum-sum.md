@@ -20,7 +20,7 @@ tags        : LeetCode Easy Array String Sorting Greedy Math
 總之先把num的數字拆出來排序。  
 如果有奇數位數，則把最小的先挑出來。剩下的數字倆倆成對，先把前面加起來的數字移位，在加上兩個新數字。  
 
-時間複雜度瓶頸為排序的O(N log N)，其中N為nums的位數，也就是log num。空間複雜度O(N)。  
+時間複雜度瓶頸為排序的O(N log N)，其中N為nums的位數，也就是10。空間複雜度O(N)。  
 
 ```python
 class Solution:
