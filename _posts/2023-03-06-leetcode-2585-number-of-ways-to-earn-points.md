@@ -21,7 +21,7 @@ tags        : LeetCode Hard Array DP
 即dp(i,sm) = sum(dp(i+1,sm+mark\*j)) FOR ALL 0 <= j <= cnt  
 base cases：當sm正好為target，得到1種方案；sm超過target不合法，0種方案；i等於N時且sm不為target，沒有剩下的題目了，0種方案。  
 
-時間複雜度O(target \* N \* CNT)，其中N為types長度，CNT為總題數。空間複雜度O(target \* N)。  
+時間複雜度O(target \* N \* max(count))，其中N為types長度。空間複雜度O(target \* N)。  
 
 ```python
 class Solution:
