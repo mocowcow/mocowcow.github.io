@@ -51,3 +51,31 @@ class Solution:
                     
         return ans
 ```
+
+上面方法是以每個時間點來考慮，檢查是當前秒數是否有某些行程必須運行，並將運行到的行程時間扣除。  
+也可改成檢查每個行程運行時間是否足夠，若不足夠則從後往前將某些秒數設為運行。  
+
+維護整數陣列run，初始全為0，代表不運行；設為1則代表該時間點將運行電腦。  
+遍歷每個行程，先檢查其允許範圍內run[s,e]是否滿足d秒。若不滿足則從e向前將某些秒數設為1，直到滿足為止。  
+最後run的總和就是答案。  
+
+時間複雜度O(N\*T)，其中N為tasks大小，T為max(end<sub>i</sub>)。空間複雜度O(T)。  
+
+```python
+class Solution:
+    def findMinimumTime(self, tasks: List[List[int]]) -> int:
+        tasks.sort(key=itemgetter(1))
+        run=[0]*2001
+        
+        for s,e,d in tasks:
+            for i in range(s,e+1):
+                d-=run[i]
+            if d>0:
+                for i in range(e,s-1,-1):
+                    if run[i]==0:
+                        run[i]=1
+                        d-=1
+                        if d==0:break
+                            
+        return sum(run)
+```
