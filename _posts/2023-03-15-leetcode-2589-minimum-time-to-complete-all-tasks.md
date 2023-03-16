@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2589. Minimum Time to Complete All Tasks
-tags        : LeetCode Hard Array Greedy Sorting
+tags        : LeetCode Hard Array Greedy Sorting SegmentTree
 ---
 模擬周賽336。測資放水了，如果範圍改大一些是真的難。  
 
@@ -78,4 +78,75 @@ class Solution:
                         if d==0:break
                             
         return sum(run)
+```
+
+如果測資範圍大一些，可能就要考慮用線段樹來提供範圍查詢、修改。  
+一樣先將tasks以結束時間排序，以O(log T)時間查詢閉區間[s,e]內運行的時間。若不足需求時間d，則以O(log T)時間更新，優先選擇[s,
+e]的右子樹遞迴。  
+
+處理完所有節點後，根節點代表閉區間[1,T]的運行時間，直接回傳根節點就是答案。  
+
+時間複雜度O(N log T + N log N)，其中N為tasks大小，T為max(end<sub>i</sub>)，若N大於T則瓶頸為排序。空間複雜度O(T)。  
+
+```python
+class Solution:
+    def findMinimumTime(self, tasks: List[List[int]]) -> int:
+        T=2001
+        tree=[0]*(4*T)
+        lazy=[False]*(4*T)
+        
+        # 下放懶標
+        def push_down(id,L,R,M):
+            if lazy[id]:
+                lazy[id]=False
+                mark(id*2,L,M)
+                mark(id*2+1,M+1,R)
+        
+        # 以子樹更新當前值
+        def push_up(id):
+            tree[id]=tree[id*2]+tree[id*2+1]
+        
+        # 將整個區間設為運行
+        def mark(id,L,R):
+            tree[id]=R-L+1
+            lazy[id]=True
+        
+        # 查詢[i,j]中的運行時間
+        def query(id,L,R,i,j):
+            if i<=L and R<=j:
+                return tree[id]
+            M=(L+R)//2
+            push_down(id,L,R,M)
+            ans=0
+            if i<=M:
+                ans+=query(id*2,L,M,i,j)
+            if M<j:
+                ans+=query(id*2+1,M+1,R,i,j)
+            return ans
+        
+        # 在[i,j]中選擇d個時間設為運行，優先找右半邊
+        def update(id,L,R,i,j):
+            nonlocal d
+            size=R-L+1
+            if tree[id]==size: # 整個區間已經運行中
+                return
+            if i<=L and R<=j and size-tree[id]<=d: # 將整個區間設為運行
+                d-=size-tree[id]
+                mark(id,L,R)
+                return
+            M=(L+R)//2
+            push_down(id,L,R,M)
+            if M<j: # 優先找右半邊
+                update(id*2+1,M+1,R,i,j)
+            if d>0: # 還不夠的話再找左半邊
+                update(id*2,L,M,i,j)
+            push_up(id)
+        
+        tasks.sort(key=itemgetter(1))
+        for s,e,d in tasks:
+            d-=query(1,1,T,s,e)
+            if d>0:
+                update(1,1,T,s,e)
+                
+        return tree[1]
 ```
