@@ -31,15 +31,15 @@ tags        : LeetCode Medium Array BinarySearch
 class Solution:
     def repairCars(self, ranks: List[int], cars: int) -> int:
         
-        def ok(limit):
+        def ok(t):
             cnt=0
             for r in ranks:
-                n=int((limit//r)**0.5)
+                n=int((t//r)**0.5)
                 cnt+=n
             return cnt>=cars
         
         lo=1
-        hi=10**18
+        hi=10**14
         while lo<hi:
             mid=(lo+hi)//2
             if not ok(mid):
@@ -48,4 +48,12 @@ class Solution:
                 hi=mid
                 
         return lo
+```
+
+使用內建函數的一行版本。  
+
+```python
+class Solution:
+    def repairCars(self, ranks: List[int], cars: int) -> int:
+        return bisect_left(range(10**14+1),True,key=lambda t:sum(int((t//r)**0.5) for r in ranks)>=cars)
 ```
