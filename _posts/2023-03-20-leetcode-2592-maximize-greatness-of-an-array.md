@@ -50,6 +50,8 @@ class Solution:
 如果nums[i]小於當前元素n，則代表配對成功，使i+1，答案+1。  
 因為是兩個完全相同的陣列在比對，配對成功的次數不可能超過陣列長度本身，所以也不需考慮邊界問題。而i剛好也就是配對成功的次數。  
 
+時間複雜度一樣在於排序，O(N log N)。但這次只需原地排序加上常數變數，空間複雜度O(1)。  
+
 ```python
 class Solution:
     def maximizeGreatness(self, nums: List[int]) -> int:
