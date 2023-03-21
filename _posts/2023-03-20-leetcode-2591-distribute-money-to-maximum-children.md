@@ -44,3 +44,31 @@ class Solution:
             if money_remain>=ppl_remain:
                 return i
 ```
+
+在一開始就把每個人都發1塊錢，這樣之後就不用考慮錢不夠的情況。  
+每個人都有1塊後，再拿7塊可以湊成8，直接算最多可以多出幾個人再拿7塊。  
+
+如果每個人都拿了7塊，且還有剩下的錢，代表有人要負責把剩的錢都拿走，所以答案要減1；或是剩下一個人沒拿7塊，又正好剩下3塊錢，他也要找另一個人來幫忙分錢，所以答案也要減1。  
+
+時間複雜度O(1)。空間複雜度O(1)。  
+
+```python
+class Solution:
+    def distMoney(self, money: int, children: int) -> int:
+        money-=children
+        
+        if money<0:
+            return -1
+        
+        ans=min(money//7,children)
+        money-=ans*7
+        children-=ans
+        
+        if children==0 and money>0:
+            ans-=1
+        
+        if children==1 and money==3:
+            ans-=1
+        
+        return ans
+```
