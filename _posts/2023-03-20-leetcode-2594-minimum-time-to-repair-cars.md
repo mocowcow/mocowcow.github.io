@@ -57,3 +57,32 @@ class Solution:
     def repairCars(self, ranks: List[int], cars: int) -> int:
         return bisect_left(range(10**14),True,key=lambda t:sum(int((t//r)**0.5) for r in ranks)>=cars)
 ```
+
+因為ranks[i]的範圍不大，只有100，但是卻高達10^5個，可見有很多重複元素。  
+可以先把ranks依照技工排名r分類，在二分檢查時直接把修車數乘上當前排名r的人數即可。  
+
+時間複雜度O(N + R log (m\*c^2))，其中N為ranks長度，R為獨特的ranks[i]數量，m為min(ranks)，c為cars。空間複雜度O(1)。  
+
+```python
+class Solution:
+    def repairCars(self, ranks: List[int], cars: int) -> int:
+        d=Counter(ranks)
+        
+        def ok(t):
+            cnt=0
+            for r,v in d.items():
+                n=int((t//r)**0.5)
+                cnt+=n*v
+            return cnt>=cars
+        
+        lo=1
+        hi=10**14
+        while lo<hi:
+            mid=(lo+hi)//2
+            if not ok(mid):
+                lo=mid+1
+            else:
+                hi=mid
+                
+        return lo
+```
