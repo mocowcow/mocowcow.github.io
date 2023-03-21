@@ -50,3 +50,27 @@ class Solution:
             
         return True
 ```
+
+或是不用絕對值處理移動量，直接把dx和dy平方，總和必定為5。  
+
+```python
+class Solution:
+    def checkValidGrid(self, grid: List[List[int]]) -> bool:
+        N=len(grid)
+        step=[None]*(N*N)
+        
+        for r in range(N):
+            for c in range(N):
+                step[grid[r][c]]=[r,c]
+                
+        if step[0]!=[0,0]:
+            return False
+        
+        for prev,curr in pairwise(step):
+            dx=prev[0]-curr[0]
+            dy=prev[1]-curr[1]
+            if dx*dx+dy*dy!=5:
+                return False
+            
+        return True
+```
