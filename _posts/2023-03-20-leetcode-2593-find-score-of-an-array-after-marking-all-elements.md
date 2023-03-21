@@ -46,3 +46,37 @@ class Solution:
         
         return ans
 ```
+
+若一個nums[i]不可以選，一定是因為i-1或是i+1的元素已經被選擇。  
+如果將nums視作若干個嚴格遞減的區間，則區間最後一個索引i一定是小於左右的元素，所以一定可以選。  
+而區間左方的元素都小於nums[i]，所以要把左邊剩下i-2, i-4...都選完。  
+最後因為選了i，所以i+1當然不可選，直接快進到i+2，重複以上步驟。  
+
+> nums = [2,1,3,4,5,2]  
+> 看作[2,1], [3], [4], [5,2]  
+> [2,1]區間中可選1  
+> 因為選了nums[1]，所以nums[2]不可選  
+> [4]區間中可選4  
+> 因為選了nums[3]，所以nums[4]不可選  
+> [5,2]區間中可選2  
+> 答案是1+4+2=7  
+
+時間複雜度O(N)。空間複雜度O(1)。  
+
+```python
+class Solution:
+    def findScore(self, nums: List[int]) -> int:
+        N=len(nums)
+        ans=0
+        i=0
+        
+        while i<N:
+            prev=i-1
+            while i+1<N and nums[i+1]<nums[i]:
+                i+=1
+            for j in range(i,prev,-2):
+                ans+=nums[j]
+            i+=2
+            
+        return ans
+```
