@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2601. Prime Subtraction Operation
-tags        : LeetCode Medium Array Math Greedy
+tags        : LeetCode Medium Array Math Greedy BinarySearch
 ---
 周賽338。
 
@@ -21,7 +21,7 @@ tags        : LeetCode Medium Array Math Greedy
 
 注意：若nums[i]原本就小於nums[i+1]則不需要動作。  
 
-時間複雜度O(MX\*N)，其中MX為max(nums)，N為nums長度。空間複雜度O(MX)。  
+時間複雜度O(P\*N)，其中P為質數個數，N為nums長度。空間複雜度O(MX)。  
 
 ```python
 n=1000
@@ -46,6 +46,34 @@ class Solution:
                     break
             if nums[i]>=nums[i+1]:
                 return False
+            
+        return True
+```
+
+找最小質數p的部分可以用二分搜來優化加速。  
+
+時間複雜度O(N log P)，其中P為質數個數，N為nums長度。空間複雜度O(MX)。   
+
+```python
+n=1000
+sieve = [True]*(n+1)
+prime = [0]
+for i in range(2, n+1):
+    if sieve[i]:
+        prime.append(i)
+        for j in range(i*i, n+1, i):
+            sieve[j] = False
+
+class Solution:
+    def primeSubOperation(self, nums: List[int]) -> bool:
+        N=len(nums)
+
+        for i in range(N-2,-1,-1):
+            need=nums[i]-nums[i+1]
+            idx=bisect_right(prime,need)
+            if idx==len(prime) or prime[idx]>=nums[i]:
+                return False
+            nums[i]-=prime[idx]
             
         return True
 ```
