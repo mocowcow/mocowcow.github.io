@@ -32,7 +32,7 @@ tags        : LeetCode Medium Array Sorting PrefixSum BinarySearch
 先將nums排序後，就可以夠過二分搜找最後一個小於等於q的元素索引pivot，從0\~pivot的元素都小於等於q；從pivot\~N-1的元素都大於q。每次複雜度O(log N)  
 最後再透過前綴和求0\~pivot的總和，以及pivot+1\~N-1的總和。每次複雜度O(1)。  
 
-時間複雜度為O(N log N)。空間複雜度O(N)。  
+時間複雜度為O( (N+Q) log N)，其中N為nums長度，Q為queries長度。忽略答案陣列空間，空間複雜度O(N)。  
 
 ```python
 class Solution:
