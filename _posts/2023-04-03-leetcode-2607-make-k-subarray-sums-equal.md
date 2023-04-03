@@ -69,3 +69,30 @@ class Solution:
             
         return ans
 ```
+
+長度為N的循環陣列，等價於N次一個循環。而每個長度k的子陣列都相等，代表k次也是一個循環。  
+根據貝祖定理，若一個循環陣列有週期N，又有週期k，則其週期為gcd(N,k)。  
+得到arr[i] = arr[i+gcd(N,k)] = arr[i+grd(N,k)\*2]...。　　
+
+只要將每個索引i對gcd(N,k)求餘，將餘數相同的元素分到同一組，再轉換成中位數即可。  
+
+時間複雜度O(N log N)。空間複雜度O(N)。  
+
+```python
+class Solution:
+    def makeSubKSumEqual(self, arr: List[int], k: int) -> int:
+        N=len(arr)
+        cycle=gcd(N,k)
+        d=defaultdict(list)
+        ans=0
+        
+        for i in range(N):
+            d[i%cycle].append(arr[i])
+            
+        for v in d.values():
+            v.sort()
+            median=v[len(v)//2]
+            ans+=sum(abs(x-median) for x in v)
+        
+        return ans
+```
