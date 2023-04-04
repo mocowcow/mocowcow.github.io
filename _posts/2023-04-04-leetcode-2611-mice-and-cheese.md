@@ -59,3 +59,20 @@ class Solution:
 
         return ans
 ```
+
+另一種思路是：一開始假設所有乳酪都是二號鼠吃的。  
+找出每塊乳酪**轉讓**給一號鼠的分數變化量。二號鼠讓出第i個乳酪會少reward2[i]分，然後一號鼠吃完會得到reward1[i]分，變化量為reward1[i] - reward2[i]。  
+
+最後找出加分最大的前k個乳酪轉讓給一號鼠。  
+
+時間複雜度O(N log N)。空間複雜度O(N)。  
+
+```python
+class Solution:
+    def miceAndCheese(self, reward1: List[int], reward2: List[int], k: int) -> int:
+        N=len(reward1)
+        profit=sorted([a-b for a,b in zip(reward1,reward2)],reverse=True)
+        ans=sum(reward2)
+        
+        return ans+sum(profit[:k])
+```
