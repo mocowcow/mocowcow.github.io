@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2609. Find the Longest Balanced Substring of a Binary String
-tags        : LeetCode Easy String
+tags        : LeetCode Easy String TwoPointers
 ---
 周賽339。需求簡單明瞭，但就是不太好實踐，不小心又WA一次。  
 
@@ -84,4 +84,31 @@ class Solution:
             pat="0"+pat+"1"
             
         return len(pat)-2
+```
+
+純粹暴力解，窮舉所有子字串，只要前半段都是0，後半段都是1，那就以當前子字串長度更新答案。  
+
+時間複雜度O(N^3)。空間複雜度O(1)。  
+
+```python
+class Solution:
+    def findTheLongestBalancedSubstring(self, s: str) -> int:
+        N=len(s)
+        ans=0
+        
+        for i in range(N):
+            for j in range(i,N):
+                size=j-i+1
+                l,r=i,j
+                if size%2==0:
+                    ok=True
+                    while l<r:
+                        if s[l]!="0" or s[r]!="1":
+                            ok=False
+                            break
+                        l,r=l+1,r-1
+                    if ok:
+                        ans=max(ans,size)
+                    
+        return ans
 ```
