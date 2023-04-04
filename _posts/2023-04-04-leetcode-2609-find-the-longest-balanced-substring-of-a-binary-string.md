@@ -45,6 +45,30 @@ class Solution:
         return ans*2
 ```
 
+將s看做好幾段連續的1或0，我們只會參考到上一次的連續長度，因此只需要維護上一段的長度prev和當前長度curr。  
+檢查當前字元c是否為連續的最後一位，若剛好是最後一個1時則順便更新答案。  
+
+時間複雜度O(N)。空間複雜度O(1)。  
+
+
+```python
+class Solution:
+    def findTheLongestBalancedSubstring(self, s: str) -> int:
+        N=len(s)
+        prev=curr=0
+        ans=0
+        
+        for i,c in enumerate(s):
+            curr+=1
+            if i==N-1 or c!=s[i+1]: # last
+                if c=="1":
+                    ans=max(ans,min(curr,prev))
+                prev=curr
+                curr=0
+            
+        return ans*2
+```
+
 其實最方便的解法應該是內建字串查找。  
 
 從空字串""開始，如果存在於s之中，則外層多包一次0和1，繼續查找。直到找不到為止，答案應該是上一次的查找結果。  
