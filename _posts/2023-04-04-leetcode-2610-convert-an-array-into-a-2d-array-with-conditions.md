@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2610. Convert an Array Into a 2D Array With Conditions
-tags        : LeetCode Medium Array Matrix HashTable
+tags        : LeetCode Medium Array Matrix HashTable Simulation
 ---
 周賽339。滿普通的題，如果測資範圍大一點就只能用雜湊表做。  
 
@@ -54,6 +54,25 @@ class Solution:
                 d[k]-=1
                 if d[k]==0:
                     del d[k]
+                    
+        return ans
+```
+
+換個角度思考，可以發現ans的列數等於所有元素中的最大出現出現次數max_row。  
+先創建好max_row列的矩陣，最後將每個元素依序加入各列中。  
+
+時間複雜度O(N)。空間複雜度O(N)。  
+
+```python
+class Solution:
+    def findMatrix(self, nums: List[int]) -> List[List[int]]:
+        d=Counter(nums)
+        max_row=max(d.values())
+        ans=[[] for _ in range(max_row)]
+        
+        for k,v in d.items():
+            for r in range(v):
+                ans[r].append(k)
                     
         return ans
 ```
