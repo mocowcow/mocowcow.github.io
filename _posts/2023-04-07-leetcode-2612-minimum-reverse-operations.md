@@ -14,7 +14,7 @@ tags        : LeetCode Hard Array Math BFS BinarySearch SortedList HashTable
 
 回傳長度為n的陣列ans，其中ans[i]代表使1跑到arr[i]的**最小操作次數**。若不可能則記為-1。  
 
-# 解法
+# 解法d
 有個大前提：翻轉的子陣列必須包含1，否則1不會移動位置。  
 
 假設1在索引i，要翻轉的子陣列大小為k，範圍為[lb:rb]：  
@@ -30,6 +30,8 @@ tags        : LeetCode Hard Array Math BFS BinarySearch SortedList HashTable
 這時只能將左邊界lb設為0，右邊界rb為k-1。索引i位於[lb:rb]之中，根據**對稱性**，翻轉後i的位置為lb+rb-i = (0)+(k-1)-i = k-1-i。  
 同理，i太過靠右時，右邊界rb只能設為k-1。翻轉後i的位置為lb+rb-i = (n-1-k+1)+(n-1)-i = 2n-1-k-i。  
 
+![示意圖](/assets/img/2612.jpg)
+
 所以i翻轉後的可能位置記為[L:R]，其中L為max(i-k+1, k-1-i)，而R為min(i-k+1, 2n-1-k-i)。  
 
 然後來看看各種大小子陣列翻轉的情形。不考慮出界，設i=3。先看看k=2時：  
@@ -40,6 +42,8 @@ tags        : LeetCode Hard Array Math BFS BinarySearch SortedList HashTable
 > 子陣列[1:3]，翻轉後i=1  
 > 子陣列[2:4]，翻轉後i=3  
 > 子陣列[3:5]，翻轉後i=5  
+
+![示意圖](/assets/img/2612-2.jpg)
 
 會發現大小為k的子陣列，候選索引**差值為2的倍數**，奇偶性保持一致。換句話說，如果翻轉後的可能區間為[L:R]，則可能的索引為[L, L+2, ... R-2, R]。  
 而當k為偶數，i翻轉後位置的奇偶性會改變；k為奇數時，則不改變。  
