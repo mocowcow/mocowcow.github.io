@@ -43,3 +43,33 @@ class Solution:
                     
         return ans
 ```
+
+這題應該比較適合暴力檢查是否為質數，畢竟判斷一次只要O(sqrt(x))，最多只要判斷600次而已。  
+直接寫一個判斷函數，只要x不為1，且無法被2\~sqrt(x)的任一整數整除就是質數。  
+
+另外有個小加速點，先確定數字大於當前答案在去判斷質數，如果小於ans就不管了。  
+
+時間複雜度O(N\*sqrt(MX))，其中MX為max(nums[i][j])。空間複雜度O(1)。  
+
+```python
+class Solution:
+    def diagonalPrime(self, nums: List[List[int]]) -> int:
+        N=len(nums)
+        ans=0
+        
+        def is_prime(x):
+            if x==1:
+                return False
+            for i in range(2,int(x**0.5)+1):
+                if x%i==0:
+                    return False
+            return True
+        
+        for i in range(N):
+            for j in [i,N-1-i]:
+                x=nums[i][j]
+                if x>ans and is_prime(x):
+                    ans=x
+                    
+        return ans
+```
