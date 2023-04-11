@@ -92,3 +92,25 @@ class Solution:
         
         return bisect_left(range(max(nums)+1),True,key=ok)
 ```
+
+最後優化完的滾動DP。  
+
+```python
+class Solution:
+    def minimizeMax(self, nums: List[int], p: int) -> int:
+        N=len(nums)
+        nums.sort()
+        
+        def ok(limit):
+            pprev=prev=curr=0
+            for i in range(1,N):
+                if nums[i]-nums[i-1]<=limit:
+                    curr=pprev+1
+                else:
+                    curr=prev
+                pprev=prev
+                prev=curr
+            return curr>=p
+                
+        return bisect_left(range(max(nums)+1),True,key=ok)
+```
