@@ -1,9 +1,9 @@
 --- 
 layout      : single
 title       : LeetCode 2616. Minimize the Maximum Difference of Pairs
-tags        : LeetCode
+tags        : LeetCode Medium Array BinarySearch Greedy Sorting
 ---
-周賽339。
+周賽339。python內建二分函數真的很好用，大概可以省下一分鐘的打字時間。  
 
 # 題目
 輸入整數陣列nums和整數p。  
@@ -15,8 +15,45 @@ tags        : LeetCode
 求p個數對中**最大差**的**最小值**為多少。  
 
 # 解法
+答案具有單調性：如果你能在最大差不超過x的情況下找到p組數對，那麼大於x的情形一定也可以；反之，若x不行，小於x也不行。  
+而且nums中元素的順序不影響答案，那就排序吧。  
+
+那怎樣才是最佳的配對法？  
+試想以下例子：  
+> nums = [0,5,6,10]  
+> 當limit = 10時，你可以選擇[0,10]+[5,6]  
+> 或是[0,5]+[6,10]  
+> 當limit = 5時，你只能選擇[0,5]+[6,10]  
+> 如果拿0和10配對的話，只有可能使差值加大，不可能變小  
+
+所以將相鄰的數字配對總是最佳的選擇。  
+根據上述所說，最佳的方式一定是相鄰數配對，如果無法配對其前後一位的數，則永遠不會配對成功。例如：  
+> nums = [0,5,6,10], limit = 1  
+> [0,5]不能配，就不管0了，因為後面的數只會至少是5，不可能跟0得到更小差  
+> [5,6]可以配  
+
+而題目說明一個索引只能使用一次，所以配對成功的話直接跳到下兩個數；配對失敗則嘗試下一個數。  
+
+時間複雜度O(N log N + N log MX)，其中MX為max(nums)-min(nums)。空間複雜度O(1)。  
 
 ```python
-code here
-
+class Solution:
+    def minimizeMax(self, nums: List[int], p: int) -> int:
+        N=len(nums)
+        nums.sort()
+        
+        def ok(limit):
+            i=0
+            cnt=0
+            while i+1<N:
+                # make pair with nums[i] and nums[i+1]
+                if nums[i+1]-nums[i]<=limit:
+                    i+=2
+                    cnt+=1
+                # discard nums[i]
+                else:
+                    i+=1
+            return cnt>=p
+        
+        return bisect_left(range(max(nums)+1),True,key=ok)
 ```
