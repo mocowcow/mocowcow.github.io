@@ -65,3 +65,32 @@ class Solution:
         
         return ans
 ```
+
+參考大神的解答，發現有很重要的優化：因為分組時是按照順序加入索引，所以遍歷每一組的時候索引依然保持有序，因此**不需要二分**就可以知道當前索引i是該組別中的第pivot個元素。  
+
+而在遍歷組別中所有元素的同時，也能得知原本的索引，因此可以直接寫入答案。  
+
+時間複雜度O(N)。空間複雜度O(N)。  
+
+```python
+class Solution:
+    def distance(self, nums: List[int]) -> List[int]:
+        N=len(nums)
+        d=defaultdict(list)
+        ans=[0]*N
+        
+        for i,n in enumerate(nums):
+            d[n].append(i)
+            
+        for k,v in d.items():
+            ps=list(accumulate(v,initial=0))
+            # there are M elements in the group
+            # left part = (pivot+1)
+            # right part = (M-1-pivot)
+            for pivot,i in enumerate(d[k]):
+                left=i*(pivot+1)-ps[pivot+1]
+                right=ps[-1]-ps[pivot+1]-(i*(len(d[k])-1-pivot))
+                ans[i]=left+right
+        
+        return ans
+```
