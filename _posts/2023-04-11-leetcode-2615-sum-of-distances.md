@@ -96,3 +96,40 @@ class Solution:
         
         return ans
 ```
+
+另外一種思路是：當pivot向右移動時，差值為diff。左邊的所有數都會增加diff，而右邊的都會減少diff。  
+例如：  
+> idx = [3,4,5]  
+> pivot = 0時，總和為(3-3) + (4-3) + (5-3) = 3  
+> pivot移動到1，diff = (4-3)，有1個元素增加了diff、2個數字減少了diff  
+> pivot = 1時，總和為3 + 1\*diff -2\*diff = 2  
+> pivot移動到2，diff = (5-4)，有2個元素字增加了diff、1個數字減少了diff  
+> pivot = 2時，總和為2 + 2\*diff -1\*diff = 3  
+
+可以看出，若從j-1移動到j，會有j個元素減少diff，然後M-j個元素增加diff。  
+
+時間複雜度O(N)。空間複雜度O(N)。  
+
+```python
+class Solution:
+    def distance(self, nums: List[int]) -> List[int]:
+        N=len(nums)
+        d=defaultdict(list)
+        ans=[0]*N
+        
+        for i,n in enumerate(nums):
+            d[n].append(i)
+            
+        for v in d.values():
+            M=len(v)
+            tot=sum(x-v[0] for x in v)
+            ans[v[0]]=tot
+            for i in range(1,M):
+                diff=v[i]-v[i-1]
+                inc=diff*i
+                dec=diff*(M-i)
+                tot+=inc-dec
+                ans[v[i]]=tot
+        
+        return ans
+```
