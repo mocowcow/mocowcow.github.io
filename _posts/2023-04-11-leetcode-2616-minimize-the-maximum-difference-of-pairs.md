@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2616. Minimize the Maximum Difference of Pairs
-tags        : LeetCode Medium Array BinarySearch Greedy Sorting
+tags        : LeetCode Medium Array BinarySearch Greedy Sorting DP
 ---
 周賽339。python內建二分函數真的很好用，大概可以省下一分鐘的打字時間。  
 
@@ -54,6 +54,41 @@ class Solution:
                 else:
                     i+=1
             return cnt>=p
+        
+        return bisect_left(range(max(nums)+1),True,key=ok)
+```
+
+另外一個思路是動態規劃。  
+
+定義dp[i]：從子陣列nums[0:i]個元素中可以配對的最大數對。  
+轉移方程式：
+- 若nums[i]-nums[i-1]<=limit，則dp[i]=max(dp[i-1],dp[i-2]+1)  
+- 否則dp[i]=dp[i-1]  
+base cases：dp[0]沒東西可以配。dp[-1]代表初始狀態，也是0，但因為python支援負數索引，所以不用特別處理。  
+
+對於nums[i]來說，如果不配對，那就是接續前面0\~i-1的結果，也就是dp[i-1]；如果要配對，必須用上前一個數，所以要從0\~i-2的結果在加1，也就是dp[i-2]+1。  
+
+假設nums[i]可以配對，可選拿或不拿，那麼dp[i]=max(dp[i-1], dp[i-2]+1)。  
+但是dp[i-1]又是從dp[i-2]或是dp[i-3]轉移而來，所以dp[i]=max(dp[i-2], dp[i-3]+1, dp[i-2]+1)。  
+而dp[i-2]已經包含dp[i-3]+1的情形，而dp[i-2]+1一定比dp[i-2]還大，所以乾脆直接取dp[i-2]+1就好。  
+
+時間複雜度O(N log N + N log MX)，其中MX為max(nums)-min(nums)。空間複雜度O(N)，如果改成滾動dp可以降到O(1)。  
+
+```python
+class Solution:
+    def minimizeMax(self, nums: List[int], p: int) -> int:
+        N=len(nums)
+        nums.sort()
+        
+        def ok(limit):
+            dp=[0]*N
+            for i in range(1,N):
+                if nums[i]-nums[i-1]<=limit:
+                    # dp[i]=dp[i-2]+1
+                    dp[i]=max(dp[i-1],dp[i-2]+1)
+                else:
+                    dp[i]=dp[i-1]
+            return dp[-1]>=p
         
         return bisect_left(range(max(nums)+1),True,key=ok)
 ```
