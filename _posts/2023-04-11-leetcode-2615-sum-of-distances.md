@@ -31,6 +31,8 @@ tags        : LeetCode Medium Array BinarySearch HashTable PrefixSum
 - 從0到i為止共有(i+1)個索引，這些索引都小於等於i，所以用i\*(i+1)扣掉這些索引的總和。  
 - 而右方共有(M-i-1)個索引大於i，所以用這些索引的總和扣掉(M-i-1)\*(i+1)  
 
+![示意圖](/assets/img/2615.jpg)
+
 我們可以透過二分搜找到每個索引在組內的相對位置，每次O(log M)。  
 索引加總都是連續的區塊，所以可以預處理前綴和，之後每次查詢區間和都是O(1)。  
 
