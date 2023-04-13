@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2617. Minimum Number of Visited Cells in a Grid
-tags        : LeetCode Hard Array Matrix Heap
+tags        : LeetCode Hard Array Matrix Heap SortedList
 ---
 周賽339。和上週的Q4有點類似，都會重複訪問到同一個位置數次，需要用一些方法優化。  
 
@@ -72,4 +72,66 @@ class Solution:
             return -1
         
         return dist[-1][-1]
+```
+
+上面的heap方法是維護走過的節點，在訪問到新的(r,c)時，從已經訪問的點找到合法的來源。  
+
+另一個思路是照著[2612. minimum reverse operations]({% post_url 2023-04-07-leetcode-2612-minimum-reverse-operations %})的方法，對每個行列都使用一個sorted list，維護該行列中可以訪問的位置，並把訪問過的位置刪除掉。  
+
+時間複雜度O(MN \* log(M+N))。空間複雜度O(MN)。  
+
+```python
+from sortedcontainers import SortedList
+
+class Solution:
+    def minimumVisitedCells(self, grid: List[List[int]]) -> int:
+        M,N=len(grid),len(grid[0])
+        row=[SortedList(range(N)) for _ in range(M)]
+        col=[SortedList(range(M)) for _ in range(N)]
+        q=deque()
+        q.append((0,0))
+        step=1
+        
+        while q:
+            for _ in range(len(q)):
+                r,c=q.popleft()
+                if r==M-1 and c==N-1:
+                    return step
+                
+                val=grid[r][c]
+                t=[]
+                for cc in row[r].irange(c+1,c+val):
+                    t.append((r,cc))
+                
+                for rr in col[c].irange(r+1,r+val):
+                    t.append((rr,c))
+
+                for r,c in t:
+                    q.append((r,c))                    
+                    row[r].remove(c)
+                    col[c].remove(r)
+
+            step+=1
+            
+        return -1
+```
+
+今天才見識到sorted list的真正威力。  
+如果要找出一個閉區間[s,e]內的所有元素，可以使用irange(min,max)方法，會回傳一個疊代器。  
+
+```python
+t=[]
+for x in sl.irange(s,e):
+    t.append(x)
+    # do something...
+for x in t:
+    sl.remove(x)
+```
+
+但是要同時刪除這些元素的話，必須另外儲存，等到疊代完後再刪除；或是直接把疊代器轉成list，這樣就不會噴錯了。  
+
+```python
+for x in list(sl.irange(s,e));
+    sl.remove(x)
+    # do something...
 ```
