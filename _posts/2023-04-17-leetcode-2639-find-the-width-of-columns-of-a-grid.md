@@ -20,7 +20,7 @@ tags        : LeetCode
 
 直接把整數轉成字串後判斷長度最方便，不用考慮正負或是零。  
 
-時間複雜度O(MN log (MX))，其中M為列數，N為行數，MX為max(nums[r][c])-min(nums[r][c])。忽略輸出答案陣列，空間複雜度O(1)。  
+時間複雜度O(MN log (MX))，其中M為列數，N為行數，MX為nums[r][c]中的最大絕對值。忽略輸出答案陣列，空間複雜度O(1)。  
 
 ```python
 class Solution:
