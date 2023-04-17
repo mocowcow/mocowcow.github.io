@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2645. Minimum Additions to Make Valid String
-tags        : LeetCode Medium Array String Greedy
+tags        : LeetCode Medium Array String Greedy TwoPointers
 ---
 周賽341。
 
@@ -35,10 +35,33 @@ class Solution:
                 i=(i+1)%3
                 ans+=1
             i=(i+1)%3
-            
+
+        # equals to 
+        # ans+(3-i)%3
         while i>0:
             i=(i+1)%3
             ans+=1
             
+        return ans
+```
+
+補一個搞笑方法，每次replace和count應該是O(N + M)，其中N為word長度，M為"abc"長度，也就是3。  
+複雜度應該是O(N)。  
+
+```python
+class Solution:
+    def addMinimum(self, word: str) -> int:
+        ans=0
+        
+        word=word.replace("abc","")
+        
+        for pat in ["ab","ac","bc"]:
+            ans+=word.count(pat)
+            word=word.replace(pat,"")
+            
+        for pat in "abc":
+            ans+=word.count(pat)*2
+            word=word.replace(pat,"")
+        
         return ans
 ```
