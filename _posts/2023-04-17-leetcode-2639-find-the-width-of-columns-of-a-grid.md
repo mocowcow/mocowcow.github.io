@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 2639. Find the Width of Columns of a Grid
 tags        : LeetCode Easy Array Matrix String
 ---
-雙周賽102。初始值設錯吃到一個WA，我自己都覺得很瞎。  
+雙周賽102。好像很多人被0的長度搞到，算是小陷阱。  
 
 # 題目
 輸入M\*N的矩陣grid。  
