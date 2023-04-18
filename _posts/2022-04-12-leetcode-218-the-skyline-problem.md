@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 218. The Skyline Problem
-tags 		: LeetCode Hard Array BinarySearch 
+tags 		: LeetCode Hard Array BinarySearch Heap
 ---
 放在待辦清單裡面好久，今天終於拉出來寫。搞了好多種解法，十分快樂。
 
@@ -15,34 +15,41 @@ tags 		: LeetCode Hard Array BinarySearch
 雖然底下分類標籤有一堆什麼分治法、樹狀陣列、線段樹、heap之類的，結果我選擇座標壓縮+二分搜。  
 
 先遍歷一次buildings，把所有出現的起、終點座標加進集合co中，再將co排序，供後續二分搜使用。  
-這時co大小為N，建立一個長度同為N的陣列skyline，對映co區段中的天際線。  
+這時co大小為N，建立一個長度同為N的陣列skyline，對應co區段中的天際線。  
 在遍歷一次buildings，這次分別以起點、終點在co中找到對應位置left和right，對skyline[left:right]的位置更新最大高度。  
-最後建立ans陣列，先把[第一個座標,高度]加入，接下來的座標若高度改變時，再分別加入ans中。
+最後建立ans陣列，遍歷一次天際線高度，並在高度改變時將[原座標, 新高度]加入ans中。  
 
-跑了8536ms，有夠久，但至少是有通過。
+~~跑了8536ms，有夠久，但至少是有通過。~~  
+
+2023/4/18更新，更新區間其實不用二分搜，直接單純迴圈就快了不少。  
+
+在每個點都不重複的情況下，將近每個節點都要更新N次，時間複雜度O(N^2)。空間複雜度O(N)。  
 
 ```python
 class Solution:
     def getSkyline(self, buildings: List[List[int]]) -> List[List[int]]:
-        co = set()
-        for a, b, _ in buildings:
-            co.add(a)
-            co.add(b)
-
-        co = sorted(co)
-        N = len(co)
-        skyline = [0]*N
-        for a, b, h in buildings:
-            left = bisect_left(co, a)
-            right = bisect_left(co, b)
-            for i in range(left, right):
-                skyline[i] = max(skyline[i], h)
-
-        ans = [(co[0], heighs[0])]
-        for i in range(1, N):
-            if skyline[i] != skyline[i-1]:
-                ans.append((co[i], skyline[i]))
-
+        a=set()
+        for s,e,_ in buildings:
+            a.add(s)
+            a.add(e)
+            
+        indexes=sorted(a)
+        mp={x:i for i,x in enumerate(indexes)}
+        heights=[0]*len(a)
+        
+        for s,e,h in buildings:
+            for i in range(mp[s],mp[e]):
+                if h>heights[i]:
+                    heights[i]=h
+        
+        ans=[]
+        prev=-1
+        for i,h in enumerate(heights):
+            if h!=prev:
+                ans.append([indexes[i],h])
+            prev=h
+        
+        return ans
         return ans
 ```
 
