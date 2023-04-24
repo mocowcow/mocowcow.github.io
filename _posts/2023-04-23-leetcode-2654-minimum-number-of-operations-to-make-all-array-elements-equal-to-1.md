@@ -28,7 +28,7 @@ tags        : LeetCode Medium Array Math
 從k=2開始嘗試，枚舉每個索引i作為左邊界，若成功以[i,i+k-1]的子陣列得到gcd=1，代表找到答案，回傳上述公式。  
 窮舉完畢都沒找到，代表整個nums的gcd不為1，回傳-1。  
 
-時間複雜度O(N^2 \* (N + log MX))，其中MX為nums[i]的最大值，gcd至多減半log MX次，到1不會繼續變化。  
+時間複雜度O(N^2 \* (N + log MX))，其中MX為nums[i]的最大值，gcd至多從MX減半log MX次，到1不會繼續變化。  
 空間複雜度O(1)。  
 
 ```python
@@ -48,4 +48,32 @@ class Solution:
                     return k+N-2
                 
         return -1
+```
+
+如果改成先窮舉起點i，再窮舉長度k的子陣列gcd，就不用每次都重頭計算。  
+
+時間複雜度降低到O(N \* (N + log MX))。空間複雜度O(1)。  
+
+```python
+class Solution:
+    def minOperations(self, nums: List[int]) -> int:
+        N=len(nums)
+        
+        if 1 in nums:
+            return N-nums.count(1)
+        
+        k=inf
+        for i in range(N):
+            x=0
+            for j in range(i,N):
+                if j-i+1>=k:
+                    break
+                x=gcd(x,nums[j])
+                if x==1:
+                    k=j-i+1
+                    
+        if k==inf:
+            return -1
+            
+        return k+N-2
 ```
