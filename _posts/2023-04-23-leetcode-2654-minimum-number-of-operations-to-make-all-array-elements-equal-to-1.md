@@ -77,3 +77,46 @@ class Solution:
             
         return k+N-2
 ```
+
+根據上面所說的，最大值MX所可以產生的gcd，最多只會有log MX種。  
+因此可以窮舉所有nums[i]做為子陣列的右邊界，計算出其可能組成的gcd有哪些。  
+越多個數一起求gcd，只有可能不變、或是變小。如果不變則只保留最靠近右邊的索引作為左邊界，gcd串列會呈現單調遞增。  
+
+gcd去除重複的後最多只會有log MX個，最多全部更新N次，時間複雜度降低到O(N log MX)。空間複雜度O(log MX)。  
+
+```python
+class Solution:
+    def minOperations(self, nums: List[int]) -> int:
+        N=len(nums)
+        
+        if 1 in nums:
+            return N-nums.count(1)
+        
+        k=inf
+        gcds=[]
+        for i,x in enumerate(nums):
+            # update gcds
+            gcds.append([x,i])
+            for g in gcds:
+                g[0]=gcd(g[0],x)
+            
+            # de dup
+            j0=0
+            for j in range(len(gcds)):
+                if gcds[j][0]!=gcds[j0][0]:
+                    j0+=1
+                    gcds[j0]=gcds[j]
+                else:
+                    gcds[j0][1]=gcds[j][1]
+                    
+            # remove redundant space
+            del gcds[j0+1:]
+
+            if gcds[0][0]==1:
+                k=min(k,i-gcds[0][1]+1)
+        
+        if k==inf:
+            return -1
+            
+        return N-1+k-1
+```
