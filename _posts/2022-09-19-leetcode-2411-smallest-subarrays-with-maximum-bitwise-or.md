@@ -65,3 +65,39 @@ class Solution:
             
         return ans
 ```
+
+從右邊往左對每個nums[i]做OR運算，其值會呈現單調遞增。  
+而因為10^9內只有30個位元，最多只會同時存在30種不同的OR結果。對於重複的OR值，只要保留索引最小者。  
+第一個OR結果一定是最大值，以其索引為右邊界，和當前遍歷到的i所組成區間，更新答案ans[i]。  
+
+時間複雜度O(N log MX)，其中MX為nums[i]的最大值。空間複雜度O(log MX)。  
+
+```python
+class Solution:
+    def smallestSubarrays(self, nums: List[int]) -> List[int]:
+        N=len(nums)
+        ans=[0]*N
+        ors=[] # [OR_val, right]
+        
+        for i in reversed(range(N)):
+            x=nums[i]
+            
+            # update ors
+            for o in ors:
+                o[0]|=x
+            ors.append([x,i])
+            
+            # de dup
+            j0=0
+            for j in range(len(ors)):
+                if ors[j][0]!=ors[j0][0]:
+                    j0+=1
+                    ors[j0]=ors[j]
+                else:
+                    ors[j0][1]=ors[j][1]
+            del ors[j0+1:]  
+
+            ans[i]=ors[0][1]-i+1
+            
+        return ans
+```
