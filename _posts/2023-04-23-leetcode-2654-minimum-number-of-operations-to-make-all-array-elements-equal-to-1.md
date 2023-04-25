@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2654. Minimum Number of Operations to Make All Array Elements Equal to 1
-tags        : LeetCode Medium Array Math
+tags        : LeetCode Medium Array Math SegmentTree SlidingWindow TwoPointers
 ---
 周賽342。理論上，這次也是無壓軸題的簡單周賽，但怎麼每次我碰到送分場都會有一題莫名打結。  
 原本做完Q3是80名，卡Q4最後變成2000名，有夠慘。  
@@ -118,5 +118,59 @@ class Solution:
         if k==inf:
             return -1
             
+        return N-1+k-1
+```
+
+gcd運算符合結合率，可以用線段樹達到O(log N+MX)的區間gcd查詢。  
+加上雙指針[left,right]維護一個子陣列區間。窮舉右邊界right，若[left,right]的gcd為1，則更新答案，並收縮左邊界。  
+兩個指針都是向右移動，最多只會有2N次查詢。  
+
+而線段數的第一個節點就是整個nums的gcd，若不為1則直接回傳-1。  
+
+時間複雜度O(N log N+MX)。空間複雜度O(N)。  
+
+```python
+class Solution:
+    def minOperations(self, nums: List[int]) -> int:
+        N=len(nums)
+        
+        if 1 in nums:
+            return N-nums.count(1)
+        
+        tree=[0]*(N*4+10)
+        
+        def build(id,L,R):
+            if L==R:
+                tree[id]=nums[L]
+                return
+            M=(L+R)//2
+            build(id*2,L,M)
+            build(id*2+1,M+1,R)
+            tree[id]=gcd(tree[id*2],tree[id*2+1])
+        
+        def query(id,L,R,i,j):
+            if i<=L and R<=j:
+                return tree[id]
+            M=(L+R)//2
+            ans=0
+            if i<=M:
+                ans=gcd(ans,query(id*2,L,M,i,j))
+            if M+1<=j:
+                ans=gcd(ans,query(id*2+1,M+1,R,i,j))
+            return ans
+        
+        
+        build(1,0,N-1)
+        
+        if tree[1]!=1:
+            return -1
+        
+        k=inf
+        left=0
+        for right in range(N):
+            while query(1,0,N-1,left,right)==1:
+                k=min(k,right-left+1)
+                left+=1
+                 
         return N-1+k-1
 ```
