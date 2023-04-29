@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2309. Greatest English Letter in Upper and Lower Case
-tags        : LeetCode Easy HashTable String BitManipulate
+tags        : LeetCode Easy HashTable String BitManipulation
 ---
 周賽298。python真的是字串處理的神，直接秒殺有夠方便。倒是我後來用java寫卡了超過五分鐘。
 

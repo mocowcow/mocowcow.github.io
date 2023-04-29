@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2538. Difference Between Maximum and Minimum Price Sum
-tags        : LeetCode Medium Array Graph Tree DFS DP sorting
+tags        : LeetCode Medium Array Graph Tree DFS DP Sorting
 ---
 周賽328。剩下7分鐘好不容易想通，但沒來得及把分類討論寫完。連續三次周賽沒過Q4，好慘。  
 

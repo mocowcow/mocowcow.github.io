@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 745. Prefix and Suffix Search
-tags        : LeetCode Hard String Design Hashtable 
+tags        : LeetCode Hard String Design HashTable 
 ---
 每日題。好像是想考字典樹吧，結果被我偷雞偷過了。字典樹的解法很多種，但沒一種我覺得容易理解的。
 
