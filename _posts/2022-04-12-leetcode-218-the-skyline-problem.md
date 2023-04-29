@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 218. The Skyline Problem
-tags 		: LeetCode Hard Array BinarySearch Heap
+tags 		: LeetCode Hard Array BinarySearch Heap UnionFind HashTable
 ---
 放在待辦清單裡面好久，今天終於拉出來寫。搞了好多種解法，十分快樂。
 
@@ -121,4 +121,62 @@ class Solution:
             return ans
 
         return merge(0, len(buildings)-1)
+```
+
+後來發現付費官方解有並查集，也來練習一下。  
+這個思路比較少見，幾乎沒有看到這個方式，看來買會員也不算太虧。  
+
+這方法一樣要將座標離散化。  
+主要思路是先處理較高的建築，然後使用並查集紀錄**下一步的位置**。例如：  
+> 有個建築是[1,5,10]，代表從1\~4高度都是10  
+> 座標i範圍1\~4，將heights[i]標記為10，然後根節點fa[i]設為5  
+
+假設又有一棟建築和[1,5]重疊，但是因為剛才有標記過根節點，所以可以跳過處理過的座標：  
+> 後有一棟建築[1,4,2]，代表從1\~3高度都是2  
+> 座標i範圍1\~3，但是i=1時就發現已經標記過，所以直接跳到根節點fa[i]  
+> fa[1]=5，已經超出當前建築的右邊界4，不需要任何動作  
+
+時間瓶頸在於buildings的排序，時間複雜度O(N log N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def getSkyline(self, buildings: List[List[int]]) -> List[List[int]]:
+        pos=set()
+        for s,e,_ in buildings:
+            pos.add(s)
+            pos.add(e)
+            
+        N=len(pos)
+        pos=sorted(pos)
+        mp={x:i for i,x in enumerate(pos)}
+        
+        fa=list(range(N))
+        heights=[0]*N
+        
+        def find(x):
+            if fa[x]!=x:
+                fa[x]=find(fa[x])
+            return fa[x]
+        
+        buildings.sort(key=lambda x:-x[2]) # sort by height, desc
+        for s,e,h in buildings:
+            left=mp[s]
+            right=mp[e]
+            while left<right:
+                if fa[left]!=left:
+                    left=find(left)
+                else:
+                    heights[left]=h
+                    fa[left]=right
+                    left+=1
+                    
+        ans=[]
+        prev=-1
+        for i,curr in enumerate(heights):
+            if curr!=prev:
+                ans.append([pos[i],curr])
+                prev=curr
+                
+        return ans
 ```
