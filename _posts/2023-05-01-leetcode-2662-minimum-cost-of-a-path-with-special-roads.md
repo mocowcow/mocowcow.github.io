@@ -28,7 +28,7 @@ tags        : LeetCode Medium Array Graph BFS Heap HashTable
 
 把每個特殊路徑終點的視為節點，共有V個，而可移動的邊共有E=V^2個。  
 
-時間複雜度O(E + V log V)。  
+最差情況下每條邊都在heap中，時間複雜度O((V+E) log E)。  
 空間複雜度O(E + V)。  
 
 ```python
