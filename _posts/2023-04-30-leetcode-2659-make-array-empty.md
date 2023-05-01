@@ -163,3 +163,35 @@ class Solution:
         
         return ans
 ```
+
+假設所有要元素都按照刪除順序排列，那他們可以**從左到右一輪刪除**。例如[1,2,3]，共3次。  
+
+如果中間插了其他元素破壞順序，則這一輪中，需要**跳過其他元素各一次**。例如[1,2,4,5,6,3]，刪除[1,2,3]的時候需要跳過[4,5,6]一次，然後才刪除[4,5,6]，共6+3次。  
+
+就算中間插的元素是無序的，也一樣道理。例如[1,3,5,4,2]，先跳過[3,5,4]刪除[1,2]，然後跳過[5]刪除[3,4]，最後才刪[5]，總共5+3+1次。  
+
+講起來很簡單，實作起來很難。按照nums[i]的值將索引i排序後，只有在**當前的i小於prev時**，才能知道在上一輪刪除過程中**跳過了多少元素**，也就是**當前剩下的元素**。  
+
+時間複雜度O(N log N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def countOperationsToEmptyArray(self, nums: List[int]) -> int:
+        N=len(nums)
+        indexes=sorted([[x,i] for i,x in enumerate(nums)])
+        indexes.sort()
+        
+        ans=N
+        prev=0
+        remain=N
+        
+        for _,i in indexes:
+            # these elements should be skipped at previous round
+            if i<prev:
+                ans+=remain
+            prev=i
+            remain-=1
+            
+        return ans
+```
