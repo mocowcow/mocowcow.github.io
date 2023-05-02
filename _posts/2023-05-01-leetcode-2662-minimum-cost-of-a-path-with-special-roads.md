@@ -26,10 +26,10 @@ tags        : LeetCode Medium Array Graph BFS Heap HashTable
 如果後者比前者成本還低，那就代表走這條特殊道路是更佳的。那再繼續判斷有沒有別條路可以繼續省？  
 發現根本就是dijkstra最短路：優先選成本最低的路徑，第一個到達終點的就是最佳解。  
 
-把每個特殊路徑終點的視為節點，共有N個，而可移動的邊共有E=V^2個。  
+把每個特殊路徑終點的視為節點，共有N個，而可移動的邊共有M=N^2個。  
 
-最差情況下每條邊都在heap中，時間複雜度O(N^2 log N^2)，可改寫為O(2\*(N^2 log N))，去掉常數變成O(N^2 log N)。  
-空間複雜度O(N^2)。  
+最差情況下每條邊都在heap中，時間複雜度O(M log M)，可改寫為O(M log N^2)=O(2\*(M log N))，去掉常數變成O(M log N)。  
+空間複雜度O(M)。  
 
 ```python
 class Solution:
