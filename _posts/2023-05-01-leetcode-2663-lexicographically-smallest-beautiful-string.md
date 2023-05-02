@@ -105,3 +105,40 @@ class Solution:
             
         return ''.join([chr(x+97) for x in a])
 ```
+
+後來想想，我在比賽中的想法應該是這樣：  
+i從後面往開始慢慢加1，直到不回文為止。  
+若停止時a[i]等於k，代表需進位，故i=i-1，重複上述步驟；否則代表[0,i]都不需要調整，剩下的[i+1,N-1]這段都是剛才進位過的，理論上都是0，選擇最小且不回文的填上就行。  
+
+i+1開始只有三種循環模式：  
+1. 若a[i]=0，則為bac...  
+2. 若a[i]=1，則為acb...  
+3. 若a[i]>=2，則為abc...
+
+時間複雜度O(N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def smallestBeautifulString(self, s: str, k: int) -> str:
+        N=len(s)
+        a=[ord(c)-97 for c in s]
+       
+        def ok(i):
+            if i>0 and a[i]==a[i-1]:return False
+            if i>1 and a[i]==a[i-2]:return False
+            return True
+    
+        for i in reversed(range(N)):
+            for x in range(a[i]+1,k):
+                a[i]=x
+                if ok(i):
+                    # fill remaining with "a", "b" or "c"
+                    for i in range(i+1,N):
+                        for x in range(3):
+                            a[i]=x
+                            if ok(i):break
+                    return "".join([chr(x+97) for x in a])
+            
+        return ""
+```
