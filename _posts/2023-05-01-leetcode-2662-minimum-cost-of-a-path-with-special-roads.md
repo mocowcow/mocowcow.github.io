@@ -9,9 +9,9 @@ tags        : LeetCode Medium Array Graph BFS Heap HashTable
 輸入陣列start = [startX, startY]，代表你將從(startX, startY)出發。  
 還有陣列target = [targetX, targetY]，代表目的地(targetX, targetY)。  
 
-從(x1, y1)移動到(x2, y2)的成本為|x2 - x1| + |y2 - y1|。  
+從(x1, y1)移動到(x2, y2)的成本為\|x2 - x1\| + \|y2 - y1\|。  
 
-有一些特殊的道路，由二維陣列specialRoads表示，其中specialRoads[i] = [x1i, y1i, x2i, y2i, costi]代表從(x1i, y1i) 到 (x2i, y2i)的成本為costi。  
+有一些特殊的道路，由二維陣列specialRoads表示，其中specialRoads[i] = [x1<sub>i</sub>, y1<sub>i</sub>, x2<sub>i</sub>, y2<sub>i</sub>, cost<sub>i</sub>]代表從(x1<sub>i</sub>, y1<sub>i</sub>) 到 (x2<sub>i</sub>, y2<sub>i</sub>)的成本為costi。  
 你可以使用各特殊道路任意次。  
 
 求從(startX, startY)到(targetX, targetY)的**最低成本**。  
@@ -26,10 +26,10 @@ tags        : LeetCode Medium Array Graph BFS Heap HashTable
 如果後者比前者成本還低，那就代表走這條特殊道路是更佳的。那再繼續判斷有沒有別條路可以繼續省？  
 發現根本就是dijkstra最短路：優先選成本最低的路徑，第一個到達終點的就是最佳解。  
 
-把每個特殊路徑終點的視為節點，共有V個，而可移動的邊共有E=V^2個。  
+把每個特殊路徑終點的視為節點，共有N個，而可移動的邊共有E=V^2個。  
 
-最差情況下每條邊都在heap中，時間複雜度O((V+E) log E)。  
-空間複雜度O(E + V)。  
+最差情況下每條邊都在heap中，時間複雜度O(N^2 log N^2)，可改寫為O(2\*(N^2 log N))，去掉常數變成O(N^2 log N)。  
+空間複雜度O(N^2)。  
 
 ```python
 class Solution:
