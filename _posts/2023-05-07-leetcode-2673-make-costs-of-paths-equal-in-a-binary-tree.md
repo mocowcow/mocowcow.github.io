@@ -72,3 +72,37 @@ class Solution:
         
         return sum(inc)
 ```
+
+dfs改成迴圈，並直接在cost上操作。  
+將父節點的的成本加到子節點上，葉節點就會是路徑的總和。  
+在從最後一個節點向前遍歷，若是葉節點則求出修改次數；否則從子節點提取出共通值mn，並從子節點扣除mn。  
+
+時間複雜度O(n)。  
+空間複雜度O(n)。  
+
+```python
+class Solution:
+    def minIncrements(self, n: int, cost: List[int]) -> int:
+        cost=[0]+cost
+        
+        for i in range(1,n+1):
+            l=i*2
+            r=i*2+1
+            if l<=n:
+                cost[l]+=cost[i]
+                cost[r]+=cost[i]
+                
+        mx=max(cost)
+        for i in range(n,-1,-1):
+            l=i*2
+            r=i*2+1
+            if l<=n:
+                mn=min(cost[l],cost[r])
+                cost[i]=mn
+                cost[l]-=mn
+                cost[r]-=mn
+            else:
+                cost[i]=mx-cost[i]
+
+        return sum(cost)
+```
