@@ -6,6 +6,11 @@ tags        : LeetCode Easy Array HashTable PrefixSum
 周賽344。
 
 # 題目
+輸入長度n的陣列nums。  
+
+長度同為n的陣列diff是陣列nums的**獨特差**，其中diff[i]等於前綴nums[0,...,i]中獨特元素個數**減掉**後綴nums[i+1,...,n-1]中獨特元素個數。  
+
+回傳nums的**獨特差陣列**。  
 
 # 解法
 暴力法，直接把前後綴用set去重求獨特的個數，大小相減得到差值。  
