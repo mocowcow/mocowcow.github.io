@@ -27,7 +27,7 @@ tags        : LeetCode Medium Array Simulation
 
 而原本未上色的0不會貢獻任何相同數，所以在nums[i]從0改成其他色不可能使same減少。  
 
-時間複雜度O(Q)，其中Q為查詢次數。
+時間複雜度O(n+Q)，其中Q為查詢次數。  
 空間複雜度O(n)。  
 
 ```python
