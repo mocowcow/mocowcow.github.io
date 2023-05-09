@@ -106,3 +106,57 @@ class Solution:
 
         return sum(cost)
 ```
+
+上面兩種方法都是站在**子節點的視角**來考慮要修改幾次。那如果是站在**父節點的視角呢**？  
+對於某節點i所產生的兩個路徑l和r，從根到i為止的成本都是共通的，所以只要將**l和r的成本調整相同**。  
+而l和r所產生的路徑也是同理，變成一個遞迴的子問題。最後會從**最下層的非葉節點**開始向上處理。  
+
+![示意圖](/assets/img/2673-4.jpg)  
+
+如圖，對於根節點來說，左節點出發的所有路徑都成本都為6，而右節點3路徑都為4。這時應該在節點3再修改2次，使兩邊平衡。答案應為4次修改。  
+
+因此，我們只需要一次後序dfs，先算出子節點的修改次數，並加入答案後，回傳修改後子節點的成本供父節點使用。  
+
+時間複雜度O(n)。  
+遞迴最多log n層，空間複雜度O(log n)。  
+
+```python
+class Solution:
+    def minIncrements(self, n: int, cost: List[int]) -> int:
+        ans=0
+        cost=[0]+cost
+        
+        def dfs(i):
+            nonlocal ans 
+            if i>n:
+                return 0
+            l=dfs(i*2)
+            r=dfs(i*2+1)
+            ans+=abs(l-r)
+            return max(l,r)+cost[i]
+        
+        dfs(1)
+        
+        return ans
+```
+
+一樣也可以改成迴圈。  
+根據complete binary tree特性，編號第1\~(n/2)都是非葉節點，而(n/2)+1\~n的都是葉節點，直接從n/2開始像前遍歷即可。  
+
+時間複雜度O(n)。  
+不需要遞迴，空間複雜度O(1)。  
+
+```python
+class Solution:
+    def minIncrements(self, n: int, cost: List[int]) -> int:
+        ans=0
+        cost=[0]+cost
+        
+        for i in range(n//2,0,-1):
+            l=cost[i*2]
+            r=cost[i*2+1]
+            ans+=abs(l-r)
+            cost[i]+=max(l,r)
+        
+        return ans
+```
