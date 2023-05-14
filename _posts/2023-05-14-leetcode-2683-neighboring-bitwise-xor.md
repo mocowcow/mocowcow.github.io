@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2683. Neighboring Bitwise XOR
-tags        : LeetCode Medium Array BitManipulation
+tags        : LeetCode Medium Array BitManipulation Simulation
 ---
 周賽345。差點被這題搞死，拖到最後才解出來。  
 
@@ -39,7 +39,6 @@ d[i]是由a[i] ^ a[(i+1)%N]所構成，要判斷d是存在對應的a。
 時間複雜度O(N)。  
 空間複雜度O(N)。  
 
-
 ```python
 class Solution:
     def doesValidArrayExist(self, derived: List[int]) -> bool:
@@ -47,11 +46,13 @@ class Solution:
         N=len(d)
         
         def ok(x):
-            a=[0]*N
+            a=[0]*N # a[i] = d[i] ^ a[i+1]
             a[-1]=x # 假設a的最後一個元素是x
-            for i in reversed(range(N-1)): # 然後把剩下的a[N-2]~a[0]都推出來
+            for i in reversed(range(N-1)): # 然後從倒數第二個開始往回推
                 a[i]=d[i]^a[i+1]
-            return d[-1]==a[-1]^a[0] # 最後檢查d[N-1]是否合法
+            # 除了最後一個位置a[N-1]以外都是推出來的，一定合法
+            # 最後只要檢查d[N-1]是否合法
+            return d[-1]==a[-1]^a[0] 
         
         for x in [0,1]:
             if ok(x):
