@@ -65,3 +65,38 @@ class Solution:
 
         return ans
 ```
+
+前綴和其實是多此一舉。  
+
+再仔細研究[1, 2, 3, 4]這個例子：  
+- 最初，mn=[]  
+- 加入1，mn=[1]  
+- 加入2，mn=[1, 2]  
+- 加入3，mn=[1\*2, 2, 3]  
+- 加入4，mn=[1\*4, 2\*2, 3]  
+
+可以發現，每加入一個元素x，mn中除了最後加入的元素prev以外，其他元素的貢獻都會變成2倍，也就是mn\*2-prev再加上新來的x。  
+只要維護上一個加入的數字prev，就可以透過公式快速推出貢獻值。  
+
+瓶頸在於排序，時間複雜度O(N log N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def sumOfPower(self, nums: List[int]) -> int:
+        MOD=10**9+7
+        nums.sort()
+        ans=0
+        mn=0
+        prev=0
+        
+        for x in nums:
+            mn=mn*2-prev+x
+            mn%=MOD
+            ans+=x*x*mn
+            ans%=MOD
+            prev=x
+            
+        return ans
+            
+```
