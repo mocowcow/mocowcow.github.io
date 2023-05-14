@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2680. Maximum OR
-tags        : LeetCode
+tags        : LeetCode Medium Array Greedy PrefixSum BitManipulation
 ---
 雙周賽104。這題有點小難度，結果我搞出的解法和大部分人都不一樣。  
 
