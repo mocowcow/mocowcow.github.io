@@ -36,3 +36,14 @@ class Solution:
             
         return ans
 ```
+
+也可以利用zip函數將排序好的每個列都綁成一個list，直接max就可以取最大值。  
+
+```python
+class Solution:
+    def matrixSum(self, nums: List[List[int]]) -> int:
+        for row in nums:
+            row.sort()
+            
+        return sum(max(col) for col in zip(*nums))
+```
