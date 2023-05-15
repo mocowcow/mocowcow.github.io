@@ -46,3 +46,33 @@ class Solution:
             
         return ans
 ```
+
+官方解答和討論區幾乎都是這一種解法。  
+
+N個元素，總共會產生2^N-1個非空子序列，也就是最大值和最小值共2^N-1個。  
+一樣遍歷排序好的nums，當窮舉到nums[i]時，左方有i個元素都，而右方有N-1-i個元素。  
+左邊i個元素可以產生2^i種子序列，並以nums[i]為最大值；右邊N-1-i個元素可以產生2^(N-1-i)種子序列，並以nums[i]為最大值。  
+分別將最大最小值的貢獻加入答案中即可。  
+
+瓶頸是排序，時間複雜度O(N log N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def sumSubseqWidths(self, nums: List[int]) -> int:
+        MOD=10**9+7
+        N=len(nums)
+        nums.sort()
+        
+        POW=[1]*N
+        for i in range(1,N):
+            POW[i]=(POW[i-1]*2)%MOD
+            
+        ans=0
+        for i,x in enumerate(nums):
+            ans+=POW[i]*x
+            ans-=POW[N-1-i]*x
+            ans%=MOD
+            
+        return ans
+```
