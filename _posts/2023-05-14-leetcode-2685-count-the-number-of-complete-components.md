@@ -7,7 +7,7 @@ tags        : LeetCode Medium Array Graph DFS
 
 # 題目
 輸入整數n，代表有個n節點的無向圖，編號分別從0\~n-1。  
-輸入二維整數陣列edges，其中edges[i] = [ai, bi]，代表ai和bi之間存在一條邊。  
+輸入二維整數陣列edges，其中edges[i] = [a<sub>i</sub>, b<sub>i</sub>]，代表a<sub>i</sub>和b<sub>i</sub>之間存在一條邊。 
 
 求有多少**完全連通塊**。  
 
