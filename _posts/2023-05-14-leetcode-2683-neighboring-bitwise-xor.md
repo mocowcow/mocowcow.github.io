@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2683. Neighboring Bitwise XOR
-tags        : LeetCode Medium Array BitManipulation Simulation
+tags        : LeetCode Medium Array BitManipulation Simulation Math
 ---
 周賽345。差點被這題搞死，拖到最後才解出來。  
 
@@ -59,4 +59,33 @@ class Solution:
                 return True
             
         return False
+```
+
+看了其他神人的解答，幾乎都是依照公式來推出規律。  
+
+根據題目定義：d[i] = a[i] ^ d[i+1]  
+假設a長度為3，則：  
+> b[0] = a[0] ^ a[1]  
+> b[1] = a[1] ^ a[2]  
+> b[2] = a[2] ^ a[3]  
+
+可見a之中的每個元素都在b出現了兩次。  
+利用這個特性，若將b中所有元素做XOR，相當於a中的**每個元素都XOR兩次**，結果必定等於0。  
+
+時間複雜度O(N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def doesValidArrayExist(self, derived: List[int]) -> bool:
+        '''
+        a = [a1, a2, a3]
+        b = [a1^a2, a2^a3, a3^a1]
+        XOR b = a1^a2 ^ a2^a3 ^ a3^a1 = 0
+        '''
+        XOR=0
+        for x in derived:
+            XOR^=x
+            
+        return XOR==0
 ```
