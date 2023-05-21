@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2696. Minimum String Length After Removing Substrings
-tags        : LeetCode Easy String Simulation
+tags        : LeetCode Easy String Simulation Stack
 ---
 周賽346。
 
@@ -19,7 +19,7 @@ tags        : LeetCode Easy String Simulation
 每次查找、取代都是O(N)。  
 
 最差情況下查找N次，時間複雜度O(N^2)。  
-空間複雜度O(1)。  
+空間複雜度O(N)。  
 
 ```python
 class Solution:
@@ -29,4 +29,25 @@ class Solution:
             s=s.replace("CD","")
             
         return len(s)
+```
+
+AB和CD正好長度都是2，剛好可以用堆疊處理。  
+只要在加入的字元是B或是D時檢查頂端的元素是否正好是A或C，若是則彈出頂端元素；否則將字元加入堆疊。  
+
+時間複雜度O(N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def minLength(self, s: str) -> int:
+        st=[]
+        for c in s:
+            if st and c=="B" and st[-1]=="A":
+                st.pop()
+            elif st and c=="D" and st[-1]=="C":
+                st.pop()
+            else:
+                st.append(c)
+        
+        return len(st)
 ```
