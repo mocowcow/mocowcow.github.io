@@ -28,6 +28,18 @@ tags        : LeetCode Hard Array Graphs
 然後跑第二次dijkstra，根據第一次所算出的各點最短路徑dis1，來計算出可以把特殊邊改多大的值。  
 如果改完還是不足target，一樣回傳空陣列；否則將沒用到的特殊邊改成任意值，回傳edges。  
 
+回顧一下dijkstra的核心思想：不斷選擇**最短的路徑**，並繼續從該點移動，直到走到終點為止。  
+當選擇最短的路徑，並處於X點時，和X相鄰的所有點Y都可能是下一個最短路的候補。而Y走到終點dest距離已經在第一次的dijkstra中算出。  
+假設結構為[src -> X -> Y -> dest]。為了通過修改X到Y的路徑而使最短路等於target，得到以下等式：  
+> target = [src -> X] + [X -> Y] + [Y -> dest]  
+> [src -> X]是第二次dijkstra從起點走到X也距離，也就是當前的dis[X]  
+> [X -> Y]是要修改的距離，記為w  
+> [Y -> dest]是第一次dijkstra中，Y走到終點的最短路。可以透過dis1[dest]-dis[y]求出  
+> 得到target = dis[X] + w + (dis1[dest] - dis1[Y])  
+> 移項得w = target - dis[X] - dis1[dest] + dis1[Y]  
+
+但要特別注意，修改後的邊權只能介於[1, 2e9]之間，如果公式求出的w小於1，則為非法答案，只能沿用最小值1。  
+
 時間複雜度O(n + M log M)，其中M為edges大小。  
 空間複雜度O(n + M)。  
 
