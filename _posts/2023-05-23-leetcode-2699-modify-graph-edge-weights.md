@@ -39,6 +39,7 @@ tags        : LeetCode Hard Array Graphs
 > 移項得w = target - dis[X] - dis1[dest] + dis1[Y]  
 
 但要特別注意，修改後的邊權只能介於[1, 2e9]之間，如果公式求出的w小於1，則為非法答案，只能沿用最小值1。  
+那w會不會超過2e9？答案是不會，如果單個邊需要超過2e9，那麼在第一次dijkstra時就被過濾掉了。  
 
 時間複雜度O(n + M log M)，其中M為edges大小。  
 空間複雜度O(n + M)。  
