@@ -58,3 +58,38 @@ class Solution:
             
         return False
 ```
+
+另一種思路是：如果存在關鍵點，那麼**刪除任意一條**路徑必定也會刪除到關鍵點。  
+
+維護一個dfs(r,c)函數，代表從(r,c)出發是否能抵達右下角。在dfs的過程中把訪問過的1變成0，也就是刪除掉這條路徑。  
+注意：只能修改左上角和右下角以外的1，因為這兩點必定為1。  
+
+如果第一次dfs就失敗了，代表本來就沒連通，根本不用修改，直接回傳True。  
+否則，第一次dfs時已經刪掉連通一條路徑，再跑一次dfs確認是否連通。若不連通代表刪除到了關鍵點，回傳True；否則答案為False。  
+
+時間複雜度O(M\*N)。直接修改grid，只需要遞迴的空間，空間複雜度O(M+N)。  
+
+```python
+class Solution:
+    def isPossibleToCutPath(self, grid: List[List[int]]) -> bool:
+        M,N=len(grid),len(grid[0])
+        
+        def dfs(r,c):
+            if r==M or c==N or grid[r][c]==0:
+                return False
+            if r==M-1 and c==N-1:
+                return True
+            if r!=0 or c!=0:
+                grid[r][c]=0
+            return dfs(r+1,c) or dfs(r,c+1)
+        
+        # no connected
+        if not dfs(0,0):
+            return True
+
+        # can disconnect
+        if not dfs(0,0):
+            return True
+
+        return False
+```
