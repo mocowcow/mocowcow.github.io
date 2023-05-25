@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2556. Disconnect Path in a Binary Matrix by at Most One Flip
-tags        : LeetCode Medium Array Matrix DFS
+tags        : LeetCode Medium Array Matrix DFS DP
 ---
 雙周賽97。第三題想不出，剩下最後5分鐘發現這題比較簡單，沒時間做了。  
 
@@ -26,9 +26,11 @@ tags        : LeetCode Medium Array Matrix DFS
 用想的很簡單，但是要怎麼找到這個關鍵點？  
 這種只能向下、向右走的題目有個關鍵點：總步數一定是M+N-2步。所以我們只要確保每一步中，有任一步不存在2種以上的可能位置，那就有可能成為**不連通**圖。  
 
+首先過濾掉無法抵達右下角的1，因為他們不會在任何有效路徑上。  
+
 ![示意圖](/assets/img/2556-2.jpg)  
 
-所以我們直接從起點開始dfs，每抵達一個新的位置，就將其對應的步數計數+1。  
+然後從起點開始dfs，每抵達一個新的位置，就將其對應的步數計數+1。  
 除了起點與終點以外，每個步數都應該至少存在2個以上的可能位置，所以從第1步檢查到M+N-3步。  
 若其中一步不符合，回傳true；否則代表存在多條路徑，回傳false。    
 
@@ -38,22 +40,29 @@ tags        : LeetCode Medium Array Matrix DFS
 class Solution:
     def isPossibleToCutPath(self, grid: List[List[int]]) -> bool:
         M,N=len(grid),len(grid[0])
-        step=[0]*(M+N)
+        ok=[0]*(M+N)
         
+        for r in reversed(range(M)):
+            for c in reversed(range(N)):
+                if r==M-1 and c==N-1:continue
+                if r==0 and c==0:continue
+                down=r+1<M and grid[r+1][c]==1
+                right=c+1<N and grid[r][c+1]==1
+                if not down and not right:
+                    grid[r][c]=0
+
         @cache
         def dfs(r,c):
-            if r<0 or r==M or c<0 or c==N:
+            if r==M or c==N or grid[r][c]==0:
                 return
-            if grid[r][c]==0:
-                return 
-            step[r+c]+=1
+            ok[r+c]+=1
             dfs(r+1,c)
             dfs(r,c+1)
         
         dfs(0,0)
-        
+
         for i in range(1,M+N-2):
-            if step[i]<2:
+            if ok[i]<2:
                 return True
             
         return False
