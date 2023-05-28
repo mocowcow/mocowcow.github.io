@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2710. Remove Trailing Zeros From a String
-tags        : LeetCode Easy String Stack
+tags        : LeetCode Easy String Stack Simulation
 ---
 周賽347。最近Q1就很良心，總算是沒有一些妖魔鬼怪。  
 
