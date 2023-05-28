@@ -47,3 +47,29 @@ class Solution:
         
         return ans
 ```
+
+後來想想，根據回溯函數bt的順序，如果總是先嘗試**不選**，之後才嘗試**選**的話，第一個被構造出的答案一定是空集合。  
+那麼可以先保存所有實力值，取第一個結果以外的實力值就可以。  
+
+時間複雜度O(2^N\*N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def maxStrength(self, nums: List[int]) -> int:
+        ans=-inf
+        N=len(nums)
+        ans=[]
+        
+        def bt(i,score):
+            nonlocal ans
+            if i==N:
+                ans.append(score)
+                return
+            bt(i+1,score)
+            bt(i+1,score*nums[i])
+        
+        bt(0,1)
+        
+        return max(ans[1:])
+```
