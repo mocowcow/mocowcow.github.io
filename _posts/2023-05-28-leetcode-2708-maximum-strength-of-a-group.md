@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2708. Maximum Strength of a Group
-tags        : LeetCode
+tags        : LeetCode Medium Array Backtracking Bitmask
 ---
 雙周賽105。這題還挺微妙的，因為測資範圍很小，所以方法也很多種，而且每種的實現難度都有一段差距。  
 
@@ -17,7 +17,7 @@ tags        : LeetCode
 
 維護回溯函數bt(i)，代表第i個學生選或不選，如果要選就把used[i]設成true。當i等於N時代表都處理完，把所有選到的學生成績相乘，得到實力值後更新答案。  
 
-N個元素可選可不選，共有2^N種選法，每次構造答案需要O(N)。時間複雜度O(2^N\*N)。  
+N個元素可選可不選，共有2^N種選法，每次構造答案需要O(N)。時間複雜度O(N \* 2^N)。  
 空間複雜度O(N)。  
 
 ```python
@@ -51,7 +51,7 @@ class Solution:
 後來想想，根據回溯函數bt的順序，如果總是先嘗試**不選**，之後才嘗試**選**的話，第一個被構造出的答案一定是空集合。  
 那麼可以先保存所有實力值，取第一個結果以外的實力值就可以。  
 
-時間複雜度O(2^N\*N)。  
+時間複雜度O(2^N)。  
 空間複雜度O(N)。  
 
 ```python
@@ -73,3 +73,27 @@ class Solution:
         
         return max(ans[1:])
 ```
+
+也可以使用bitmask做狀態壓縮，用N個位元表示每個學生選或不選。  
+mask=0代表空集合，所以從1開始窮舉到2^N-1，分別計算各選法的實力值後更新答案。  
+
+時間複雜度O(N \* 2^N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def maxStrength(self, nums: List[int]) -> int:
+        N=len(nums)
+        ans=-inf
+        
+        for mask in range(1,1<<N):
+            x=1
+            for i in range(N):
+                if mask&(1<<i):
+                    x*=nums[i]
+            ans=max(ans,x)
+            
+        return ans
+```
+
+還有一種方法是排序，根據正負數的數量分類討論，但是太麻煩了改天有空再來寫。  
