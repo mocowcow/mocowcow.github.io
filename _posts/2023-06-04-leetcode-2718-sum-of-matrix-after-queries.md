@@ -49,3 +49,23 @@ class Solution:
         
         return ans
 ```
+
+可以直接使用集合來維護已經處理過的行列，還可以直接取得個數，一舉兩得。  
+查詢type的0和1也剛好對應到列和行，把type XOR 1就可以行列互換。  
+
+時間複雜度O(q)，其中q為查詢次數。  
+查詢夠少的話，集合有時候裝沒多少東西，空間複雜度O(min(n,q))。  
+
+```python
+class Solution:
+    def matrixSumQueries(self, n: int, queries: List[List[int]]) -> int:
+        vis=[set(),set()] # vis[0] for row, vis[1] for col
+        ans=0
+        
+        for tp,idx,val in reversed(queries):
+            if idx not in vis[tp]:
+                vis[tp].add(idx)
+                ans+=(n-len(vis[tp^1]))*val
+        
+        return ans
+```
