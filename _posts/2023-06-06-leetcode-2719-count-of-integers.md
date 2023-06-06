@@ -30,6 +30,20 @@ tags        : LeetCode Hard String DP Math
 
 ![示意圖](/assets/img/2719.jpg)  
 
+最後剩下數位dp的實作。  
+
+定義dp(i,cnt_digit,is_limit,is_num)：當位數和為cnt_digit時，從i\~N-1的部分共有多少種有效的選法。  
+is_limit當前數字是否受限於最大值s的第i位數，這會根據高位數的選項而改變；is_num則代表高位所選過的數字是否為有效的數字。  
+轉移方程式：只有當is_limit為true，且選擇同時當前最高位的數字，才需要從is_limit=true的狀態轉移過來，嚴格來說整個過程中總共只有N個狀態。  
+如果is_limit為true，則只能選擇0\~s[i]的數字，才不會超過規定的數字上限；否則0\~9可以任選。  
+base case：當cnt_digit超過規定的位數和mx_digit，之後不管怎樣選都不合法，直接回傳0。  
+當i等於N，代表所有位數都選完，而且不超過mx_digit，這時is_num=true代表所選的值不全為0，是一個有效值，可以和空字串組成一種可能；否則值為0，不在題目要求的有效範圍內，回傳0。  
+
+dp共有四個狀態：i的狀態有N種；cnt_digit的狀態為mx_digit種，也可能受限於9N種；is_limit和is_nums都只有2種。  
+每個狀態最多轉移10次，然後要4次dp，為O(4 \* 10 \* N \* M \* 2 \* 2)，其中N為s大小，M為min(9N,max_sum)。  
+去掉常數後，整體時間複雜度O(N\*M)。  
+空間複雜度O(N\*M)。  
+
 ```python
 class Solution:
     def count(self, num1: str, num2: str, min_sum: int, max_sum: int) -> int:
@@ -42,10 +56,8 @@ class Solution:
             def dp(i,cnt_digit,is_limit,is_num):
                 if cnt_digit>mx_digit:
                     return 0
-                
                 if i==N:
                     return is_num
-                
                 up=int(s[i]) if is_limit else 9
                 down=0 if is_num else 1
                 ans=0
