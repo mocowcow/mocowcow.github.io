@@ -21,8 +21,8 @@ tags        : LeetCode Hard String DP Math
 要找符合[num1, num2]區間的x很麻煩，可以轉換成[0, nums2]中 扣掉 [0, nums1 - 1]中的個數。  
 同理，位數總和digit_sum也要介於[max_sum, min_sum]之間，轉換成[0, max_sum]中 扣掉 [0, min_sum - 1]中的個數。  
 
-定義為f(x, mx_digit)為：小於等於x，且位數和小於等於mx_digit的**好的**整數個數。  
-題目要求的是數字x介於[num1, num2]之間，且位數和介於[max_sum, min_sum]之間。  
+定義為f(s, mx_digit)為：小於等於s，且位數和小於等於mx_digit的**好的**整數個數。  
+題目要求的是數字s介於[num1, num2]之間，且位數和介於[max_sum, min_sum]之間。  
 根據排容原理，公式為：  
 > f(num2, max_sum) - f(num1 - 1 , max_sum) - f(num2 , min_sum - 1) + f(num1 - 1 , min_sum - 1)  
 
@@ -73,6 +73,42 @@ class Solution:
         num1=str(int(num1)-1)
         min_sum-=1
         ans=f(num2,max_sum)-f(num1,max_sum)-f(num2,min_sum)+f(num1,min_sum)
+        
+        return ans%MOD
+```
+
+仔細想想，is_num這個狀態根本不需要，因為：  
+1. min_sum至少會是1，但是全部選0的位數和是0，根本不會被算進去  
+2. 就算會被算進去，在排容的時後也會被消掉，不影響答案  
+
+而且也不需要切成四塊，既然我們都可以在dp裡面判斷是否超過max_sum，那麼在base case的時候判斷是否至少min_sum就可以。  
+f只需要字串s一個參數，答案簡化成f(num2)-f(num1 - 1)。  
+
+```python
+class Solution:
+    def count(self, num1: str, num2: str, min_sum: int, max_sum: int) -> int:
+        MOD=10**9+7
+        
+        def f(s):
+            N=len(s)
+
+            @cache
+            def dp(i,cnt_digit,is_limit):
+                if cnt_digit>max_sum:
+                    return 0
+                if i==N:
+                    return cnt_digit>=min_sum
+                up=int(s[i]) if is_limit else 9
+                ans=0
+                for j in range(up+1):
+                    new_limit=is_limit and j==up 
+                    ans+=dp(i+1,cnt_digit+j,new_limit)
+                return ans%MOD
+            
+            return dp(0,0,True)
+        
+        num1=str(int(num1)-1)
+        ans=f(num2)-f(num1)
         
         return ans%MOD
 ```
