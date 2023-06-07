@@ -112,3 +112,76 @@ class Solution:
         
         return ans%MOD
 ```
+
+如果在別的語言，num1的值可能高達10^22，超過long的上限，沒辦法轉成數字-1後轉回字串。  
+這時只能用f(num2)-f(num1)，並且單獨判斷num1，若位數和介於min_sum和max_sum間，則將答案補回1。  
+
+另外一個問題是手刻記憶化搜索，到底要記憶哪些狀態？  
+剛才提到過is_limit=true的狀態最多只有N個，而且也只會被用到一次，那其實不必記憶他。  
+例如：  
+> num = "123"  
+> i = 0時，選1才符合is_limit  
+> i = 1時，選12才符合is_limit  
+> i = 2時，選123才符合is_limit  
+
+省略掉is_limit這個維度，只有在is_limit=false才做記憶化。  
+
+```go
+var MOD int=1e9+7
+
+func count(num1 string, num2 string, min_sum int, max_sum int) int {
+
+    var f func(s string) int    
+    f=func (s string) int{
+        memo:=make([][]int,30)
+        for i:=range memo{
+            memo[i]=make([]int,405)
+            for j:=range memo[i]{
+                memo[i][j]=-1
+            }
+        }
+        
+        var dp func(i, cnt_digit int, is_limit bool) int
+        dp=func(i, cnt_digit int, is_limit bool) int{
+            if cnt_digit>max_sum{
+                return 0
+            }
+            if i==len(s){
+                if cnt_digit>=min_sum{
+                    return 1
+                }
+                return 0
+            }
+            if !is_limit && memo[i][cnt_digit]!=-1{
+                return memo[i][cnt_digit]
+            }
+            res:=0
+            up:=9
+            if is_limit{
+                up=int(s[i]-'0')
+            }
+            for j:=0;j<=up;j++{
+                new_limit:=is_limit && j==up
+                res+=dp(i+1,cnt_digit+j,new_limit)
+            }
+            res=(res+MOD)%MOD
+            if !is_limit{
+                memo[i][cnt_digit]=res
+            }
+            return res
+        }
+        return dp(0,0,true)
+    }    
+    
+    ans:=f(num2)-f(num1)
+    cnt:=0
+    for _,c:=range num1{
+        cnt+=int(c-'0')
+    }
+    if min_sum<=cnt && cnt<=max_sum{
+        ans+=1
+    }
+    
+    return (ans+MOD)%MOD
+}
+```
