@@ -18,6 +18,7 @@ tags        : LeetCode Hard Array Graph BFS
 使用bfs的話，從某個節點出發，只要某個節點被**訪問第二次**，必定是由兩條不同的路徑抵達，而這兩條路徑連接起來正好是一個環。  
 
 但根據出發點的不同，最先找到的環也不同。所以必須窮舉每個節點做為出發點各bfs一次，看哪個環最小。  
+而且第一個找到的環也不一定是最小環，所以還是要跑完整個bfs流程，千萬不可以提早退出。  
 
 ![示意圖](/assets/img/2608.jpg)
 
@@ -29,35 +30,33 @@ tags        : LeetCode Hard Array Graph BFS
 ```python
 class Solution:
     def findShortestCycle(self, n: int, edges: List[List[int]]) -> int:
-        g=[[] for _ in range(n)]
+        g=defaultdict(list)
         for a,b in edges:
             g[a].append(b)
             g[b].append(a)
         
-        def bfs(i):
-            dist=[-1]*n
+        def bfs(src):
+            cycle=inf
+            dis=[inf]*n
+            dis[src]=0
             q=deque()
-            q.append([i,-1]) # curr, fa
-            step=0
-            
+            q.append([src,-1])
             while q:
-                for _ in range(len(q)):
-                    i,fa=q.popleft()
-                    dist[i]=step
-                    for j in g[i]:
-                        if j==fa:
-                            continue
-                        if dist[j]==-1: # unvisited
-                            q.append([j,i])
-                        else: # cycle found
-                            return 1+dist[j]+dist[i]
-                step+=1
-            return inf
-
+                i,fa=q.popleft()
+                for j in g[i]:
+                    if j==fa:
+                        continue
+                    if dis[j]!=inf:
+                        cycle=min(cycle,dis[i]+dis[j]+1)
+                    else:
+                        dis[j]=dis[i]+1
+                        q.append([j,i])
+            return cycle
+        
         ans=inf
         for i in range(n):
-            ans=min(ans,bfs(i))
-        
+            ans=min(ans,bfs(i)) 
+        bfs(1)
         if ans==inf:
             return -1
         
