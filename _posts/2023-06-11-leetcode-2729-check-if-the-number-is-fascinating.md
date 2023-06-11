@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2729. Check if The Number is Fascinating
-tags        : LeetCode Easy String Simulation bitmask HashTable
+tags        : LeetCode Easy String Simulation bitmask BitManipulation HashTable
 ---
 雙周賽106。
 
