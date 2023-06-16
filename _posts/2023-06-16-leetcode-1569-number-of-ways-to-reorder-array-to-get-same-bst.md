@@ -75,3 +75,35 @@ class Solution:
         ans=dp(nums)-1
         return ans%MOD
 ```
+
+python內建的comb函數是真的強，不僅好用還快。  
+其他語言沒有的話只能自己預處理，遞推時間是O(N^2)。  
+
+時間複雜度O(N^2)。  
+空間複雜度O(N^2)。  
+
+```python
+MOD=10**9+7
+MX=1000
+C=[[0]*MX for _ in range(MX)]
+C[0][0]=1
+for i in range(1,MX):
+    C[i][0]=1
+    for j in range(1,MX):
+        C[i][j]=(C[i-1][j-1]+C[i-1][j])%MOD
+
+class Solution:
+    def numOfWays(self, nums: List[int]) -> int:
+   
+        def dp(a):
+            if len(a)<=1:
+                return 1
+            left=[x for x in a if x<a[0]]
+            right=[x for x in a if x>a[0]]            
+            l=len(left)
+            r=len(right)
+            return dp(left)*dp(right)*C[l+r][l]%MOD
+                
+        ans=dp(nums)-1
+        return ans%MOD
+```
