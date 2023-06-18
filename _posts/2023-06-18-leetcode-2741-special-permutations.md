@@ -37,6 +37,8 @@ mask共有2^N種，prev共有N種，所以dp狀態是2^N \* N種。每個狀態�
 時間複雜度O(2^N \* N^2)。  
 空間複雜度O(2^N \* N)。  
 
+注意：為處理排列的第一個數的特例，可以把prev設為1，因為不管什麼數取對1餘都是0，保證可選。  
+
 ```python
 class Solution:
     def specialPerm(self, nums: List[int]) -> int:
@@ -49,10 +51,10 @@ class Solution:
                 return 1
             ans=0
             for i in range(N):
-                if not mask&(1<<i) and (prev is None or nums[i]%prev==0 or prev%nums[i]==0):
+                if not mask&(1<<i) and (nums[i]%prev==0 or prev%nums[i]==0):
                     new_mask=mask|(1<<i)
                     ans+=dp(new_mask,nums[i])
             return ans%MOD
         
-        return dp(0,None)
+        return dp(0,1)
 ```
