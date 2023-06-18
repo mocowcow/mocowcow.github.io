@@ -46,11 +46,35 @@ class Solution:
                 return inf
             if i==N:
                 return 0
-            # notake
-            res=dp(i+1,free-1)
-            # take
-            res=min(res,dp(i+1,min(N,free+time[i]))+cost[i])
-            return res
+            return min(
+                dp(i+1,free-1),
+                dp(i+1,free+min(N,free+time[i]))+cost[i]
+            )
+        
+        return dp(0,0)
+```
+
+對於處理超過N的免費次數，還有兩種方法：  
+1. 處理付費時不處理，改在遞迴開頭檢查，如果free大於N，直接回傳dp(i,N)  
+2. 如果free次數可以刷完剩下的牆，直接剪枝，回傳0  
+
+```python
+class Solution:
+    def paintWalls(self, cost: List[int], time: List[int]) -> int:
+        N=len(cost)
+        
+        @cache
+        def dp(i,free):
+            if free>=(N-i): # paint all for free
+                return 0
+            if i==N and free<0:
+                return inf
+            if i==N:
+                return 0
+            return min(
+                dp(i+1,free-1),
+                dp(i+1,free+time[i])+cost[i]
+            )
         
         return dp(0,0)
 ```
