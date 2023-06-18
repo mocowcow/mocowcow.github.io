@@ -67,10 +67,8 @@ class Solution:
         def dp(i,free):
             if free>=(N-i): # paint all for free
                 return 0
-            if i==N and free<0:
-                return inf
             if i==N:
-                return 0
+                return inf
             return min(
                 dp(i+1,free-1),
                 dp(i+1,free+time[i])+cost[i]
