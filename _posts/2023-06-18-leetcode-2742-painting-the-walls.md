@@ -14,7 +14,7 @@ tags        : LeetCode Hard Array DP
 求粉刷全部牆壁所需的**最小成本**。  
 
 # 解法
-大概可以理解成：**付費**的花多少時間，**免費**的就可以刷幾道牆。  
+大概可以理解成：**付費**的花多少時間，**免費**的就可以刷幾面牆。  
 
 本來想用貪心法+雙指針優先選CP值最高的牆付費刷，盡可能爭取更多的**免費時間**，但碰到這種情況就無解：  
 > cost = [2,1], time = [100,1]  
@@ -32,7 +32,7 @@ base cases：當i=N，全部牆都粉刷完，若free小於0，代表免費額�
 
 注意：最多只有N=500面牆，超過牆壁數量的的免費次數都是無意義的，所以免費額度要和N取最小值。  
 
-共有N道牆，免費額度介於[-N,N]之間，時間複雜度O(N^2)。  
+共有N面牆，免費額度介於[-N,N]之間，時間複雜度O(N^2)。  
 空間複雜度O(N^2)。  
 
 ```python
@@ -75,4 +75,70 @@ class Solution:
             )
         
         return dp(0,0)
+```
+
+上面講了好幾次**選**或**不選**，聽起來很像01背包，其實稍微轉換一下定義就真的是背包問題。  
+把粉刷完的**牆壁個數**視為背包空間，也就是免費+付費必須大於等於N面牆。  
+每付費刷一面牆，還能免費刷cost[i]面牆。選了第i面牆，總共可以裝下cost[i]+1面牆。  
+
+定義dp(i,wall)：在第0\~i面牆中，還有wall面要刷時的最小成本。  
+轉移方程式：dp(i,wall) = min(dp(i+1,wall-1-time[i])+cost[i], dp(i+1,wall))  
+base case：當wall小於等於0，代表全部刷完了(可能還多刷)，回傳0；否則當i<0，沒牆壁可刷但卻刷不夠，不合法，回傳inf。  
+
+時間複雜度O(N^2)。  
+空間複雜度O(N^2)。  
+
+```python
+class Solution:
+    def paintWalls(self, cost: List[int], time: List[int]) -> int:
+        N=len(cost)
+        # paid count + free count >= N
+        # total paid time >= free count
+        # total paid time >= N - paid count
+        # total paid time + paid count >= N
+        
+        @cache
+        def dp(i,wall):
+            if wall<=0:
+                return 0
+            if i<0:
+                return inf
+            return min(
+                dp(i-1,wall-1-time[i])+cost[i],
+                dp(i-1,wall)
+            )
+        
+        return dp(N-1,N)
+```
+
+轉換成遞推。因為對於i來說只會從i-1的狀態轉移，可以把第一個維度壓縮掉。  
+
+```python
+class Solution:
+    def paintWalls(self, cost: List[int], time: List[int]) -> int:
+        N=len(cost)
+
+#         dp=[[0]*(N+1) for _ in range(N+1)]
+#         for i in range(1,N+1):
+#             dp[0][i]=inf
+        
+#         for i in range(1,N+1):
+#             c,t=cost[i-1],time[i-1]
+#             for wall in range(N+1):
+#                 dp[i][wall]=min(
+#                     dp[i-1][max(0,wall-1-t)]+c,
+#                     dp[i-1][wall]
+#                 )
+                
+#         return dp[N][N]
+
+        dp=[0]*(N+1)
+        for i in range(1,N+1):
+            dp[i]=inf
+               
+        for c,t in zip(cost,time):
+            for wall in reversed(range(N+1)):
+                dp[wall]=min(dp[wall],dp[max(0,wall-1-t)]+c)
+                
+        return dp[N]
 ```
