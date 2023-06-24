@@ -113,6 +113,9 @@ class Solution:
 
 轉換成遞推。因為對於i來說只會從i-1的狀態轉移，可以把第一個維度壓縮掉。  
 
+時間複雜度O(N^2)。  
+空間複雜度O(N)。  
+
 ```python
 class Solution:
     def paintWalls(self, cost: List[int], time: List[int]) -> int:
