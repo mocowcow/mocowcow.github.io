@@ -38,11 +38,11 @@ tags        : LeetCode Hard Array DP
 轉移方程式：dp(i,bar)=min( dp(i-1,bar), dp(i-1,bar+rods[i]), dp(i-1,abs(bar-rods[i])+min(bar,rods[i])) )
 base cases：當i<0，代表沒有鐵桿了，支架差值bar=0代表兩者長度相同，回傳0；否則代表長度不同，回傳-inf使答案無效化。  
 
-時間複雜度O(N\*S)，其中N為rods長度，S為sum(rods)。  
+時間複雜度O(N\*S)，其中N為rods長度，S為sum(rods)。      
 空間複雜度O(N\*S)。  
 
 ```python
-code class Solution:
+class Solution:
     def tallestBillboard(self, rods: List[int]) -> int:
         N=len(rods)
         
@@ -64,4 +64,61 @@ code class Solution:
         
         return dp(N-1,0)
 
+```
+
+改成遞推版本。  
+
+有個小優化，維護前綴和ps，就知道接下來的rods[i+1,N-1]總和有多少，只有到ps為止的差值才是合法的，其他狀態都不可能抵達。  
+例如dp[N-1][0]代表剩下前N個鐵桿，且支架長度差為0時的最大長度，也就是答案。dp[N][1\~S]都是不合法的起點，直接不處理。  
+如果rods[N-1]長度是5，則dp[N-2][bar]可能從dp[N-1][0\~5]的某些位置轉移過來。  
+
+```python
+class Solution:
+    def tallestBillboard(self, rods: List[int]) -> int:
+        N=len(rods)
+        S=sum(rods)
+        dp=[[-inf]*(S+1) for _ in range(N+1)]
+        dp[0][0]=0
+        ps=S # possible maximum value 
+        
+        for i in range(1,N+1):
+            x=rods[i-1]
+            ps-=x
+            for bar in range(ps+1):
+                dp[i][bar]=max(
+                    dp[i-1][bar], # no take
+                    dp[i-1][bar+x], # add to long bar
+                    dp[i-1][abs(bar-x)]+min(bar,x) # add to short bar
+                )
+            
+        return dp[N][0]
+```
+
+因為只會從i-1轉移到i，可以把空間壓縮成一維。  
+
+時間複雜度O(N\*S)，其中N為rods長度，S為sum(rods)。  
+空間複雜度O(S)。  
+
+```python
+class Solution:
+    def tallestBillboard(self, rods: List[int]) -> int:
+        N=len(rods)
+        S=sum(rods)
+        dp=[-inf]*(S+1)
+        dp[0]=0
+        ps=S # possible maximum value 
+        
+        for i in range(1,N+1):
+            t=[0]*(S+1)
+            x=rods[i-1]
+            ps-=x
+            for bar in range(ps+1):
+                t[bar]=max(
+                    dp[bar], # no take
+                    dp[bar+x], # add to long bar
+                    dp[abs(bar-x)]+min(bar,x) # add to short bar
+                )
+            dp=t
+            
+        return dp[0]
 ```
