@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 956. Tallest Billboard
 tags        : LeetCode Hard Array DP
 ---
-每日題。還滿有意思
+每日題。還滿有意思的題目，可以有好幾種不同的狀態定義。  
 
 # 題目
 你想要立一個廣告牌，越高越好。一個廣告牌需要由兩支長度相同的支架來支撐。  
