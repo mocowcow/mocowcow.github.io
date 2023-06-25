@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 2731. Movement of Robots
 tags        : LeetCode Medium Array Sorting
 ---
-雙周賽106。這種腦筋急轉彎題真的是很垃圾，講一推廢話結果都沒有用，每次都被這種爛題浪費時間。  
+雙周賽106。這種腦筋急轉彎題真的是很垃圾，講一堆廢話結果都沒有用，每次都被這種爛題浪費時間。  
 
 # 題目
 有一些機器人在無邊界的直線上，他們的初始位置由整數陣列nums表示。機器人每秒可以移動一個單位距離。  
