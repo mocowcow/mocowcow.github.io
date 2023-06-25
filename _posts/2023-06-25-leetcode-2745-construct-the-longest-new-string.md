@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2745. Construct the Longest New String
-tags        : LeetCode Medium DP
+tags        : LeetCode Medium DP Greedy
 ---
 雙周賽107。雖然我感覺有公式解，但是測資不大就算了，賽後再來補。  
 
@@ -59,4 +59,32 @@ class Solution:
             dp(x,y-1,z,False),
             dp(x,y,z-1,False)
         )
+```
+
+再來複習一次連接規則：  
+> AA -> BB  
+> BB -> AA or AB  
+> AB -> AA or AB  
+
+發現AB可以無限連接自己，代表AB不管怎樣都可以全部用掉。  
+而AA可以接AB，AB又可以接回AA，倆倆成對，可以等比例消費掉。  
+AA可以比AB多一個，長成這樣：  
+> [ABAB...], AA, AB, AA  
+也可以是AB比AA多一個：  
+> BB, AA, BB, [ABAB...]  
+
+結論：  
+- AA跟AB一樣多，則三種可以全部用完  
+- AA跟AB不一樣，則m=min(x,y)，共可以使用m\*2+1+z個  
+
+時間複雜度O(1)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def longestString(self, x: int, y: int, z: int) -> int:
+        if x==y:
+            return (x+y+z)*2
+        else:
+            return (min(x,y)*2+1+z)*2
 ```
