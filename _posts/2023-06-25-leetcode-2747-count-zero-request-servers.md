@@ -53,3 +53,35 @@ class Solution:
             
         return ans
 ```
+
+其實也不用將queries分組處理，只要將查詢時間和查詢id一起排序，直接遍歷就可以。  
+
+```python
+class Solution:
+    def countServers(self, n: int, logs: List[List[int]], x: int, queries: List[int]) -> List[int]:
+        N=len(logs)
+        Q=len(queries)
+        ans=[0]*Q
+        qid_group=defaultdict(list)
+        qs=[[qtime,qid]for qid,qtime in enumerate(queries)]
+        qs.sort(key=itemgetter(0)) # sort queries by qtime
+        logs.sort(key=itemgetter(1)) # sort logs by time
+        
+        freq=Counter()
+        left=0
+        right=0
+        for qtime,qid in qs:
+            while right<N and logs[right][1]<=qtime: # expand window
+                freq[logs[right][0]]+=1
+                right+=1
+                    
+            while left<N and logs[left][1]<qtime-x: # shrink window
+                freq[logs[left][0]]-=1
+                if freq[logs[left][0]]==0: # delete key with frequency 0 
+                    del freq[logs[left][0]]
+                left+=1
+                
+            ans[qid]=n-len(freq) # answer queries
+            
+        return ans
+```
