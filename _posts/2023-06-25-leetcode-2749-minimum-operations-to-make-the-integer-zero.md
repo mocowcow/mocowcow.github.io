@@ -51,8 +51,8 @@ class Solution:
             if remain<1:
                 return -1
         
-            lo=remain.bit_count()
-            hi=remain
-            if lo<=ops<=hi:
+            min_ops=remain.bit_count()
+            max_ops=remain
+            if min_ops<=ops<=max_ops:
                 return ops
 ```
