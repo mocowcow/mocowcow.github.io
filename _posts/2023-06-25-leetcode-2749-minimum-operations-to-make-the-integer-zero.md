@@ -13,8 +13,8 @@ tags        : LeetCode Medium BitManipulation
 求**最少**需要幾次操作才可以使num1變成0。若無法使num1變成0則回傳-1。  
 
 # 解法
-每次操作都要先從num1扣掉num2，剩餘數記做remain，然後再扣2<sup>i</sup>。2的次方介於0\~60，為至少是1的正整數。  
-如果remain不足1，就沒辦法扣次方數了，沒有答案。  
+操作x次，要從num1中扣掉x個num2和2<sup>i</sup>。因為num2的是固定的，直接扣掉之後再考慮2<sup>i</sup>怎麼分配。  
+把num1-x\*num2記做remain。2<sup>i</sup>至少為1，如果remain不足x個，那就不可能有答案了，直接回傳-1。  
 
 說到2<sup>i</sup>就會想到他是二進位中某一個位置的1 bit。  
 可以將問題轉換成：x次操作，我們需要把num1扣掉x個num2後，remain擁有的1 bit個數就是最少需要扣掉幾次2<sup>i</sup>。  
@@ -33,7 +33,7 @@ tags        : LeetCode Medium BitManipulation
 
 但num2可能是負數，會讓remain越來越多，那最多到底需要幾次操作？  
 num1最大值是10^9，num2最小值是-10^9，轉成二進位大概是30個位元。  
-而我們每次可以刪的數高達2<sup>60</sup>，remain的每個位元都可以刪到。也就是說，在remain不斷增長的情況下，就算最差情況使得每個位元都是1，也只需要30次操作就可以全部刪掉。  
+而我們每次可以刪的數高達2<sup>60</sup>，remain的每個位元都可以刪到。也就是說，在remain不斷增長的情況下，就算最差情況使得每個位元都是1，大概需要30幾次操作就可以全部刪掉。  
 
 時間複雜度O(log remain)。  
 空間複雜度O(1)。  
@@ -48,11 +48,11 @@ class Solution:
             ops+=1
             remain-=num2
             
-            if remain<1:
+            if remain<ops: # ensure that remain >= ops
                 return -1
         
             min_ops=remain.bit_count()
             max_ops=remain
-            if min_ops<=ops<=max_ops:
+            if min_ops<=ops: 
                 return ops
 ```
