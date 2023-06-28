@@ -75,3 +75,40 @@ class Solution:
         
         return [x[1] for x in live]
 ```
+
+改成只排序機器人編號，直接在原本的輸入做修改，順便修改一下排版，邏輯應該更加清楚。  
+
+```python
+class Solution:
+    def survivedRobotsHealths(self, positions: List[int], healths: List[int], directions: str) -> List[int]:
+        N=len(positions)
+        bots=sorted(range(N),key=lambda x:positions[x])
+        
+        st=[] # keep "R"
+        live=[] # keep "L"
+        for i in bots: # iterative over sorted bots
+            if directions[i]=="R":
+                st.append(i)
+                continue
+                
+            # "L"
+            while st and healths[i]>0:
+                if healths[st[-1]]>healths[i]:
+                    healths[st[-1]]-=1
+                    healths[i]=0
+                elif healths[st[-1]]<healths[i]:
+                    st.pop()
+                    healths[i]-=1
+                else:
+                    st.pop()
+                    healths[i]=0
+                    
+            # if "L" alive
+            if healths[i]>0:
+                live.append(i)
+                    
+        live+=st
+        live.sort()
+        
+        return [healths[x] for x in live]
+```
