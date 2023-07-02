@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2762. Continuous Subarrays
-tags        : LeetCode Medium Array TwoPointers SlidingWindow SortedList
+tags        : LeetCode Medium Array TwoPointers SlidingWindow SortedList HashTable
 ---
 雙周賽352。
 
@@ -35,6 +35,31 @@ class Solution:
             sl.add(x)
             while sl[-1]-sl[0]>2:
                 sl.remove(nums[l])
+                l+=1
+            ans+=r-l+1
+            
+        return ans
+```
+
+但絕對差最大只會到2，也就是說子陣列中最多只會有**三種數字**。  
+這時只要用普通的雜湊表計數即可，每次查找最大最小值只要O(3)，可以視作O(1)。  
+
+時間複雜度O(N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def continuousSubarrays(self, nums: List[int]) -> int:
+        ans=0
+        d=Counter()
+        
+        l=0
+        for r,x in enumerate(nums):
+            d[x]+=1
+            while max(d)-min(d)>2:
+                d[nums[l]]-=1
+                if d[nums[l]]==0:
+                    del d[nums[l]]
                 l+=1
             ans+=r-l+1
             
