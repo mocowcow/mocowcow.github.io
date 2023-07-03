@@ -72,3 +72,28 @@ class Solution:
         return ans
 ```
 
+可以發現，當一個區間[left,right]結束擴展時，下一個區間的起點一定會大於right，因為選擇介於left和right之間的索引作為左邊界，他的右邊界都一定是right，只會得到更小的結果。  
+所以可以直接left跳到right+1，實際上每個索引只會被訪問到一次。  
+
+時間複雜度O(N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def longestAlternatingSubarray(self, nums: List[int], threshold: int) -> int:
+        N=len(nums)
+        ans=0
+        left=0
+        
+        while left<N:
+            if nums[left]%2==1 or nums[left]>threshold:
+                left+=1
+            else:
+                right=left
+                while right+1<N and nums[right+1]%2!=nums[right]%2 and nums[right+1]<=threshold:
+                    right+=1
+                ans=max(ans,right-left+1)
+                left=right+1
+                
+        return ans
+```
