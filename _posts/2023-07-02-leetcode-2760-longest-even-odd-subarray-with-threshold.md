@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2760. Longest Even Odd Subarray With Threshold
-tags        : LeetCode Easy Array
+tags        : LeetCode Easy Array TwoPointers SlidingWindow
 ---
 雙周賽352。這題是真的囉嗦，完全不想考慮非暴力以外的方法。  
 
@@ -49,3 +49,26 @@ class Solution:
                     
         return ans
 ```
+
+枚舉左邊界，並嘗試擴展右邊界。  
+在擴展右邊界的同時進行檢查，空間和時間都節省很多。  
+
+時間複雜度O(N^2)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def longestAlternatingSubarray(self, nums: List[int], threshold: int) -> int:
+        N=len(nums)
+        ans=0
+        
+        for left in range(N):
+            if nums[left]%2==0 and nums[left]<=threshold:
+                right=left
+                while right+1<N and nums[right]%2!=nums[right+1]%2 and nums[right+1]<=threshold:
+                    right+=1
+                ans=max(ans,right-left+1)
+                
+        return ans
+```
+
