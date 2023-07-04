@@ -37,21 +37,53 @@ class Solution:
     def sumImbalanceNumbers(self, nums: List[int]) -> int:
         ans=0
         subs=[]
+
         for x in nums:
             for sub in subs:
                 sl,cnt=sub
                 i=sl.bisect_left(x)
                 if i<len(sl) and sl[i]-sl[i-1]>1:
                     cnt-=1
-                if i>0 and x-sl[i-1]>1:
-                    cnt+=1
                 if i<len(sl) and sl[i]-x>1:
+                    cnt+=1
+                if i>0 and x-sl[i-1]>1:
                     cnt+=1
                 sl.add(x)
                 sub[1]=cnt
                 ans+=cnt
                 
             subs.append([SL([x]),0])
+            
+        return ans
+```
+
+改成枚舉左邊界的話，同時只會存在一個子陣列，空間複雜度降低。  
+
+時間複雜度O(N^2 log N)。  
+空間複雜度O(N)。  
+
+```python
+from sortedcontainers import SortedList as SL
+
+class Solution:
+    def sumImbalanceNumbers(self, nums: List[int]) -> int:
+        N=len(nums)
+        ans=0
+        
+        for left in range(N):
+            sl=SL([nums[left]])
+            cnt=0
+            for right in range(left+1,N):
+                x=nums[right]
+                i=sl.bisect_left(x)
+                if i<len(sl) and sl[i]-sl[i-1]>1:
+                    cnt-=1
+                if i<len(sl) and sl[i]-x>1:
+                    cnt+=1
+                if i>0 and x-sl[i-1]>1:
+                    cnt+=1
+                sl.add(x)
+                ans+=cnt
             
         return ans
 ```
