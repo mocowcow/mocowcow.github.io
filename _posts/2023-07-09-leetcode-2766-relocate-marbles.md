@@ -8,9 +8,9 @@ tags        : LeetCode Medium Array HashTable Sorting Simulation
 # 題目
 輸入整數陣列nums，代表彈珠的初始位置。還有兩個長度相同的整數陣列moveFrom和moveTo。  
 
-你會執行數次動作，在第i次動作，將所有位於moveFrom[i]的彈珠移動到moveTo[i]。  
+你會執行數次操作，在第i次操作，將所有位於moveFrom[i]的彈珠移動到moveTo[i]。  
 
-在所有移動結束後，將所有被**占用**的的索引位置排序後回傳。  
+在所有操作結束後，將所有被**占用**的的索引位置排序後回傳。  
 
 注意：  
 - **占用**指的是該位置存在至少一顆彈珠  
@@ -18,11 +18,12 @@ tags        : LeetCode Medium Array HashTable Sorting Simulation
 
 # 解法
 每個位置有幾顆彈珠並不重要，只要知道哪裡有。  
+~~不問敵人有多少，只問敵人在哪裡。~~  
 
-用集合初始化nums中所有位置，按照提議模擬，遍歷所有move，將moveFrom[i]從集合移除，在把moveTo[i]加入集合。  
+用集合初始化nums中所有位置，按照題意模擬，遍歷所有移動操作，將moveFrom[i]從集合移除，在把moveTo[i]加入集合。  
 最後將集合中的元素排序後回傳。  
 
-時間複雜度O(N log N + M)，其中N為初始彈珠數量，M為移動次數。  
+時間複雜度O(N log N + M)，其中N為初始彈珠數量，M為操作次數。  
 空間複雜度O(N)。  
 
 ```python
