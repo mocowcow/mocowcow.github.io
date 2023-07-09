@@ -1,9 +1,9 @@
 --- 
 layout      : single
 title       : LeetCode 2772. Apply Operations to Make All Array Elements Equal to Zero
-tags        : LeetCode Medium Array Greedy PrefixSum
+tags        : LeetCode Medium Array Greedy PrefixSum SegmentTree
 ---
-周賽353。垃圾測資，10^5的範圍竟然允許C++的O(N^2)解法通過，但python的O(N log N)卻有機率被卡掉。  
+周賽353。垃圾測資，10^5的範圍竟然允許C++的O(N^2)解法通過，但python的O(N log k)卻有機率被卡掉。  
 更妙的是，一堆作弊仔都貼了C++那個O(N^2)的程式碼，看來洩露答案和抄襲兩方都有點不太可靠。  
 
 # 題目
@@ -49,6 +49,82 @@ class Solution:
             
             if nums[i]+diff[i]!=0:
                 return False
+                
+        return True
+```
+
+當然也可以使用懶標線段樹來處理區間修改。但就和先前提到的一樣，細節沒有處理好不小心就會TLE。  
+
+時間複雜度O(N log k)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def checkArray(self, nums: List[int], k: int) -> bool:
+
+        def build(id, L, R):
+            if L == R:  
+                tree[id] = init[L]
+                return
+            M = (L+R)//2
+            build(id*2, L, M)
+            build(id*2+1, M+1, R)
+            tree[id] = tree[id*2]+tree[id*2+1]  
+
+        def query(id, L, R, i, j):
+            if i <= L and R <= j: 
+                return tree[id]
+            push_down(id, L, R)
+            ans = 0
+            M = (L+R)//2
+            if i <= M:
+                ans += query(id*2, L, M, i, j)
+            if M+1 <= j:
+                ans += query(id*2+1, M+1, R, i, j)
+            return ans
+
+        def update(id, L, R, i, j, val):
+            if i <= L and R <= j:  
+                tree[id] += (R-L+1)*val
+                lazy[id] += val 
+                return
+            push_down(id, L, R)
+            M = (L+R)//2
+            if i <= M:
+                update(id*2, L, M, i, j, val)
+            if M+1 <= j:
+                update(id*2+1, M+1, R, i, j, val)
+            push_up(id)
+
+        def push_down(id, L, R):
+            M = (L+R)//2
+            if lazy[id]:
+                lazy[id*2] += lazy[id]
+                tree[id*2] += lazy[id]*(M-L+1)
+                lazy[id*2+1] += lazy[id]
+                tree[id*2+1] += lazy[id]*(R-(M+1)+1)
+                lazy[id] = 0
+
+        def push_up(id):
+            tree[id] = tree[id*2]+tree[id*2+1]
+
+        N=len(nums)
+        tree = [0]*(N*4)
+        lazy = [0]*(N*4)
+        init = nums
+        build(1, 0, N-1)
+        
+        for i in range(N):
+            remain=query(1,0,N-1,i,i)+nums[i]
+            
+            if remain<0:
+                return False
+            
+            if i+k-1>=N and remain>0:
+                return False
+            
+            if remain>0: # prevent TLE
+                update(1,0,N-1,i,i+k-1,-remain)
                 
         return True
 ```
