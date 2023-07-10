@@ -50,3 +50,26 @@ class Solution:
         
         return ans
 ```
+
+遞推比記憶化搜索還慢，可能因為測資很多都是跳不到的地方，反而多出很多無效計算。  
+
+```python
+class Solution:
+    def maximumJumps(self, nums: List[int], target: int) -> int:
+        N=len(nums)
+        dp=[-inf]*N
+        dp[N-1]=0
+        
+        for i in reversed(range(N-1)):
+            for j in range(i+1,N):
+                diff=abs(nums[i]-nums[j])
+                if diff<=target:
+                    dp[i]=max(dp[i],dp[j]+1)
+            
+        ans=dp[0]
+        
+        if ans==-inf:
+            return -1
+        
+        return ans
+```
