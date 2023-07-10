@@ -50,3 +50,66 @@ class Solution:
             
         return ans
 ```
+
+上面這種使用到prev的定義太難寫了，換一種比較通俗的。  
+令nums = [nums1, nums2]。  
+
+定義dp(i,j)：以nums[j][i]為右邊界時，**最長的非遞減子陣列**長度。  
+轉移方程式：dp[i][j] = max(1, dp[i-1][0], dp[i-1][1])。若nums[j][i]>=nums1[i-1]可選擇dp[i-1][0]；若nums[j][i]>=num2[i-1]可選擇dp[i-1][1]。  
+base case：當i=0，左邊沒有可以連接的子陣列，只有自己一個，長度1。  
+
+時間複雜度O(N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def maxNonDecreasingLength(self, nums1: List[int], nums2: List[int]) -> int:
+        N=len(nums1)
+        nums=[nums1,nums2]
+        ans=0
+        
+        @cache
+        def dp(i,j):
+            if i==0:
+                return 1
+            x=nums[j][i]
+            res=1
+            for k in range(2):
+                if x>=nums[k][i-1]:
+                    res=max(res,dp(i-1,k)+1)
+            return res
+            
+        ans=0
+        for i in range(N):
+            ans=max(ans,dp(i,0),dp(i,1))
+            
+        return ans
+```
+
+最後改成遞推，在計算dp狀態的過程中順便更新答案。  
+注意：base case的i=0並沒有計算，所以答案初始值要設成1才不會出錯。  
+
+```python
+class Solution:
+    def maxNonDecreasingLength(self, nums1: List[int], nums2: List[int]) -> int:
+        N=len(nums1)
+        ans=1
+        dp=[[1]*2 for _ in range(N)]
+        
+        for i in range(1,N):
+            # using nums1
+            if nums1[i]>=nums1[i-1]:
+                dp[i][0]=max(dp[i][0],dp[i-1][0]+1)
+            if nums1[i]>=nums2[i-1]:
+                dp[i][0]=max(dp[i][0],dp[i-1][1]+1)
+                
+            # using nums2
+            if nums2[i]>=nums1[i-1]:
+                dp[i][1]=max(dp[i][1],dp[i-1][0]+1)
+            if nums2[i]>=nums2[i-1]:
+                dp[i][1]=max(dp[i][1],dp[i-1][1]+1)
+                
+            ans=max(ans,dp[i][0],dp[i][1])
+            
+        return ans
+```
