@@ -106,3 +106,31 @@ class Solution:
             
         return ans
 ```
+
+最後改成遞推。  
+
+```python
+pow5={1, 5, 15625, 625, 3125, 25, 125}
+
+class Solution:
+    def minimumBeautifulSubstrings(self, s: str) -> int:
+        N=len(s) 
+        dp=[inf]*(N+1)
+        dp[N]=0
+
+        for i in reversed(range(N)):
+            if s[i]=="0":
+                continue
+            val=0
+            for j in range(i,N):
+                val=val*2+int(s[j])
+                if val in pow5:
+                    dp[i]=min(dp[i],dp[j+1]+1)
+
+        ans=dp[0]
+        
+        if ans==inf:
+            return -1
+            
+        return ans
+```
