@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2767. Partition String Into Minimum Beautiful Substrings
-tags        : LeetCode Medium Array Backtracking HashTable
+tags        : LeetCode Medium Array Backtracking HashTable DP
 ---
 雙周賽108。把5的次方看成5的倍數，被騙個WA。  
 
@@ -24,9 +24,8 @@ tags        : LeetCode Medium Array Backtracking HashTable
 
 因為不可有前導零，若s[i]是0的話可以直接剪枝。
 而當前分割的子字串數量cnt若已經等於當前答案最小值，也可以直接跳出。  
-雖然理論上高達15!，但實際上沒幾個子陣列是5的次方，搭配剪枝，執行時間其實非常快。  
 
-時間複雜度O(N!)。  
+時間複雜度O(2^N)。  
 空間複雜度O(N)。  
 
 ```python
@@ -65,5 +64,45 @@ class Solution:
         if ans==inf:
             return -1
         
+        return ans
+```
+
+其實在範圍內的5的次方數也只有7個，直接寫死就好。  
+而且正確解法應該是dp，畢竟是窮舉所有分割點**選或不選**，不同的分割法會共享到同樣的子問題。  
+
+定義dp(i)：子字串[i,N-1]最少可以分割成幾個**美麗子字串**。  
+轉移方程式：dp(i) = min( dp(j)+1 FOR ALL i<=j<N )  
+base case：若i=N，分割結束，回傳0；若dp[i]="0"，不可有前導零，回傳inf避免結果被使用。  
+
+共有N個狀態，每個狀態需要轉移N次。  
+時間複雜度O(N^2)。  
+空間複雜度O(N)。  
+
+```python
+pow5={1, 5, 15625, 625, 3125, 25, 125}
+
+class Solution:
+    def minimumBeautifulSubstrings(self, s: str) -> int:
+        N=len(s)
+        
+        @cache
+        def dp(i):
+            if i==N:
+                return 0
+            if s[i]=="0":
+                return inf
+            val=0
+            res=inf
+            for j in range(i,N):
+                val=val*2+int(s[j])
+                if val in pow5:
+                    res=min(res,dp(j+1)+1)
+            return res
+        
+        ans=dp(0)
+        
+        if ans==inf:
+            return -1
+            
         return ans
 ```
