@@ -28,8 +28,8 @@ tags        : LeetCode Easy Array TwoPointers SlidingWindow
 ```python
 class Solution:
     def alternatingSubarray(self, nums: List[int]) -> int:
-        ans=0
         N=len(nums)
+        ans=0
         
         for i in range(N-1):
             if nums[i]+1==nums[i+1]:
@@ -41,5 +41,42 @@ class Solution:
         if ans==0:
             return -1
         
+        return ans
+```
+
+當區間[left,right]結束擴展時，下一個子陣列區間的有可能是從right或是right+1開始。  
+例如：  
+> nums = [1,2,3,4,3]  
+> [1,2]停止擴展後  
+> 從3開始，找到找到[3,4,3]  
+> nums = [1,2,3,2,3]  
+> [1,2]停止擴展  
+> 從2繼續，找到[2,3,2,3]
+
+為方便起見，直接將left更新成right。  
+
+時間複雜度O(N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def alternatingSubarray(self, nums: List[int]) -> int:
+        N=len(nums)
+        ans=0
+        left=0
+        
+        while left<N-1:
+            right=left+1
+            if nums[left]+1!=nums[right]:
+                left+=1
+            else:
+                while right+1<N and nums[right+1]==nums[right-1]:
+                    right+=1
+                ans=max(ans,right-left+1)
+                left=right
+        
+        if ans==0:
+            return -1
+                
         return ans
 ```
