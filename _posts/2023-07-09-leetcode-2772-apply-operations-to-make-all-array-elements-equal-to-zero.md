@@ -53,6 +53,31 @@ class Solution:
         return True
 ```
 
+同樣邏輯，只是大神寫起來更簡潔。  
+
+```python
+class Solution:
+    def checkArray(self, nums: List[int], k: int) -> bool:
+        N=len(nums)
+        diff=[0]*(N+5)
+        ps=0
+        
+        for i,x in enumerate(nums):
+            ps+=diff[i]
+            x+=ps
+            
+            if x==0:
+                continue
+            
+            if x<0 or i+k-1>=N:
+                return False
+            
+            ps-=x
+            diff[i+k]+=x
+            
+        return True
+```
+
 當然也可以使用懶標線段樹來處理區間修改。但就和先前提到的一樣，細節沒有處理好不小心就會TLE。  
 
 時間複雜度O(N log k)。  
@@ -117,14 +142,13 @@ class Solution:
         for i in range(N):
             remain=query(1,0,N-1,i,i)+nums[i]
             
-            if remain<0:
-                return False
+            if remain==0:
+                continue
             
-            if i+k-1>=N and remain>0:
+            if remain<0 or i+k-1>=N:
                 return False
-            
-            if remain>0: # prevent TLE
-                update(1,0,N-1,i,i+k-1,-remain)
+
+            update(1,0,N-1,i,i+k-1,-remain)
                 
         return True
 ```
