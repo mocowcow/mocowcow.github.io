@@ -34,7 +34,7 @@ forbidden[i]的長度最多只到10，這肯定是可以利用的地方。
 先將被禁止的區間以右邊界排序。由左到右枚舉右邊界right，並找到所有右邊界**小於等於**right的區間，並以該區間的左邊界更新**有效左邊界**left。最後[left,right]就是有效的子字串區間，以此更新答案。  
 最差情況下，right剛好也被禁止，而左邊界會變成left=right+1，得到有效區間長度為0，也就是空字串。  
 
-M為forbidden[i]長度，對於每個索引要產生M個子字串，每次O(M)，共O(N \* M^2)。  
+M為max(len(forbidden[i]))，對於每個索引要產生M個子字串，每次O(M)，共O(N \* M^2)。  
 最多會產生N\*M個被禁止的區間ban。   
 瓶頸在於排序ban，時間複雜度O(N\*M log N\*M)。  
 空間複雜度O(N\*M)。  
@@ -61,5 +61,32 @@ class Solution:
                 i+=1
             ans=max(ans,right-left+1)
             
+        return ans
+```
+
+其實根本不用預處理所有禁止的區間。  
+只要在枚舉右邊界right的時候檢查10種子字串是否被禁止，若為真則更新左邊界。  
+
+時間複雜度O(F + N \* M^2)，其中F為forbidden長度，N為word長度，M為max(len(forbidden[i]))。  
+空間複雜度O(F)。  
+
+```python
+class Solution:
+    def longestValidSubstring(self, word: str, forbidden: List[str]) -> int:
+        N=len(word)
+        s=set(forbidden)
+
+        ans=0
+        left=0
+        for right in range(N):
+            for i in range(0,10):
+                j=right-i
+                if j<0:
+                    break
+                if word[j:right+1] in s:
+                    left=max(left,j+1)
+                    break
+            ans=max(ans,right-left+1)
+                
         return ans
 ```
