@@ -34,7 +34,7 @@ class Solution:
                 cnt+=1
                 last=e
                 
-        return N-cnt1
+        return N-cnt
 ```
 
 當然也可以不轉換問題，就按照原本的題意來做。  
