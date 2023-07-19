@@ -60,3 +60,29 @@ class Solution:
                 
         return cnt
 ```
+
+也可以依左端點排序，同樣計算要刪除的重疊區間數。  
+
+較靠右的區間，其左端點一定大於等於先前出現過的其他區間。  
+因此若[s,e]與先前區間無交集，則e肯定會是最靠右的端點，因此以e更新last；若有交集，則保留右端點較小的，比較不容易和剩下的區間產生重疊。  
+
+瓶頸在於排序，時間複雜度O(N log N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
+        N=len(intervals)
+        intervals.sort(key=itemgetter(0))
+        
+        cnt=0
+        last=-inf
+        for s,e in intervals: 
+            if s>=last: # assured e>=last
+                last=e
+            else: # overlapped, keep lefter one
+                cnt+=1
+                last=min(last,e)
+            
+        return cnt
+```
