@@ -13,8 +13,10 @@ tags        : LeetCode Medium Array Greedy Sorting
 乍看很難知道刪除哪個區間是最佳解。  
 將問題轉換成：選擇最少的X個索引，使所有區間至少與一個索引交集，原區間數量N扣掉X就是要被刪除的個數。  
 
-將區間以右端點排序，依序遍歷，能保證右方區間的右邊界一定大於等於當前區間。  
+將區間以右端點排序，依序遍歷，能保證右方區間的右端點一定大於等於當前區間。  
 因此只要檢查當前區間[s,e]的左端點是否小於前一個區間的右端點last，若是則代表兩者可以共享索引last；否則需要選擇一個新的索引，越靠右則之後能被使用到的機率越大，故選擇索引作為新的last。  
+
+![示意圖](/assets/img/435-1.jpg)
 
 瓶頸在於排序，時間複雜度O(N log N)。  
 空間複雜度O(1)。  
@@ -28,7 +30,7 @@ class Solution:
         cnt=0
         last=-inf
         for s,e in intervals:
-            if s>=last:
+            if s>=last: # case 1
                 cnt+=1
                 last=e
                 
@@ -37,6 +39,8 @@ class Solution:
 
 也可以依照左端點排序。  
 右方區間的左端點一定大於等於左方區間。如果當前區間[s,e]想要和左方區間共用一個索引last，則e必須小於等於last；否則需要選擇一個新的索引，更新last為e。  
+
+![示意圖](/assets/img/435-2.jpg)
 
 ```python
 class Solution:
@@ -47,7 +51,7 @@ class Solution:
         cnt=0
         last=-inf
         for s,e in intervals:
-            if e>last:
+            if e>last: # case 1
                 cnt+=1
                 last=e
                 
