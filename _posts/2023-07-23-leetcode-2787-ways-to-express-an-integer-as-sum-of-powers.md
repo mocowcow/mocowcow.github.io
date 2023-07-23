@@ -69,3 +69,26 @@ class Solution:
                 
         return dp[n]
 ```
+
+但是我就算沒有先預處理可能的數字，用記憶化搜索也沒有TLE。有點好奇被卡的人是什麼情況。  
+
+時間複雜度O(n^2)。  
+空間複雜度O(n^2)。  
+
+```python
+class Solution:
+    def numberOfWays(self, n: int, x: int) -> int:
+        MOD=10**9+7
+        
+        @cache 
+        def dp(n,i):
+            if n==0:
+                return 1
+            val=i**x
+            if val>n:
+                return 0
+            res=dp(n-val,i+1)+dp(n,i+1)
+            return res%MOD
+        
+        return dp(n,1)
+```
