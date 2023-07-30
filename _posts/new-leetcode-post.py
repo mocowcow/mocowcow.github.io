@@ -3,23 +3,23 @@ from string import Template
 import os
 
 
-tpl = '''--- 
+TPL = '''---
 layout      : single
 title       : LeetCode $TOPIC
 tags        : LeetCode
 ---
 $FOREWORD
 
-# 題目
+## 題目
 
-# 解法
+## 解法
 
 ```python
 code here
 
 ```
 '''
-template = Template(tpl)
+template = Template(TPL)
 
 # 找出已經寫過的
 leetcode_posts = set()
@@ -37,7 +37,7 @@ for f in files:
 
 # 自訂前言
 print('自訂前言：')
-foreword=input()
+foreword = input()
 
 # 嘗試新建
 print('目前已寫過', len(leetcode_posts), '題')
@@ -52,7 +52,7 @@ while True:
     title = '-'.join(topic.split(' ')[1:]).lower()
     time = datetime.now().strftime('%Y-%m-%d')
     filename = f'{time}-leetcode-{number}-{title}.md'
-    text = template.substitute(FOREWORD=foreword,TOPIC=topic)
+    text = template.substitute(FOREWORD=foreword, TOPIC=topic)
     with open(filename, 'w', encoding='utf8') as f:
         f.write(text)
     print('新建成功\n')
