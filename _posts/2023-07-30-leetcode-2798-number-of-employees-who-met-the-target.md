@@ -5,7 +5,7 @@ tags        : LeetCode Easy Array Simulation
 ---
 周賽356。佛心送分題。  
 
-# 題目
+## 題目
 
 公司有n個員工，編號分別從0\~n-1。每個員工i的工時為hours[i]。  
 
@@ -15,7 +15,7 @@ tags        : LeetCode Easy Array Simulation
 
 求有多少員工至少工作target小時。  
 
-# 解法
+## 解法
 
 按照題意模擬。  
 
