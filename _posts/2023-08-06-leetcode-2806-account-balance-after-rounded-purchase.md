@@ -40,3 +40,11 @@ class Solution:
             
         return 100-d*10
 ```
+
+來自[votrubac](https://leetcode.com/problems/account-balance-after-rounded-purchase/discuss/3868120/One-Liner)大佬的一行版本，真的有夠簡潔。  
+
+```python
+class Solution:
+    def accountBalanceAfterPurchase(self, purchaseAmount: int) -> int:
+        return 100-(purchaseAmount+5)//10*10
+```
