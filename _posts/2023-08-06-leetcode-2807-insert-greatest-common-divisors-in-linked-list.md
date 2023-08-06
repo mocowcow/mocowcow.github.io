@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2807. Insert Greatest Common Divisors in Linked List
-tags        : LeetCode Medium Array LinkedList
+tags        : LeetCode Medium Array LinkedList Simulation
 ---
 雙周賽110。沒什麼陷阱的單純題目，可能是最近幾次最良心的Q2。  
 
