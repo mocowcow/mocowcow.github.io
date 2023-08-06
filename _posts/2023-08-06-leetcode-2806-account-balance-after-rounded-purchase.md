@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2806. Account Balance After Rounded Purchase
-tags        : LeetCode Easy Math
+tags        : LeetCode Easy Math Simulation
 ---
 雙周賽110。有點小囉嗦，還差點忘記怎麼四捨五入。  
 
