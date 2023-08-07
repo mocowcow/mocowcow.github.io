@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2812. Find the Safest Path in a Grid
-tags        : LeetCode Medium Array Matrix BFS UnionFind HashTable
+tags        : LeetCode Medium Array Matrix BFS UnionFind HashTable BinarySearch DFS
 ---
 周賽357。再次確認我真的很會並查集。  
 
@@ -82,4 +82,69 @@ class Solution:
             
             if start in fa and end in fa and find(start)==find(end):
                 return k
+```
+
+剛才也提到，如果只走安全度x以上的格子能夠抵達終點，那麼改x-1更寬鬆，當然也可以；反之，x若不行，x+1限制更嚴格，當然也不行。答案很明顯具有單調性。  
+
+大部分的人應該是用二分+bfs/dfs檢查是否連通。  
+
+同樣先預處理每一格的安全度，維護一個函數ok(limit)，判斷是否可以只走安全度limit以上的格子抵達終點。  
+下界為最低安全度0，上界是最差情況下的安全度N\*2。如果mid無法連通，則嘗試放寬限制，更新上界為mid-1；否則縮緊限制，更新下界為mid。  
+
+二分結束後，下界lo就是答案的最高安全度。  
+
+可能的安全度共有2N種，最多判斷log 2N次，每次O(N^2)。  
+時間複雜度O(N^2 log N)。  
+空間複雜度O(N^2)。  
+
+```python
+class Solution:
+    def maximumSafenessFactor(self, grid: List[List[int]]) -> int:
+        N=len(grid)
+
+        # mark thief
+        safe=[[inf]*N for _ in range(N)]
+        q=deque()
+        for r in range(N):
+            for c in range(N):
+                if grid[r][c]==1:
+                    q.append([r,c,0])
+                    safe[r][c]=0
+        
+        # bfs safeness from thief
+        while q:
+            r,c,sf=q.popleft()
+            for dx,dy in pairwise([0,1,0,-1,0]):
+                rr,cc=r+dx,c+dy
+                if 0<=rr<N and 0<=cc<N and safe[rr][cc]==inf:
+                    q.append([rr,cc,sf+1])
+                    safe[rr][cc]=sf+1
+        
+        def ok(limit):
+            vis=[[False]*N for _ in range(N)]
+            
+            def dfs(r,c):
+                vis[r][c]=True
+                if safe[r][c]<limit:
+                    return False
+                if r==N-1 and c==N-1:
+                    return True
+                for dx,dy in pairwise([0,1,0,-1,0]):
+                    rr,cc=r+dx,c+dy
+                    if 0<=rr<N and 0<=cc<N and not vis[rr][cc] and dfs(rr,cc):
+                        return True
+                return False
+            
+            return dfs(0,0)
+        
+        lo=0
+        hi=N*2
+        while lo<hi:
+            mid=(lo+hi+1)//2
+            if not ok(mid):
+                hi=mid-1
+            else:
+                lo=mid
+
+        return lo
 ```
