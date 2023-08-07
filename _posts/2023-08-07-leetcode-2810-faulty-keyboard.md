@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2810. Faulty Keyboard
-tags        : LeetCode Easy Array String
+tags        : LeetCode Easy Array String Simulation
 ---
 周賽357。
 
@@ -34,4 +34,33 @@ class Solution:
                 st.append(c)
                 
         return "".join(st)
+```
+
+可以使用雙向隊列，直接改變加入字元的方向來模擬翻轉。  
+
+維護變數rev代表是否翻轉，若是則從左方加入字元，否則從右方加入。  
+最後組合字串時，記得檢查是否翻轉過。  
+
+時間複雜度O(N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def finalString(self, s: str) -> str:
+        q=deque()
+        rev=False
+        
+        for c in s:
+            if c=="i":
+                rev=not rev
+            elif rev:
+                q.appendleft(c)
+            else:
+                q.append(c)
+                
+        ans="".join(q)
+        if rev:
+            return ans[::-1]
+        else:
+            return ans
 ```
