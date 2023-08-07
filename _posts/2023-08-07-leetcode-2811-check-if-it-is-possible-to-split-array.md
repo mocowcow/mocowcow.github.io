@@ -68,3 +68,55 @@ class Solution:
             
         return False
 ```
+
+如果想要以dp(0,N-1)作為遞迴入口，則需特別判定，只有在**不是完整nums**時才受限於m。  
+
+```python
+class Solution:
+    def canSplitArray(self, nums: List[int], m: int) -> bool:
+        N=len(nums)
+        ps=list(accumulate(nums,initial=0))
+        
+        @cache
+        def dp(i,j):
+            if i==j:
+                return True
+            
+            sm=ps[j+1]-ps[i]
+            if not (i==0 and j==N-1) and sm<m:
+                return False
+            
+            for k in range(i,j):
+                if dp(i,k) and dp(k+1,j):
+                    return True
+            return False
+        
+        return dp(0,N-1)
+```
+
+以上方法都不好寫，還沒有效率。  
+
+複習一下兩個特殊情況：  
+
+- nums長度1，直接合法  
+- nums長度2，一定可以分割成兩個長度1，直接合法  
+
+再仔細想想，既然最終結果是切成n個長度為1的陣列，不管nums怎樣分割，到最後一定會出現一個長度2個子陣列。  
+而最重要的關鍵，就是這個長度2的子陣列和必須滿足m，否則無法繼續分割成兩個長度1。  
+換句話說，只要有任何一個長度為2且元素和滿足m的子陣列[a, b]，就可以依照剝洋蔥的方式從左右方逐次分割出數個長度1，直到最後剩下[a, b]才分割最後一次。  
+
+時間複雜度O(N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def canSplitArray(self, nums: List[int], m: int) -> bool:
+        if len(nums)<=2:
+            return True
+        
+        for a,b in pairwise(nums):
+            if a+b>=m:
+                return True
+        
+        return False
+```
