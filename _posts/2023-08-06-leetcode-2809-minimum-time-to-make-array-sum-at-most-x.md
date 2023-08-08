@@ -82,8 +82,8 @@ class Solution:
         arr=sorted(zip(nums1,nums2),key=itemgetter(1))
         
         dp=[[0]*(N+1) for _ in range(N+1)]
-        for t in range(1,N+1):
-            for i in range(1,N+1):
+        for i in range(1,N+1):
+            for t in range(1,N+1):
                 dp[i][t]=max(
                     dp[i-1][t],
                     dp[i-1][t-1]+arr[i-1][0]+arr[i-1][1]*t
@@ -91,6 +91,34 @@ class Solution:
                 
         for t in range(N+1):
             if sum1+sum2*t-dp[N][t]<=x:
+                return t
+            
+        return -1
+```
+
+這轉移方程式其實和01背包差不多，可以壓縮掉一個維度。  
+
+時間複雜度O(N^2)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def minimumTime(self, nums1: List[int], nums2: List[int], x: int) -> int:
+        N=len(nums1)
+        sum1=sum(nums1)
+        sum2=sum(nums2)
+        arr=sorted(zip(nums1,nums2),key=itemgetter(1))
+        
+        dp=[0]*(N+1)
+        for i in range(1,N+1):
+            for t in reversed(range(1,N+1)):
+                dp[t]=max(
+                    dp[t],
+                    dp[t-1]+arr[i-1][0]+arr[i-1][1]*t
+                )
+                
+        for t in range(N+1):
+            if sum1+sum2*t-dp[t]<=x:
                 return t
             
         return -1
