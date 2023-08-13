@@ -80,3 +80,48 @@ class Solution:
             
         return head
 ```
+
+不管是遞迴還是暴力法都要額外空間，其實還有更省的方法。  
+
+首先把list反轉，這樣處理進位就變成加在下一個節點上面，可以單純迴圈遍歷。  
+但是我們沒有紀錄上一個節點prev，沒辦法到最後一個節點後面。要等第二次反轉，才把進位加到head前方。  
+
+例如：  
+> [9,8]  
+> 反轉第一次=[8,9]  
+> 翻倍=[6,9]，最後進位剩下1  
+> 反轉第二次=[9,6]  
+> 在首節點補上進位=[1,9,6]  
+
+時間複雜度O(N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def doubleIt(self, head: Optional[ListNode]) -> Optional[ListNode]:
+
+        def reverse(head):
+            prev=None
+            curr=head
+            while curr:
+                t=curr.next
+                curr.next=prev
+                prev=curr
+                curr=t
+            return prev
+        
+        head=reverse(head)
+        carry=0
+        curr=head
+        while curr:
+            curr.val=curr.val*2+carry
+            carry=curr.val//10
+            curr.val%=10
+            curr=curr.next
+        
+        head=reverse(head)
+        if carry:
+            head=ListNode(carry,head)
+            
+        return head
+```
