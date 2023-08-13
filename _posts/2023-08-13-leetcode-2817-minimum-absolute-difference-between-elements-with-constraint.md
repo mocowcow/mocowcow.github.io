@@ -66,3 +66,41 @@ class Solution:
         
         return ans
 ```
+
+仔細想想，上面的方法很冗餘，多出一堆不必要的操作，重點還很容易寫錯。我比賽中沒錯真是奇蹟。  
+
+nums[i]可以和nums[0, i-x]或[i+x, N-1]中的某個nums[j]組成答案。  
+假設j在i的右邊。那我們之後繼續遍歷到j之時，他必定也會在左邊找到nums[i]，這就是對稱性。  
+
+如此一來，其實只要維護其中一邊的可用元素，程式碼簡潔不少。  
+
+時間複雜度O(N log N)。  
+空間複雜度O(N)。  
+
+```python
+from sortedcontainers import SortedList as SL
+
+class Solution:
+    def minAbsoluteDifference(self, nums: List[int], x: int) -> int:
+        sl=SL()
+        ans=inf
+        
+        for i,val in enumerate(nums):
+            if i-x>=0:
+                sl.add(nums[i-x])
+            idx=sl.bisect_left(val)
+            if idx<len(sl):
+                ans=min(ans,abs(sl[idx]-val))
+            if idx>0:
+                ans=min(ans,abs(sl[idx-1]-val))
+
+        return ans
+```
+
+最後來想想，bisect_left能不能換成bisect_right呢？  
+
+bisect_left找的是第一個**大於等於**val的數的索引idx。如果val正好存在，則sl[idx]就是val；如果val不存在，則sl[idx]就會是第一個大於val的數，而sl[idx-1]就是最後一個小於val的數。最小絕對差肯定是和兩者其一組成。  
+
+bisect_right找的是第一個**大於**val的數的索引idx。不管val存不存在，sl[idx]一定大於val。如果val存在，則sl[idx-1]正好會是val；若不存在，則sl[idx-1]會是最後一個小於val的數。  
+
+因此兩者都可以適用。  
