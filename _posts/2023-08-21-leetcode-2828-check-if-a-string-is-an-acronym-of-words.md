@@ -42,3 +42,14 @@ class Solution:
     def isAcronym(self, words: List[str], s: str) -> bool:
         return s=="".join(w[0] for w in words)
 ```
+
+其實還有常數空間的版本。  
+
+時間複雜度O(N)，其中N為s長度，M為words長度。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def isAcronym(self, words: List[str], s: str) -> bool:
+        return len(words)==len(s) and all(w[0]==s[i] for i,w in enumerate(words))
+```
