@@ -40,4 +40,25 @@ class Solution:
         return sum(s)
 ```
 
-應該還有數學公式解，過幾天再來補。  
+剛才說過，小於k的數中，只有一半能使用。  
+
+另a = k/2，如果a大於等於n，則答案就是1\~n加總；否則還需要額外n-a的數字，從k開始，最後一個數是k+(n-a)-1，代入梯形公式求解。  
+
+時間複雜度O(1)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def minimumSum(self, n: int, k: int) -> int:
+        
+        def rsum(s,e):
+            return (s+e)*(e-s+1)//2
+        
+        a=min(n,k//2)
+        # need n-a more
+        # k ... (k+n-a-1)
+        first=k
+        last=k+n-a-1
+        
+        return rsum(1,a)+rsum(first,last)
+```
