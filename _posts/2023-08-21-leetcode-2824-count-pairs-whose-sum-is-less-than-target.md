@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2824. Count Pairs Whose Sum is Less than Target
-tags        : LeetCode Easy Array SortedList BinarySearch
+tags        : LeetCode Easy Array SortedList BinarySearch Sorting TwoPointers
 ---
 雙周賽111。
 
@@ -51,5 +51,32 @@ class Solution:
             ans+=idx+1
             sl.add(x)
             
+        return ans
+```
+
+我們只在乎任意兩數的總和，不在乎其原始位置。  
+將nums排序後，以雙指針維護兩數的位置，如果nums[lo]+nums[hi]小於target，代表nums[lo]配上nums[lo+1,hi]之間的所有數都可以滿足；若大於等於target則將hi左移。  
+
+瓶頸在於排緒，時間複雜度O(N log N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def countPairs(self, nums: List[int], target: int) -> int:
+        N=len(nums)
+        nums.sort()
+        ans=0
+        lo=0
+        hi=N-1
+        
+        while lo<hi:
+            if nums[lo]+nums[hi]<target:
+                # nums[lo] can match any nums[i]
+                # where lo+1 <= i <= hi
+                ans+=hi-(lo+1)+1 
+                lo+=1
+            else:
+                hi-=1
+                
         return ans
 ```
