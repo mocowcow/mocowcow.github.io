@@ -57,7 +57,29 @@ class Solution:
         return dp[-1]
 ```
 
-n的範圍很小，可以用類似bucket sort的方式將offers分類，以空間換取排序的時間。  
+也可以把n放在外迴圈，維護變數j當作offers的指針，只處理右邊界為i的offers[j]。  
+順便將dp向右位移一位，使得dp[0]作為base case。
+
+時間複雜度O(n + M log M)，其中M為offers長度。  
+空間複雜度O(n)。  
+
+```python
+class Solution:
+    def maximizeTheProfit(self, n: int, offers: List[List[int]]) -> int:
+        offers.sort(key=itemgetter(1))
+        dp=[0]*(n+1)
+        j=0
+        for i in range(n):
+            dp[i+1]=dp[i]
+            while j<len(offers) and offers[j][1]==i:
+                s,_,p=offers[j]
+                dp[i+1]=max(dp[i+1],dp[s]+p)
+                j+=1
+        
+        return dp[n]
+```
+
+n的範圍很小，還可以用類似bucket sort的方式將offers分類，以空間換取排序的時間。  
 
 時間複雜度O(n + M)。  
 空間複雜度O(n + M)。  
@@ -69,12 +91,11 @@ class Solution:
         for s,e,p in offers:
             d[e].append([s,p])
             
-        dp=[0]*n
+        dp=[0]*(n+1)
         for i in range(n):
-            dp[i]=dp[i-1]
+            dp[i+1]=dp[i]
             for s,p in d[i]:
-                prev=0 if s==0 else dp[s-1]
-                dp[i]=max(dp[i],prev+p)
+                dp[i+1]=max(dp[i+1],dp[s]+p)
                 
-        return dp[-1]
+        return dp[n]
 ```
