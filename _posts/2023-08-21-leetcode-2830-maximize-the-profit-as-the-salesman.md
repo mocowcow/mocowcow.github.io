@@ -20,7 +20,9 @@ tags        : LeetCode Medium Array Sorting DP
 
 ## 解法
 
-先將offers由右端點排序。之後從左到右遍歷時，能夠保證先前處理過的所有offer都不會超過當前的右邊界，我們可以決定要**保留**哪些部分來搭配當前的offer。  
+先講講比賽中的做法。  
+
+將offers由右端點排序。之後從左到右遍歷時，能夠保證先前處理過的所有offer都不會超過當前的右邊界，我們可以決定要**保留**哪些部分來搭配當前的offer。  
 
 定義dp[i]：出售區間[0, i]的房屋可獲得的最大利潤。  
 轉移方程式：dp[i]=max(dp[i-1], prev+p)。當前區間為[s,e]，其中prev是dp[s-1]，而p是當前價格。  
@@ -39,10 +41,8 @@ base case：當i<0，是無效的狀態，沒有房子，利潤0。
 class Solution:
     def maximizeTheProfit(self, n: int, offers: List[List[int]]) -> int:
         offers.sort(key=itemgetter(1))
-        
         dp=[0]*n
         last=0
-        
         for s,e,p in offers:
             while last<e:
                 dp[last+1]=dp[last]
@@ -54,5 +54,27 @@ class Solution:
             dp[last+1]=dp[last]
             last+=1
             
+        return dp[-1]
+```
+
+n的範圍很小，可以用類似bucket sort的方式將offers分類，以空間換取排序的時間。  
+
+時間複雜度O(n + M)。  
+空間複雜度O(n + M)。  
+
+```python
+class Solution:
+    def maximizeTheProfit(self, n: int, offers: List[List[int]]) -> int:
+        d=[[] for _ in range(n)]
+        for s,e,p in offers:
+            d[e].append([s,p])
+            
+        dp=[0]*n
+        for i in range(n):
+            dp[i]=dp[i-1]
+            for s,p in d[i]:
+                prev=0 if s==0 else dp[s-1]
+                dp[i]=max(dp[i],prev+p)
+                
         return dp[-1]
 ```
