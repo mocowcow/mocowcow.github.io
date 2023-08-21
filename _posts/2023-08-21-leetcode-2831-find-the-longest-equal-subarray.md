@@ -61,3 +61,35 @@ class Solution:
                 
         return lo
 ```
+
+最佳解還是滑動窗口，但不需要二分。  
+
+一個**同等的**子陣列需要由相同元素組成，先將索引i依照nums[i]的值分組。  
+對於每個組單獨處理，假設一個組v之中包含了索引[1,3,5]，我們可以知道nums[1,5]這個子陣列中共有5個元素，其中3個元素相同，剩下5-3=2個是必須被刪除的。  
+如果需要被刪除的個數超過k，則嘗試縮減左邊界，直到不超過k為止。這時後再以相同元素的個數更新答案。
+
+時間複雜度O(N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def longestEqualSubarray(self, nums: List[int], k: int) -> int:
+        d=defaultdict(list)
+        for i,x in enumerate(nums):
+            d[x].append(i)
+            
+        ans=1
+        for v in d.values():
+            left=0
+            for right,x in enumerate(v):
+                while True:
+                    tot=v[right]-v[left]+1
+                    good=right-left+1
+                    bad=tot-bad
+                    if bad<=k:
+                        break
+                    left+=1
+                ans=max(ans,good)
+                
+        return ans
+```
