@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2826. Sorting Three Groups
-tags        : LeetCode Medium Array DP
+tags        : LeetCode Medium Array DP BinarySearch
 ---
 雙周賽111。這題描述有夠繞，而且測資範圍很詭異的小，不知道出題者在想什麼。  
 
@@ -28,7 +28,7 @@ tags        : LeetCode Medium Array DP
 
 其實res的建構方式簡單講就是：從左到右掃3次，第i次只把第i組的數字加入res。  
 而且nums中沒有重複數字，與其說非遞減，不如說是**遞增**。  
-為了使res遞增，則須要確保各組別的數字都是相連的，不可以交錯出現，nums必須呈現[[group1...], [group2...], [group3...]]這種狀態。  
+為了使res遞增，則須要確保各組別的數字都是相連的，不可以交錯出現，nums必須呈現[1..2..3..]這種狀態。  
 
 我們不知道nums[i]分配到哪組才是最佳解，並且nums[i]可選的組別受限於nums[i-1]的組別。  
 假設我們給nums[i]分配到2組，則nums[i+1, N-1]則形成一個規模更小的子問題。  
@@ -57,4 +57,25 @@ class Solution:
             return res
         
         return dp(0,1)
+```
+
+既然是要使得nums非遞減，只要找到有幾個不符合非遞減的元素，修改他們就行。  
+可以先求nums的最長遞增子序列(LIS)長度，注意是**不嚴格遞增**，總長度N扣掉LIS長度就是答案。  
+
+時間複雜度O(N log N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def minimumOperations(self, nums: List[int]) -> int:
+        N=len(nums)
+        dp=[] # LIS
+        for x in nums:
+            idx=bisect_right(dp,x)
+            if len(dp)==idx:
+                dp.append(x)
+            else:
+                dp[idx]=x
+            
+        return N-len(dp)
 ```
