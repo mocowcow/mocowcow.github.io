@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2836. Maximize Value of Function in a Ball Passing Game
-tags        : LeetCode Hard Array Graph BitManipulation
+tags        : LeetCode Hard Array Graph BitManipulation BinaryLifting
 ---
 周賽360。這題在賽中也是標medium，結果考試的競賽的東西，確實是過分了。  
 學到了一個新的知識點，叫做倍增(binary lifting)。  

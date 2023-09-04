@@ -42,7 +42,8 @@ d = {
     'sl':  'SortedList',
     'XXX':  'Python',
     'mst':  'MST',
-    'uf':  'UnionFind'
+    'uf':  'UnionFind',
+    'bl': 'BinaryLifting'
 }
 
 

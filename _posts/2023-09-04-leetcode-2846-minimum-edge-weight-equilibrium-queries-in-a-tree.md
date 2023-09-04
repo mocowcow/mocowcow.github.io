@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2846. Minimum Edge Weight Equilibrium Queries in a Tree
-tags        : LeetCode Hard Array Tree PrefixSum BitManipulation
+tags        : LeetCode Hard Array Tree PrefixSum BitManipulation BinaryLifting
 ---
 周賽361。上週才考過倍增，這週馬上就考進階用法，真變態。  
 雖說是進階版，但LCA倍增其實算是競賽的常見題目，網路上隨便都找得到模板可以套用。可能因此通過人數比上次還多。  
