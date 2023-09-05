@@ -71,7 +71,7 @@ class Solution:
                 ans%=MOD
                 k-=cnt
             else:
-                ans*=math.comb(cnt, k)*pow(key,k)
+                ans*=pow(key,k,MOD)*math.comb(cnt, k)
                 ans%=MOD
                 break
             
