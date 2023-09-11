@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2850. Minimum Moves to Spread Stones Over Grid
-tags        : LeetCode Medium Array Matrix Backtracking
+tags        : LeetCode Medium Array Matrix Backtracking DP Bitmask
 ---
 周賽362。連續兩次周賽做不出Q3，太吐血了，積分直接噴掉。  
 
@@ -87,4 +87,42 @@ class Solution:
             ans=min(ans,cost)
         
         return ans
+```
+
+既然把每個石頭獨立出來，枚舉第i個位置要選那些石頭，就會出現重疊的子問題，可以使用狀壓DP。  
+
+時間複雜度O(MX^2 \* 2^MX)。  
+空間複雜度O(MX \* 2^MX)。  
+
+```python
+class Solution:
+    def minimumMoves(self, grid: List[List[int]]) -> int:
+        stones=[]
+        spaces=[]
+        for r in range(3):
+            for c in range(3):
+                cnt=grid[r][c]
+                if cnt==0:
+                    spaces.append([r,c])
+                else:
+                    for _ in range(cnt-1):
+                        stones.append([r,c])  
+                
+        MX=len(stones)
+        
+        @cache
+        def dp(i,mask):
+            if i==MX:
+                return 0
+            res=inf
+            x,y=spaces[i]
+            for j in range(MX):
+                if not mask&(1<<j):
+                    a,b=stones[j]
+                    dis=abs(x-a)+abs(y-b)
+                    new_mask=mask|(1<<j)
+                    res=min(res,dp(i+1,new_mask)+dis)
+            return res
+        
+        return dp(0,0)
 ```
