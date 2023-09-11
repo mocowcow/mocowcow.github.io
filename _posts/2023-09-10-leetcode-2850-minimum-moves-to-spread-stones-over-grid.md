@@ -56,3 +56,35 @@ class Solution:
         
         return ans
 ```
+
+另一種思考方式，是看成X個石頭在某些位置上，要一對一的配對到X個空格上。  
+假設grid[r][c] = 3，則視作有兩顆多餘的石頭位於(r,c)。  
+
+把石頭和空格位置處理完後，暴力枚舉石頭的全排列，移動到對應的空格上，以總距離更新答案即可。  
+
+時間複雜度O(MX \* MX!)，其中MX為空格和多餘石頭的最大數量，也就是8。  
+空間複雜度O(MX)。  
+
+```python
+class Solution:
+    def minimumMoves(self, grid: List[List[int]]) -> int:
+        stones=[]
+        spaces=[]
+        for r in range(3):
+            for c in range(3):
+                cnt=grid[r][c]
+                if cnt==0:
+                    spaces.append([r,c])
+                else:
+                    for _ in range(cnt-1):
+                        stones.append([r,c])
+                
+        ans=inf
+        for p in permutations(stones):
+            cost=0
+            for (x,y),(a,b) in zip(p,spaces):
+                cost+=abs(x-a)+abs(y-b)
+            ans=min(ans,cost)
+        
+        return ans
+```
