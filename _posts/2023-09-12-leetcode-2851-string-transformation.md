@@ -108,7 +108,6 @@ class Solution:
         
         # dp[i][0] = dp[i-1][0]*(good-1) + dp[i-1][1]*(good)
         # dp[i][1] = dp[i-1][0]*(bad) + dp[i-1][1]*(bad-1)
-        
         mat=[
             [good-1,good],
             [bad,bad-1]
@@ -116,8 +115,12 @@ class Solution:
         
         mat=matrixPower(mat,k)
         
-        if s!=t:
-            return mat[0][1]
-        else:
-            return mat[0][0]
+        if s==t: # dp[0][0] = 1
+            dp0=[[1,0],[0,0]]
+        else: # dp[0][1] = 1
+            dp0=[[0,0],[1,0]]
+            
+        mat=matrixMultiply(mat,dp0)
+        
+        return mat[0][0]
 ```
