@@ -49,39 +49,36 @@ base cases取決於s和t是否相等，因為dp[0]代表操作0次，也就是�
 ```python
 MOD=10**9+7
 
-def nextTable(p):
-    N = len(p)
-    table = [0]*(N+1)
-    table[0] = -1
-    i, j = 1, 0
-    while i < N:
-        if j == -1 or p[i] == p[j]:
-            i += 1
+def prefix_function(s):  # optimized version
+    N = len(s)
+    pi = [0]*N
+    for i in range(1, N):
+        j = pi[i - 1]
+        while j > 0 and s[i] != s[j]:
+            j = pi[j - 1]
+        if s[i] == s[j]:
             j += 1
-            table[i] = j
-        else:
-            j = table[j]
-    return table
+        pi[i] = j
+    return pi
 
-def KMP(s, p):  # search p in s
-    cnt=0
+def KMP_freq(s, p):  # search p in s, return frequency of p
     M, N = len(s), len(p)
-    i = j = 0
-    table = nextTable(p)
-    while i < M :
-        if j == -1 or s[i] == p[j]:
-                i += 1
-                j += 1
-        else:
-            j = table[j]
-        if j==N:
-            cnt+=1
-            j=table[j]
+    pmt = prefix_function(p)
+    j = 0
+    cnt = 0
+    for i in range(M):
+        while j > 0 and s[i] != p[j]:
+            j = pmt[j-1]
+        if s[i] == p[j]:
+            j += 1
+        if j == N:
+            cnt += 1
+            j = pmt[j-1]
     return cnt
 
 def countGood(s,t):
     ss=s+s[:-1]
-    return KMP(ss,t)
+    return KMP_freq(ss,t)    
 
 def matrixPower(base,p):
     res=[[1,0],[0,1]]
@@ -96,7 +93,8 @@ def matrixMultiply(a,b):
     c=[[0,0],[0,0]]
     for i in range(2):
         for j in range(2):
-            c[i][j]=a[i][0]*b[0][j] + a[i][1]*b[1][j]
+            for k in range(2):
+                c[i][j]+=a[i][k]*b[k][j]
             c[i][j]%=MOD
     return c
 
