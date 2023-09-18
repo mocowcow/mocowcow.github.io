@@ -37,23 +37,22 @@ tags        : LeetCode Hard Array Tree Graph DFS DP
 class Solution:
     def minEdgeReversals(self, n: int, edges: List[List[int]]) -> List[int]:
         g=[[] for _ in range(n)]
-        neg=[0]*n
         for a,b in edges:
             g[a].append([b,1]) # pos
             g[b].append([a,-1]) # neg
             
-            
         def dfs(i,fa):
-            cnt=[0]*2
+            cnt=0
             for j,dir in g[i]:
                 if j==fa:
                     continue
                 if dir==-1:
-                    neg[i]+=1
-                dfs(j,i)
-                neg[i]+=neg[j]
+                    cnt+=1
+                cnt+=dfs(j,i)
+            return cnt
         
-        dfs(0,-1)
+        neg=[0]*n
+        neg[0]=dfs(0,-1)
 
         def dfs2(i,fa):
             for j,dir in g[i]:
