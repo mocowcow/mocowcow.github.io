@@ -1,24 +1,27 @@
 --- 
 layout      : single
 title       : LeetCode 2699. Modify Graph Edge Weights
-tags        : LeetCode Hard Array Graphs
+tags        : LeetCode Hard Array Graph
 ---
 周賽346。最近Q4圖論出現次數有夠多，但這題難度也太誇張，不到一百人做出來。  
 
-# 題目
+## 題目
+
 有一個n節點的**無向有權連通**圖，節點編號由0\~n-1。  
 輸入二維整數陣列edges，其中edges[i] = [a<sub>i</sub>, b<sub>i</sub>, w<sub>i</sub>]，代表a<sub>i</sub>和b<sub>i</sub>之間存在一條邊權為w<sub>i</sub>的邊。  
 
 有部分的邊權為-1，而其他都是**正數**。  
-   
+
 你的目標是將所有邊權為-1的邊修改成介於[1, 2^10+9]內的正整數，並使得從節點source到節點destination之間的**最短距離**等於target。若有多種修改方案，可選擇任一種。  
 
 若存在合法方案，則依任意順序回傳包含所有邊的陣列(包含沒修改過的)。若不存在，則回傳空陣列。  
 
 注意：你不可以修改初始邊權為正數的邊。  
 
-# 解法
+## 解法
+
 有兩個比較容易發現的特殊形況：  
+
 - 將特殊邊最小化成1，最短路超過target，不可能再將最短路縮短  
 ![示意圖](/assets/img/2699-1.jpg)  
 - 將特殊邊最大化成2e9，最短路不足target，可能能再將最短路增加  

@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2827. Number of Beautiful Integers in the Range
-tags        : LeetCode Hard String DP math
+tags        : LeetCode Hard String DP Math
 ---
 雙周賽111。第三次數位dp，賽候補題的朋友有福了。  
 
