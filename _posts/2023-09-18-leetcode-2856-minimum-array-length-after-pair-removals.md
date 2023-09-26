@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2856. Minimum Array Length After Pair Removals
-tags        : LeetCode Medium Array Greedy Heap
+tags        : LeetCode Medium Array Greedy Heap Math
 ---
 雙周賽113。最近三次的Q2都很噁心，這題AC率大概才11%。  
 
@@ -61,4 +61,25 @@ class Solution:
                 ready.append(x)
                 
         return ans
+```
+
+數學好的人根本不用搞這麼多，直接找出眾數的出現次數。  
+
+某個數佔了最多的出現次數，共x次。  
+若x不足總數一半，其他數的次數也不可能超過x，因此一定倆倆抵銷；除非總數是奇數個，則會剩下一個。  
+
+否則，x超過一半，其餘的數不足x個，自然會剩下一些。  
+x可以和y = (N-x)個數相抵，只剩下x-y個數。  
+
+```python
+class Solution:
+    def minLengthAfterRemovals(self, nums: List[int]) -> int:
+        N=len(nums)
+        d=Counter(nums)
+        x=max(d.values())
+        
+        if mx<=N/2: # mx*2 <= N
+            return N%2
+        
+        return mx-(N-mx) # mx*2 - N
 ```
