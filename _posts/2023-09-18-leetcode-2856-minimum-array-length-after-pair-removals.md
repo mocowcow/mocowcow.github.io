@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2856. Minimum Array Length After Pair Removals
-tags        : LeetCode Medium Array Greedy Heap Math
+tags        : LeetCode Medium Array Greedy Heap Math BinarySearch
 ---
 雙周賽113。最近三次的Q2都很噁心，這題AC率大概才11%。  
 
@@ -85,4 +85,30 @@ class Solution:
             return N%2
         
         return mx-(N-mx) # mx*2 - N
+```
+
+這題重點在於找到出現次數超過一半的數x。  
+如果x出現至少N/2次，保證**nums正中間一定也是x**。  
+
+直接透過二分找到x的最初和最後位置，計算出x數量，就可以按照之前的方法判斷。  
+
+時間複雜度O(log N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def minLengthAfterRemovals(self, nums: List[int]) -> int:
+        # if some element x appeared more than N/2
+        # nums[N/2] must be x
+        
+        N=len(nums)
+        x=nums[N//2]
+        i=bisect_left(nums,x)
+        j=bisect_right(nums,x)-1
+        cnt=j-i+1
+        
+        if cnt*2<=N:
+            return N%2
+        
+        return cnt*2-N
 ```
