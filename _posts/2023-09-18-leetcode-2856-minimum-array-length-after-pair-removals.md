@@ -71,6 +71,9 @@ class Solution:
 否則，x超過一半，其餘的數不足x個，自然會剩下一些。  
 x可以和y = (N-x)個數相抵，只剩下x-y個數。  
 
+時間複雜度O(N)。  
+空間複雜度O(N)。  
+
 ```python
 class Solution:
     def minLengthAfterRemovals(self, nums: List[int]) -> int:
