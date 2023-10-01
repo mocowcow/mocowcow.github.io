@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2873. Maximum Value of an Ordered Triplet I
-tags        : LeetCode Easy Array Simulation
+tags        : LeetCode Easy Array Simulation SortedList
 ---
 周賽365。
 
@@ -32,5 +32,41 @@ class Solution:
                 for k in range(j+1,N):
                     ans=max(ans,(nums[i]-nums[j])*nums[k])
                     
+        return ans
+```
+
+枚舉作為中心點的j，為了使得值盡可能大，則左方的nums[i]越大越好、右方的nums[k]也是越大越好。  
+左方需要存取最大值，支持插入；右邊需要存取最大值，支持隨機刪除。  
+正好可以使用sorted list來維護兩方的值。  
+
+維護兩個sorted list，叫做L和R，分別裝著位於nums[j]左右方的元素。  
+以nums初始化R後，遍歷nums，枚舉x = nums[j]：  
+
+- 先從R中刪除x  
+- 從L和R找到最大值  
+- 帶入公式，更新答案  
+- 將x加入L  
+
+注意答案不允許負數，ans初始值設為0。  
+
+時間複雜度O(N log N)。  
+空間複雜度O(N)。  
+
+```python
+from sortedcontainers import SortedList as SL
+
+class Solution:
+    def maximumTripletValue(self, nums: List[int]) -> int:
+        N=len(nums)
+        ans=0
+        L=SL()
+        R=SL(nums)
+        
+        for j,x in enumerate(nums):
+            R.remove(x)
+            if L and R:
+                ans=max(ans,(L[-1]-x)*R[-1])
+            L.add(x)
+            
         return ans
 ```
