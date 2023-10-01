@@ -55,3 +55,24 @@ class Solution:
                 
         return ans
 ```
+
+特判tot結果很麻煩，但如果不特判的話，他永遠組不出res=0的子陣列，也就是說會把答案1算錯0。  
+其實可以不管他，直接在答案和1之前取最大值就好。  
+
+然後在分割子陣列時，為了處理子陣列中第一個元素。剛才把res標記成-1，表示res需要初始化。  
+數字x在二補數表示中，是abs(x)的二進位表示取反後再加1，也就是0b..0001取反後加1，等於0b..1111，全部位元都是1。  
+-1的二進位表示全都是1，跟任何數做AND，都會得到該數字。  
+
+```python
+class Solution:
+    def maxSubarrays(self, nums: List[int]) -> int:        
+        ans=0
+        res=-1
+        for x in nums:
+            res&=x
+            if res==0:
+                ans+=1
+                res=-1
+                
+        return max(ans,1)
+```
