@@ -22,6 +22,7 @@ tags        : LeetCode Hard Array Math Graph Tree DFS BFS TopologySort
 題目保證sum(values)一定可被k整除。  
 
 思路是從葉節點開始剝皮，只要總和可被k整除，就分割整個子樹；否則將總和值留給父節點使用。  
+一個連通塊本是k的倍數，扣掉同為k個倍數的某個子樹，剩下的依然是k的倍數。  
 
 維護陣列tot，其中tot[i]代表以i為根節點的子樹的值總和。  
 以dfs實現上述分割子樹的方法，並更新tot[i]。  
