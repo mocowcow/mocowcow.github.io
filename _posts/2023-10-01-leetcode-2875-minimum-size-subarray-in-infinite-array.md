@@ -50,3 +50,32 @@ class Solution:
         
         return ans+N*rep
 ```
+
+也可以不複製貼上整個nums，改用modulo處理滑動窗口的索引，可以省不少空間。  
+
+時間複雜度O(N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def minSizeSubarray(self, nums: List[int], target: int) -> int:
+        N=len(nums)
+        tot=sum(nums)
+        rep,t=divmod(target,tot)
+        
+        sm=0
+        ans=inf
+        left=0
+        for right in range(N*2):
+            sm+=nums[right%N]
+            while sm>t:
+                sm-=nums[left%N]
+                left+=1
+            if sm==t:
+                ans=min(ans,right-left+1)
+                
+        if ans==inf:
+            return -1
+        
+        return ans+N*rep
+```
