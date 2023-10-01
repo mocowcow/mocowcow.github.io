@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2872. Maximum Number of K-Divisible Components
-tags        : LeetCode Hard Array Math Tree DFS BFS TopologySort
+tags        : LeetCode Hard Array Math Graph Tree DFS BFS TopologySort
 ---
 雙周賽114。最近真的腦子不太行，搞個麻煩的拓樸排序搞半天，最緊急改成dfs才3分鐘就寫出來，可惜提交完已經結束1分鐘了。  
 
