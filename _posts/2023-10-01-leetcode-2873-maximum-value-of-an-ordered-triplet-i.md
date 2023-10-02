@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2873. Maximum Value of an Ordered Triplet I
-tags        : LeetCode Easy Array Simulation SortedList
+tags        : LeetCode Easy Array Simulation SortedList PrefixSum
 ---
 周賽365。
 
@@ -67,6 +67,35 @@ class Solution:
             if L and R:
                 ans=max(ans,(L[-1]-x)*R[-1])
             L.add(x)
+            
+        return ans
+```
+
+sorted list維護的是兩邊的最大值，這時候又是老朋友**前後綴分解**上場了。  
+先預處理前後綴的最大值，之後一次遍歷計算答案。  
+
+時間複雜度O(N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def maximumTripletValue(self, nums: List[int]) -> int:
+        N=len(nums)
+        
+        pref=[0]*N
+        pref[0]=nums[0]
+        for i in range(1,N):
+            pref[i]=max(pref[i-1],nums[i])
+        
+        suff=[0]*N
+        suff[-1]=nums[-1]
+        for i in reversed(range(N-1)):
+            suff[i]=max(suff[i+1],nums[i])
+        
+        ans=0
+        for j in range(1,N-1):
+            val=(pref[j-1]-nums[j])*suff[j+1]
+            ans=max(ans,val)
             
         return ans
 ```
