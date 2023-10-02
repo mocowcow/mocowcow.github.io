@@ -86,3 +86,58 @@ class Solution:
                 
         return ans
 ```
+
+看了別人的解法，發現一些可以改進的地方。  
+
+首先是計算環上節點數量的部分，為避免重複計算而維護的vis陣列，其實可以把入度的ind設成-1就好。  
+
+求非環上節點答案，則可以建立反向的路徑，從環上開始dfs/bfs回去。  
+
+```python
+class Solution:
+    def countVisitedNodes(self, edges: List[int]) -> List[int]:
+        N=len(edges)
+        ind=[0]*N
+        rev=[[] for _ in range(N)]
+        
+        for i,x in enumerate(edges):
+            ind[x]+=1
+            rev[x].append(i)
+            
+        q=deque()
+        for i in range(N):
+            if ind[i]==0:
+                q.append(i)
+                
+        while q:
+            i=q.popleft()
+            j=edges[i]
+            ind[j]-=1
+            if ind[j]==0:
+                q.append(j)
+                
+        ans=[0]*N
+        for i in range(N):
+            if ind[i]<=0: # 0:not on ring, -1:visited
+                continue
+            
+            q=deque()
+            curr=i
+            while True:
+                ring.append(curr)
+                ind[curr]=-1 # mark as visited
+                curr=edges[curr]
+                if curr==i:
+                    break
+                    
+            q=deque([[x,len(ring)] for x in ring])
+            while q:
+                for _ in range(len(q)):
+                    curr,cnt=q.popleft()
+                    ans[curr]=cnt
+                    for nxt in rev[curr]:
+                        if ind[nxt]==0:
+                            q.append([nxt,cnt+1])
+        
+        return ans
+```
