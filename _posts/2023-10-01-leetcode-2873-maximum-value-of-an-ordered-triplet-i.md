@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2873. Maximum Value of an Ordered Triplet I
-tags        : LeetCode Easy Array Simulation SortedList PrefixSum
+tags        : LeetCode Easy Array Simulation SortedList PrefixSum Greedy
 ---
 周賽365。
 
@@ -96,6 +96,32 @@ class Solution:
         for j in range(1,N-1):
             val=(pref[j-1]-nums[j])*suff[j+1]
             ans=max(ans,val)
+            
+        return ans
+```
+
+剛才上面都是枚舉j的方法，其實也可以枚舉k，更省空間。  
+
+我們其實需要的是i-j的最大值ij，在枚舉k的過程中以ij\*k更新答案。  
+那要怎麼維護ij？  
+
+計算ij當然需要i，在遍歷的過程中更新i的最大值：如果k大於i，那麼i會變更大；否則k可以作為j，嘗試更新ij的值。  
+
+時間複雜度O(N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def maximumTripletValue(self, nums: List[int]) -> int:
+        ans=0
+        i=0
+        ij=0
+        for k in nums:
+            ans=max(ans,ij*k)
+            if k>i:
+                i=k
+            else:
+                ij=max(ij,i-k)
             
         return ans
 ```
