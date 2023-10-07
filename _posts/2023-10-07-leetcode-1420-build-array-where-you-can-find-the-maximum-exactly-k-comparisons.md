@@ -135,3 +135,40 @@ class Solution:
                     
         return dp[n+1][0][k0+1]
 ```
+
+仔細觀察，又又發現當i和k不變的情況下，只要j越大，轉移的次數會越小。  
+對dp(i,j,k)來說，x轉移的範圍是j<x<=m；  
+對dp(i,j-1,k)來說，x轉移的範圍是j-1<x<=m，比起上者，只多出一個來源dp(i-1,j,k)。  
+也就是說這部分有非常多的重複計算。  
+
+這些重複計算怎麼處理？  
+如同先讓你找1\~1的總和，再找1\~2的總和，再找1\~3的總和同理，重複利用先前的值：正是**前綴和**。  
+維護一個變數ps，作為先前x來源的前綴和，直接加入ps就可以，不需要枚舉所有m個元素。  
+計算完dp(i,j,k)後，記得dp(i-1,j,k-1)加入前綴和中，為之後的j作貢獻。  
+
+注意：因為上述更動，dp(i,j-1,k)依賴於dp(i,j,k)的轉移前綴和，因此j必須**從大到小**枚舉。  
+並且k都是維持同樣的值，所以必須把k的迴圈搬到j的外層。  
+
+時間複雜度O(n \* m \* k)。  
+空間複雜度O(n \* m \* k)。  
+
+```python
+class Solution:
+    def numOfArrays(self, n: int, m: int, k: int) -> int:
+        MOD=10**9+7
+        k0=k
+        dp=[[[0]*(k+2) for _ in range(m+1)] for _ in range(n+2)]
+        
+        for i in range(1,n+2):
+            for k in range(1,k0+2):
+                ps=0
+                for j in reversed(range(m+1)):
+                    if i==1 and k==1:
+                        dp[i][j][k]=1
+                        continue
+                    res=dp[i-1][j][k]*j+ps
+                    dp[i][j][k]=res%MOD
+                    ps+=dp[i-1][j][k-1]
+                    
+        return dp[n+1][0][k0+1]
+```
