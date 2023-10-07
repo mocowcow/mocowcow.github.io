@@ -61,3 +61,25 @@ class Solution:
     
         return dp(n,0,k)
 ```
+
+我們發現i和k這兩個變數會出現負數，為了方便改寫成遞推版本，將狀態上的i和k都增加位移量1，使所有狀態都不為負。  
+當然，入口函數也要一起增加。  
+
+```python
+class Solution:
+    def numOfArrays(self, n: int, m: int, k: int) -> int:
+        MOD=10**9+7
+        
+        @cache
+        def dp(i,j,k):
+            if i==1 and k==1:
+                return 1
+            if i<1 or k<1:
+                return 0
+            res=dp(i-1,j,k)*j
+            for x in range(j+1,m+1):
+                res+=dp(i-1,x,k-1)
+            return res%MOD
+    
+        return dp(n+1,0,k+1)
+```
