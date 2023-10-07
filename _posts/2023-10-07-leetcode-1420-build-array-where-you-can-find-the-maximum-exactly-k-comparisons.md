@@ -172,3 +172,36 @@ class Solution:
                     
         return dp[n+1][0][k0+1]
 ```
+
+這樣就結束了嗎？並沒有。  
+
+dp(i,j,k)只依賴於i-1的結果，別忘了遞推空間優化的老朋友：**滾動陣列**。  
+計算長度為i的方案時，只需要保留前一次i-1的結果，壓縮掉n這個維度的空間。  
+
+時間複雜度O(n \* m \* k)。  
+空間複雜度O(m \* k)。  
+
+```python
+class Solution:
+    def numOfArrays(self, n: int, m: int, k: int) -> int:
+        MOD=10**9+7
+        k0=k
+        dp=[[0]*(k+2) for _ in range(m+1)]
+        
+        for i in range(1,n+2):
+            dp2=[[0]*(k+2) for _ in range(m+1)]
+            for k in range(1,k0+2):
+                ps=0
+                for j in reversed(range(m+1)):
+                    if i==1 and k==1:
+                        dp2[j][k]=1
+                        continue
+                    res=dp[j][k]*j+ps
+                    dp2[j][k]=res%MOD
+                    ps+=dp[j][k-1]
+            dp=dp2
+                    
+        return dp[0][k0+1]
+```
+
+搞這麼多次，總算大功告成。  
