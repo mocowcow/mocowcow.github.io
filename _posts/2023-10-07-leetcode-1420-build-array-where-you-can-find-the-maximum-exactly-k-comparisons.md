@@ -1,0 +1,63 @@
+---
+layout      : single
+title       : LeetCode 1420. Build Array Where You Can Find The Maximum Exactly K Comparisons
+tags        : LeetCode Hard Array DP PrefixSum
+---
+每日題。可以優化超級多次dp練習題。單純通過不難，難的是找出最佳解。  
+
+## 題目
+
+輸入三個整數n, m和k。  
+下列演算法用來來找出正整數陣列的最大元素：  
+
+![img](https://assets.leetcode.com/uploads/2020/04/02/e.png)  
+
+你必須構造出滿足以下條件的出陣列arr：  
+
+- arr擁有n個整數  
+- 1 <= arr[i] <= m 其中 (0 <= i < n)  
+- 使用上述的演算法後，search_cost會等於k  
+
+求有多少種構造出arr的方案。答案很大，先模10^9+7後回傳。  
+
+## 解法
+
+search_cost以下簡稱**成本**。  
+題目給定的演算法，就是遍歷陣列找到最大值。最大值初始為-1，成本就是最大值更新的次數。  
+
+構造出長度為n的陣列，只能由1\~m的元素組成，而成本必須是k。  
+先前最大值會影響成本的變化。  
+目前知道有三個變數：陣列長度、先前最大值、成本。  
+
+定義dp(i,j,k)：長度為i的陣列，先前最大值為j，且成本為k的陣列的**構造方案數**。  
+
+我們可以任選1\~m的任意元素，則會縮減問題的規模，形成較小的子問題dp(i-1,j',k')。  
+而新的最大值j'取max(j,x)。所有小於等於j的元素x都不會使成本增加，因此子問題為dp(i-1,j,k)；  
+大於j的元素x則會改變最大值，且成本增加1，因此子問題為dp(i-1,x,k-1)。  
+對於dp(i,j,k)來說，共有1\~j共j個元素小於等於j，其他都大於j。  
+轉移方程式：dp(i,j,k) = dp(i-1,j,k)\*j + sum( dp(i-1,x,k-1) FOR ALL j<x<=m )  
+base cases：剩餘長度i=0，且需求成本k=0時，順利達成要求，答案為1；若長度或成本不足0，代表不合法的狀態，答案為0。  
+
+狀態有三個參數，共有nmk種狀態。每個狀態轉移需要O(m)時間。  
+
+時間複雜度O(n \* m^2 \* k)。  
+空間複雜度O(n \* m \* k)。  
+
+```python
+class Solution:
+    def numOfArrays(self, n: int, m: int, k: int) -> int:
+        MOD=10**9+7
+        
+        @cache
+        def dp(i,j,k):
+            if i==0 and k==0:
+                return 1
+            if i<0 or k<0:
+                return 0
+            res=dp(i-1,j,k)*j
+            for x in range(j+1,m+1):
+                res+=dp(i-1,x,k-1)
+            return res%MOD
+    
+        return dp(n,0,k)
+```
