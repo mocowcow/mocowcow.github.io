@@ -87,6 +87,7 @@ class Solution:
 迴圈使用到的k會和輸入的k相同，原本的k記作k0，避免數值被汙染。  
 
 初始化狀態將三個狀態參數轉換成迴圈、然後return改成continue，剩餘照搬就可以。  
+dp(i,j,k)是從dp(i-1,j',k')轉移過來，因此只需要確保i是最外層迴圈，從小到大枚舉，剩餘兩者隨意。  
 
 ```python
 class Solution:
@@ -102,6 +103,30 @@ class Solution:
                         dp[i][j][k]=1
                         continue
                     if i<1 or k<1:
+                        continue
+                    res=dp[i-1][j][k]*j
+                    for x in range(j+1,m+1):
+                        res+=dp[i-1][x][k-1]
+                    dp[i][j][k]=res%MOD
+                    
+        return dp[n+1][0][k0+1]
+```
+
+又發現當i或j等於0時，方案數一定是0，根本不用處理。  
+因此i和j可從1開始枚舉。  
+
+```python
+class Solution:
+    def numOfArrays(self, n: int, m: int, k: int) -> int:
+        MOD=10**9+7
+        k0=k
+        dp=[[[0]*(k+2) for _ in range(m+1)] for _ in range(n+2)]
+        
+        for i in range(1,n+2):
+            for j in range(m+1):
+                for k in range(1,k0+2):
+                    if i==1 and k==1:
+                        dp[i][j][k]=1
                         continue
                     res=dp[i-1][j][k]*j
                     for x in range(j+1,m+1):
