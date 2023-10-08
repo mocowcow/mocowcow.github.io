@@ -204,4 +204,28 @@ class Solution:
         return dp[0][k0+1]
 ```
 
+最後再看看k的變化，對於dp(i,j,k)只會依賴於dp(i-1,j,k)和dp(i-1,j,k-1)。  
+其實連滾動的dp2陣列都不需要，只要把k逆向枚舉，就不會覆蓋到需要的值。  
+
+```python
+class Solution:
+    def numOfArrays(self, n: int, m: int, k: int) -> int:
+        MOD=10**9+7
+        k0=k
+        dp=[[0]*(k+2) for _ in range(m+1)]
+        
+        for i in range(1,n+2):
+            for k in reversed(range(1,k0+2)):
+                ps=0
+                for j in reversed(range(m+1)):
+                    if i==1 and k==1:
+                        dp[j][k]=1
+                        continue
+                    res=dp[j][k]*j+ps
+                    dp[j][k]=res%MOD
+                    ps+=dp[j][k-1]
+                    
+        return dp[0][k0+1]
+```
+
 搞這麼多次，總算大功告成。  
