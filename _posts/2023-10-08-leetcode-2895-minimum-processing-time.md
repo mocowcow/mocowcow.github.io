@@ -38,3 +38,19 @@ class Solution:
                 
         return ans
 ```
+
+仔細想想，同處理器的4個核心，開始時間都一樣，那只要找4個任務中最大的更新答案就好。  
+
+```python
+class Solution:
+    def minProcessingTime(self, processorTime: List[int], tasks: List[int]) -> int:
+        pt=processorTime
+        pt.sort()
+        tasks.sort(reverse=True)
+        
+        ans=0
+        for i,x in enumerate(pt):
+            ans=max(ans,x+tasks[i*4])
+                
+        return ans
+```
