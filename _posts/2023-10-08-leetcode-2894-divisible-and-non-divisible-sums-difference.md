@@ -35,3 +35,21 @@ class Solution:
                 
         return n1-n2
 ```
+
+既然知道n的範圍，其實可以直接公式找答案。  
+n裡面共有q = floor(n/m)個數可以被m整除，這個數列是：  
+> 1m, 2m, ...,   qm  
+> 把m提出來，就是sum(1, ..., q)\*m  
+> num2的部分就是1\~q總和乘上m  
+> num1的部分就是1\~n總和扣掉num2  
+
+```python
+class Solution:
+    def differenceOfSums(self, n: int, m: int) -> int:
+        q=n//m
+        tot=n*(n+1)//2
+        n2=q*(q+1)//2*m
+        n1=tot-n2
+        
+        return n1-n2
+```
