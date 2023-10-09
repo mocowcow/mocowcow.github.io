@@ -176,3 +176,34 @@ class Solution:
                 
         return dp[N]//2
 ```
+
+dp[i]只會參考到dp[i-1]和dp[i-2]這前兩項的結果。  
+可以使用滾動陣列，節省空間。  
+
+注意：需要特判s1等於s2的情形。  
+
+時間複雜度O(N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def minOperations(self, s1: str, s2: str, x: int) -> int:
+        idx=[i for i,c in enumerate(s1) if c!=s2[i]]
+        
+        N=len(idx)
+        if N%2==1:
+            return -1
+        
+        if N==0: # s1==s2
+            return 0
+        
+        pprev=0
+        prev=x
+        for i in range(1,N):
+            cost=idx[i]-idx[i-1]
+            t=prev
+            prev=min(prev+x,pprev+cost*2)
+            pprev=t
+        
+        return prev//2
+```
