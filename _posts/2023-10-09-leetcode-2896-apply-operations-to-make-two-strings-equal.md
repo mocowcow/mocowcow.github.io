@@ -99,3 +99,59 @@ class Solution:
         
         return dp(0,len(idx)-1)
 ```
+
+另種思路是把第一種操作**拆成兩半**。  
+
+定義dp(i)：需要反轉的索引陣列idx中，反轉前i個索引的最小成本。  
+可以選擇idx[i]要使用第一種操作，配對的idx[j]之後再找；或是idx[i]和idx[i-1]一起使用第二種操作。  
+轉移方程式：dp(i) = min( dp(i-1) + x/2, dp(i-2) + idx[i]-idx[i-1] )  
+base case：當i等於-1，代表反轉完成，回傳0。  
+
+注意：只有在剩下至少兩個索引的時候才能使用第二種操作，而且先前也過濾掉奇數情況，保證索引一定會成對。  
+然後x可能是奇數，所以dp結果必須是浮點數，最後才轉回整數。  
+
+時間複雜度O(N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def minOperations(self, s1: str, s2: str, x: int) -> int:
+        idx=[i for i,c in enumerate(s1) if c!=s2[i]]
+        
+        if len(idx)%2==1:
+            return -1
+        
+        @cache
+        def dp(i):
+            if i<0:
+                return 0
+            res=dp(i-1)+x/2
+            if i>0:
+                res=min(res,dp(i-2)+idx[i]-idx[i-1])
+            return res
+        
+        return int(dp(len(idx)-1))
+```
+
+如果怕浮點數誤差，可以把成本都先設成兩倍，最後回傳答案時一次除回來。  
+
+```python
+class Solution:
+    def minOperations(self, s1: str, s2: str, x: int) -> int:
+        idx=[i for i,c in enumerate(s1) if c!=s2[i]]
+        
+        if len(idx)%2==1:
+            return -1
+        
+        @cache
+        def dp(i):
+            if i<0:
+                return 0
+            res=dp(i-1)+x
+            if i>0:
+                cost=idx[i]-idx[i-1]
+                res=min(res,dp(i-2)+cost*2)
+            return res
+        
+        return dp(len(idx)-1)//2
+```
