@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2897. Apply Operations on Array to Maximize Sum of Squares
-tags        : LeetCode Hard Array BitManipulation Greedy
+tags        : LeetCode Hard Array BitManipulation Greedy Math
 ---
 周賽366。個人覺得比Q3簡單很多，至少我10分鐘就做出Q4，然後一小時做不出Q3。  
 
@@ -76,3 +76,18 @@ class Solution:
             
         return ans
 ```
+
+集中位元得到較大平方值，當時很直覺，卻沒有嚴謹證明，補一下看到的說法：  
+
+> 四個數 a < b < c < d 且 a + d = b + c  
+> a^2 + d^2 必定大於 b^2 + c^2  
+
+另一種說法：  
+> 設 x > y 且由 y 將1位元提供給 x
+> 原本兩數平方和是 x^2 + y^2  
+> 移動某些位元，值為d  
+> 平方和變成 (x+d)^2 + (y-d)^2  
+> 展開 = x^2 + d^2 + 2xd + y^2 + d^2 -2yd  
+> = x^2 + y^2 + 2d(x-y) + 2d^2  
+
+交換後多出了 2d(x-y) + 2d^2，(x-y)必為正，一定會更大。  
