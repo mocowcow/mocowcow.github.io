@@ -155,3 +155,24 @@ class Solution:
         
         return dp(len(idx)-1)//2
 ```
+
+改寫成遞推版本。  
+
+```python
+class Solution:
+    def minOperations(self, s1: str, s2: str, x: int) -> int:
+        idx=[i for i,c in enumerate(s1) if c!=s2[i]]
+        N=len(idx)
+        
+        if N%2==1:
+            return -1
+
+        dp=[0]*(N+1)
+        for i in range(N):
+            dp[i+1]=dp[i]+x
+            if i>0:
+                cost=idx[i]-idx[i-1]
+                dp[i+1]=min(dp[i+1],dp[i-1]+cost*2)
+                
+        return dp[N]//2
+```
