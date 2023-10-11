@@ -20,7 +20,7 @@ tags        : LeetCode Medium Array DP
 
 ## 解法
 
-我們只要考慮s1[i]和s2[i]不相同的索引i，原本相同的話再去翻轉也沒意義。  
+我們只要考慮s1[i]和s2[i]不相同的索引i，原本相同的話再去反轉也沒意義。  
 
 選擇索引i, j，操作後的變化只有四種情形：00變11、11變00、01變10、10變01。  
 字串中1的的數量一定是偶數增減，若不同的索引有奇數個，則不存在答案。  
@@ -31,7 +31,7 @@ tags        : LeetCode Medium Array DP
 > 也可以用第二種操作，先反轉s1[0]和s1[1]，s1 = 010  
 > 然後再反轉s1[1]和s1[2]，s1 = 001，成本2  
 
-發現想要同時翻轉i, j兩個索引，可以選擇成本較低的方法，也就是min(x, j-i)。  
+發現想要同時反轉i, j兩個索引，可以選擇成本較低的方法，也就是min(x, j-i)。  
 那要怎樣配對才能保證成本最小？  
 
 如果循序倆倆配對，那麼碰到s1 = 10011001, s2 = 00000000 這種情形就會算錯。  
@@ -206,4 +206,55 @@ class Solution:
             pprev=t
         
         return prev//2
+```
+
+其實還有一種O(N^2)的dp，但我覺得比起上面兩種更難想到。  
+判定當前索引i是否被**反轉過**，更類似於dfs的暴力搜索。  
+
+定義dp(i,free,rev)：剩下free次免費反轉機會，使前i個字元相等的最小反轉成本。rev代表s1[i]是否被反轉過。  
+
+轉移方程式：  
+如果s1[i]和s2[i]原本就相同、或經過反轉後相同，則不需多餘操作，直接考慮下一個字元  
+
+- dp(i,free,rev) = dp(i-1,free,False)  
+
+使用第一種操作，先計算費用，並記錄一次反轉的機會  
+
+- dp(i,free,rev) = dp(i-1,free+1,False) + x  
+
+如果當前有免費機會也可以使用  
+
+- dp(i,free,rev) = dp(i-1,free-1,False) if free>0  
+
+否則使用第二種操作，把s1[i]和s1[i-1]一起反轉  
+
+- dp(i,free,rev) = dp(i-1,free,True) + 1  
+
+base cases：當i小於0時，所有字元都處理完，這時free應為0、rev也為false，合法則回傳0；否則因操作1需要成對操作，剩餘奇數free代表沒有答案，非零0的偶數代表使用太多的操作次數，兩種都不會是答案，回傳inf。  
+
+時間複雜度O(N^2)。  
+空間複雜度O(N^2)。  
+
+```python
+class Solution:
+    def minOperations(self, s1: str, s2: str, x: int) -> int:
+        N=len(s1)
+        if s1.count("1")%2!=s2.count("1")%2:
+            return -1
+        
+        @cache
+        def dp(i,free,rev):
+            if i<0 and free==0 and not rev:
+                return 0
+            if i<0:
+                return inf
+            if (s1[i]==s2[i]) == (not rev): # no need flip
+                return dp(i-1,free,False)
+            res=dp(i-1,free+1,False)+x # op1 
+            res=min(res,dp(i-1,free,True)+1) # op2
+            if free>0:
+                res=min(res,dp(i-1,free-1,False))
+            return res
+        
+        return dp(N-1,0,False)
 ```
