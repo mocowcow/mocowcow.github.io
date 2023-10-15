@@ -28,7 +28,7 @@ tags        : LeetCode Medium Array String Greedy
 如果不選i，還要等到下一個組1的索引出現才能選，不可能比選i得到更好的結果，所以組別交替時一定要選。  
 
 時間複雜度O(n)。  
-空間複雜度O(1)。  
+空間複雜度O(1)，輸出空間不計入。  
 
 ```python
 class Solution:
@@ -41,5 +41,17 @@ class Solution:
                 prev=groups[i]
                 
         return ans
+```
 
+其實也可以倆倆枚舉groups[i]，反正只要與前者不同組，就可以把words[i]加入答案。  
+
+```python
+class Solution:
+    def getWordsInLongestSubsequence(self, n: int, words: List[str], groups: List[int]) -> List[str]:
+        ans=[]
+        for i in range(n):
+            if i==0 or groups[i-1]!=groups[i]:
+                ans.append(words[i])
+
+        return ans
 ```
