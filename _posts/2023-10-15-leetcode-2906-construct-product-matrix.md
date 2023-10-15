@@ -81,3 +81,32 @@ class Solution:
             
         return ans
 ```
+
+如果把矩陣攤平成大小MN的一維陣列a來看，若ans[r][c]對應到a[i]，那麼其乘積正是a[0, i-1]乘上a[i+1, MN-1]。  
+一次前後綴分解就完成。  
+
+時間複雜度O(MN)。  
+空間複雜度O(MN)。  
+
+```python
+class Solution:
+    def constructProductMatrix(self, grid: List[List[int]]) -> List[List[int]]:
+        MOD=12345
+        M,N=len(grid),len(grid[0])
+        MN=M*N
+        ans=[[0]*N for _ in range(M)]
+        
+        suff=[1]*(MN+1)
+        for i in reversed(range(MN)):
+            suff[i]=suff[i+1]*grid[i//N][i%N]%MOD
+            
+        pref=1
+        for i in range(MN):
+            r,c=i//N,i%N
+            ans[r][c]=suff[i+1]*pref
+            ans[r][c]%=MOD
+            pref*=grid[r][c]
+            pref%=MOD
+        
+        return ans
+```
