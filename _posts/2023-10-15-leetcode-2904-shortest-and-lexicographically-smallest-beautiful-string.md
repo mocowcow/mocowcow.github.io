@@ -39,3 +39,35 @@ class Solution:
         return ""
                     
 ```
+
+也可以枚舉子字串左起點i，擴展右邊界j，並計算字元1的個數。  
+找滿k個則以當前子字串s[i,j]更新答案。  
+
+要使得子字串盡可能小，所以不可能有前導零，若nums[i]可以直接跳過不處理。  
+
+時間複雜度O(N^2)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def shortestBeautifulSubstring(self, s: str, k: int) -> str:
+        N=len(s)
+        ans=""
+        
+        for i in range(N):
+            if s[i]!="1":
+                continue
+            cnt=0
+            for j in range(i,N):
+                if s[j]=="1":
+                    cnt+=1
+                if cnt==k:
+                    sub=s[i:j+1]
+                    if ans=="" or \
+                    len(sub)<len(ans) or \
+                    (len(sub)==len(ans) and sub<ans):
+                        ans=sub
+                    break
+                    
+        return ans
+```
