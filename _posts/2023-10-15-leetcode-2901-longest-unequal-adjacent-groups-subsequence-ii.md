@@ -66,3 +66,27 @@ class Solution:
                 
         return ans
 ```
+
+也可以把len當成max函數的判斷方式，這樣就可以直接傳入子序列本身。  
+
+```python
+class Solution:
+    def getWordsInLongestSubsequence(self, n: int, words: List[str], groups: List[int]) -> List[str]:
+        
+        def ok(i,j):
+            if groups[i]==groups[j]:
+                return False
+            if len(words[i])!=len(words[j]):
+                return False
+            return sum(c1!=c2 for c1,c2 in zip(words[i],words[j]))==1
+        
+        @cache
+        def dp(i):
+            longest=[]
+            for j in range(i):
+                if ok(i,j):
+                    longest=max(longest,dp(j),key=len)
+            return longest+[words[i]]
+        
+        return max([dp(i) for i in range(n)],key=len)
+```
