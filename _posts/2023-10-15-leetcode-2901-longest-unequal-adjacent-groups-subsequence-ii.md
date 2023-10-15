@@ -90,3 +90,50 @@ class Solution:
         
         return max([dp(i) for i in range(n)],key=len)
 ```
+
+在計算dp(i)的過程中，會試著從數個索引j轉移過來。  
+如果額外維護一個陣列fa，其中fa[i]代表i的轉移來源，那麼就可以只保存子序列長度，最後從利用fa逆向建構出整個子序列。  
+
+時間複雜度O(N^2)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def getWordsInLongestSubsequence(self, n: int, words: List[str], groups: List[int]) -> List[str]:
+        
+        def ok(i,j):
+            if groups[i]==groups[j]:
+                return False
+            if len(words[i])!=len(words[j]):
+                return False
+            return sum(c1!=c2 for c1,c2 in zip(words[i],words[j]))==1
+        
+        fa=[-1]*n
+        
+        @cache
+        def dp(i):
+            res=0
+            for j in range(i):
+                if ok(i,j):
+                    t=dp(j)
+                    if t>res:
+                        res=t
+                        fa[i]=j
+            return res+1
+        
+        mx=0
+        mxi=None
+        for i in range(n):
+            t=dp(i)
+            if t>mx:
+                mx=t
+                mxi=i
+
+        ans=[None]*mx
+        curr=mxi
+        for i in reversed(range(mx)):
+            ans[i]=words[curr]
+            curr=fa[curr]
+        
+        return ans
+```
