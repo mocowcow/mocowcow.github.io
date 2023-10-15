@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2904. Shortest and Lexicographically Smallest Beautiful String
-tags        : LeetCode Medium String Simulation
+tags        : LeetCode Medium String Simulation SlidingWindow TwoPointers
 ---
 周賽367。
 
@@ -69,5 +69,33 @@ class Solution:
                         ans=sub
                     break
                     
+        return ans
+```
+
+另一種思路是滑動窗口：維護一個擁有k個1的窗口，並以當前窗口做為子字串更新答案。  
+
+雖然均攤下來，每個s[i]最多被處理兩次，但是更新答案時需要構造子字串，每次時間還是O(N)。  
+時間複雜度O(N^2)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def shortestBeautifulSubstring(self, s: str, k: int) -> str:
+        N=len(s)
+        ans=""
+        i=0
+        cnt=0
+        
+        for j,c in enumerate(s):
+            if c=="1":
+                cnt+=1
+            while cnt==k:
+                sub=s[i:j+1]
+                if ans=="" or len(sub)<len(ans) or (len(sub)==len(ans) and sub<ans):
+                    ans=sub
+                if s[i]=="1":
+                    cnt-=1
+                i+=1
+            
         return ans
 ```
