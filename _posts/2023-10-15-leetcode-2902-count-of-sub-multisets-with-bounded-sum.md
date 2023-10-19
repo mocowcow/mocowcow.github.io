@@ -178,3 +178,54 @@ class Solution:
         
         return ans*zeros%MOD
 ```
+
+dp(i,j)只會參考到dp(i-1,j)和左方的dp(i,j-x)、dp(i,j-x\*(cnt+1))，因此可以只保留上一列的結果，只使用兩個陣列。  
+
+時間複雜度O(min(sqrt(S),N) \* min(S,r))。  
+空間複雜度O(min(S,r))。  
+
+```python
+class Solution:
+    def countSubMultisets(self, nums: List[int], l: int, r: int) -> int:
+        MOD=10**9+7
+        S=sum(nums)
+        
+        # less than l
+        if S<l:
+            return 0
+        
+        # no more than S
+        r=min(r,S)
+        
+        # special case of 0
+        d=Counter(nums)
+        zeros=d[0]+1
+        del d[0]
+        
+        # remaining elements
+        keys=list(d)
+        N=len(d)
+        
+        dp=[0]*(r+1)
+        dp[0]=1
+        
+        for i in range(N):
+            x=keys[i]
+            cnt=d[x]
+            dp2=[0]*(r+1)
+            for j in range(r+1):
+                dp2[j]=dp[j]
+                if j>=x:
+                    dp2[j]+=dp2[j-x]
+                if j>=x*(cnt+1):
+                    dp2[j]-=dp[j-x*(cnt+1)]
+                dp2[j]%=MOD
+            dp=dp2
+            
+        ans=0
+        for i in range(l,r+1):
+            ans+=dp[i]
+            ans%=MOD
+        
+        return ans*zeros%MOD
+```
