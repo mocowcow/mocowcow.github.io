@@ -94,7 +94,6 @@ class Solution:
 class Solution:
     def countSubMultisets(self, nums: List[int], l: int, r: int) -> int:
         MOD=10**9+7
-        d=Counter(nums)
         S=sum(nums)
         
         # less than l
@@ -105,6 +104,7 @@ class Solution:
         r=min(r,S)
         
         # special case of 0
+        d=Counter(nums)
         zeros=d[0]+1
         del d[0]
         
