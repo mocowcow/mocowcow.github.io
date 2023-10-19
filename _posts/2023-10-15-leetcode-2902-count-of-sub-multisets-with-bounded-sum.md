@@ -44,6 +44,11 @@ base case：當i<0時，沒有剩餘元素可選，只有空集合一種選擇�
 class Solution:
     def countSubMultisets(self, nums: List[int], l: int, r: int) -> int:
         MOD=10**9+7
+
+        # no more than S
+        r=min(r,sum(nums))
+
+        # remaining elements
         d=Counter(nums)
         keys=list(d)
         N=len(d)
@@ -65,4 +70,65 @@ class Solution:
             ans+=dp(N-1,i)
 
         return ans%MOD
+```
+
+假設在第i種元素為x，共有cnt個：  
+> dp(i,j) = dp(i-1,j) + dp(i-1,j-x) + ... + dp(i-1,j-cnt\*x)  
+
+列出另一項比較：
+> dp(i,j-x) = dp(i-1,j-x) + dp(i-1,j-x\*2) + ... + dp(i-1,j-(cnt+1)\*x)  
+
+發現dp(i,j)相對於dp(i,j-x)，多了dp(i-1,j)，少了dp(i-1,j-(cnt+1)\*x)。  
+轉移方程式變形成：  
+> dp(i,j) = dp(i,j-x) + dp(i-1,j) - dp(i-1,j-(cnt+1)\*x)  
+
+但是多出一個例外：如果x=0， dp(i,j-x)會無限遞迴下去。  
+0不管拿幾個總和都是0。除了空集合以外，還有cnt種選法可以組成總和0。所以最後答案要乘上cnt+1。  
+
+注意：LeetCode評測機有點問題，一定要把快取清掉，不然會MLE。  
+
+時間複雜度O(min(sqrt(S),N) \* min(S,r))。  
+空間複雜度O(min(sqrt(S),N) \* min(S,r))。  
+
+```python
+class Solution:
+    def countSubMultisets(self, nums: List[int], l: int, r: int) -> int:
+        MOD=10**9+7
+        d=Counter(nums)
+        S=sum(nums)
+        
+        # less than l
+        if S<l:
+            return 0
+        
+        # no more than S
+        r=min(r,S)
+        
+        # special case of 0
+        zeros=d[0]+1
+        del d[0]
+        
+        # remaining elements
+        keys=list(d)
+        N=len(d)
+        
+        @cache
+        def dp(i,j):
+            if i<0 and j==0:
+                return 1
+            if i<0 or j<0:
+                return 0
+            x=keys[i]
+            cnt=d[x]
+            res=dp(i,j-x)+dp(i-1,j)-dp(i-1,j-x*(cnt+1))
+            return res%MOD
+     
+        ans=0
+        for i in range(l,r+1):
+            ans+=dp(N-1,i)
+            ans%=MOD
+        
+        dp.cache_clear() # prevent MLE
+        
+        return ans*zeros%MOD
 ```
