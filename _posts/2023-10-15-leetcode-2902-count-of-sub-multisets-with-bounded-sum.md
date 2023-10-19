@@ -132,3 +132,49 @@ class Solution:
         
         return ans*zeros%MOD
 ```
+
+改成遞推版本。  
+
+```python
+class Solution:
+    def countSubMultisets(self, nums: List[int], l: int, r: int) -> int:
+        MOD=10**9+7
+        S=sum(nums)
+        
+        # less than l
+        if S<l:
+            return 0
+        
+        # no more than S
+        r=min(r,S)
+        
+        # special case of 0
+        d=Counter(nums)
+        zeros=d[0]+1
+        del d[0]
+        
+        # remaining elements
+        keys=list(d)
+        N=len(d)
+        
+        dp=[[0]*(r+1) for _ in range(N+1)]
+        dp[0][0]=1
+        
+        for i in range(N):
+            x=keys[i]
+            cnt=d[x]
+            for j in range(r+1):
+                dp[i+1][j]=dp[i][j]
+                if j>=x:
+                    dp[i+1][j]+=dp[i+1][j-x]
+                if j>=x*(cnt+1):
+                    dp[i+1][j]-=dp[i][j-x*(cnt+1)]
+                dp[i+1][j]%=MOD
+    
+        ans=0
+        for i in range(l,r+1):
+            ans+=dp[N][i]
+            ans%=MOD
+        
+        return ans*zeros%MOD
+```
