@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2910. Minimum Number of Groups to Create a Valid Assignment
-tags        : LeetCode Medium Array Math HashTable
+tags        : LeetCode Medium Array Math HashTable Greedy
 ---
 模擬周賽368。這題複雜度還真不太好想。  
 
@@ -93,4 +93,31 @@ class Solution:
             ans=min(ans,cnt)
                 
         return ans
+```
+
+如果一組的大小k越大，那麼分出來的組數會越小。  
+改成由大到小枚舉k，碰到第一個有效的k，直接回傳答案。  
+
+還有第二個優化點。  
+在x能以k和k+1有效分組的前提下，則ceil(x/k1)正好就是分出的組數。  
+
+```python
+class Solution:
+    def minGroupsForValidAssignment(self, nums: List[int]) -> int:
+        freq=Counter(nums).values()
+        mn_k=min(freq)
+        
+        for k in reversed(range(1,mn_k+1)):
+            k1=k+1
+            cnt=0
+            for x in freq:
+                ok=True
+                q,r=divmod(x,k)
+                if q<r:
+                    ok=False
+                    break
+                cnt+=(x+k1-1)//k1
+                
+            if ok:
+                return cnt
 ```
