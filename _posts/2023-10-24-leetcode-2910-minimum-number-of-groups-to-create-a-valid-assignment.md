@@ -59,6 +59,13 @@ tags        : LeetCode Medium Array Math HashTable
 
 總共會有q組大小為k1，每一組都可以出讓一個索引來幫助r。只要q+r>=k，就可以把剩餘的r湊滿k個。  
 
+nums長度為N，而freq中共有M種種出現頻率。  
+最小的頻率為k，迴圈總共會跑k\*M次。  
+而freq中所有頻率之和為N，在只有一種頻率時kM=N；否則kM<N。  
+
+時間複雜度O(N)。  
+空間複雜度O(N)。  
+
 ```python
 class Solution:
     def minGroupsForValidAssignment(self, nums: List[int]) -> int:
