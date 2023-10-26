@@ -35,9 +35,9 @@ base cases：當i=N且k=0時，子字串分割結束，回傳0；若只出現i=N
 
 cost(i,j)要將s[i,j]視為一個獨立的字串，其長度size=j-i+1，找出可整除size的d，以餘數將字元串接，最後判斷回文修改次數。  
 對於每個合法的d，都需要遍歷這個長度size的字串一次，每個d複雜度O(N)。  
-因為size上限不大，能滿足條件的d大概也才10個左右，幾乎可以當作常數無視掉。  
+每個子字串平均下來有log N個合法的d。  
 
-時間複雜度O(N^2\*k)。  
+時間複雜度O(N^2\*k\*log N)。  
 空間複雜度O(N^2)，瓶頸為cost的狀態數。  
 
 ```python
@@ -61,6 +61,52 @@ class Solution:
                     for ii in range(semi_size//2):
                         if cs[ii]!=cs[semi_size-1-ii]:
                             cnt+=1
+                mn_swap=min(mn_swap,cnt)
+            return mn_swap
+        
+        @cache
+        def dp(i,k):
+            if i==N and k==0:
+                return 0
+            if i==N or k==0:
+                return inf
+            res=inf
+            for j in range(i+1,N):
+                res=min(res,dp(j+1,k-1)+cost(i,j))
+            return res
+        
+        return dp(0,k)
+```
+
+同樣長度的子字串，合法的d都是一樣的，可以先預處理所有長度所包含的有效d。  
+
+預處理過之後，每次計算cost就可以直接拿出有效的d。  
+再次複習一下，d一定能夠整除大小為size的子字串，最後一步的位置會停在[size-d, size-d+1, ..., size-d+(d-1)]。  
+所以子字串的右邊界會是size-d+offset，其中0<=offset<d。  
+
+```python
+MX=200
+div=[[] for _ in range(MX+1)]
+for i in range(1,MX+1):
+    for j in range(i*2,MX+1,i):
+        div[j].append(i)
+
+class Solution:
+    def minimumChanges(self, s: str, k: int) -> int:
+        N=len(s)
+        
+        @cache
+        def cost(i,j):
+            size=j-i+1
+            mn_swap=inf
+            for d in div[size]:
+                cnt=0
+                for start in range(d):
+                    left=i+start
+                    right=j+1-d+start
+                    while left<right:
+                        cnt+=s[left]!=s[right]
+                        left,right=left+d,right-d
                 mn_swap=min(mn_swap,cnt)
             return mn_swap
         
