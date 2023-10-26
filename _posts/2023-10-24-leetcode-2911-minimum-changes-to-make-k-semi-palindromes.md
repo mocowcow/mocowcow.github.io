@@ -97,15 +97,16 @@ class Solution:
         
         @cache
         def cost(i,j):
-            size=j-i+1
+            sub=s[i:j+1]
+            size=len(sub)
             mn_swap=inf
             for d in div[size]:
                 cnt=0
-                for start in range(d):
-                    left=i+start
-                    right=j+1-d+start
+                for offset in range(d):
+                    left=offset
+                    right=size-d+offset
                     while left<right:
-                        cnt+=s[left]!=s[right]
+                        cnt+=sub[left]!=sub[right]
                         left,right=left+d,right-d
                 mn_swap=min(mn_swap,cnt)
             return mn_swap
