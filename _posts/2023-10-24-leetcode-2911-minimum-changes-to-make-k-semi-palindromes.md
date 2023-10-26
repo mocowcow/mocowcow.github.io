@@ -124,3 +124,47 @@ class Solution:
         
         return dp(0,k)
 ```
+
+最後改成遞推版本，也把cost提出外面作為公共函數。  
+只是不知道為啥反而比較慢。  
+
+```python
+MX=200
+div=[[] for _ in range(MX+1)]
+for i in range(1,MX+1):
+    for j in range(i*2,MX+1,i):
+        div[j].append(i)
+
+def get_cost(s):
+    size=len(s)
+    mn_swap=inf
+    for d in div[size]:
+        cnt=0
+        for offset in range(d):
+            left=offset
+            right=size-d+offset
+            while left<right:
+                cnt+=s[left]!=s[right]
+                left,right=left+d,right-d
+        mn_swap=min(mn_swap,cnt)
+    return mn_swap
+        
+class Solution:
+    def minimumChanges(self, s: str, k: int) -> int:
+        N=len(s)
+        
+        cost=[[0]*N for _ in range(N)]
+        for i in range(N):
+            for j in range(i+1,N):
+                cost[i][j]=get_cost(s[i:j+1])
+        
+        k0=k
+        dp=[[inf]*(k+1) for _ in range(N+1)]
+        dp[N][0]=0
+        for i in reversed(range(N)):
+            for k in range(1,k0+1):
+                for j in range(i+1,N):
+                    dp[i][k]=min(dp[i][k],dp[j+1][k-1]+cost[i][j])
+        
+        return dp[0][k0]
+```
