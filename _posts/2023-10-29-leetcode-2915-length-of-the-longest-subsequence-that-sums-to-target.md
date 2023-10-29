@@ -45,3 +45,54 @@ class Solution:
         
         return ans
 ```
+
+如果說是遞迴造成額外的記憶體開銷才MLE，那就算了。  
+但是自己手寫記憶化竟然又可以過。  
+
+```python
+class Solution:
+    def lengthOfLongestSubsequence(self, nums: List[int], target: int) -> int:
+        N=len(nums)
+        memo=[[None]*(target+1) for _ in range(N)]
+        
+        def dp(i,remain):
+            if i<0 and remain==0:
+                return 0
+            if i<0 or remain<0:
+                return -inf
+            if memo[i][remain] is None:
+                res=dp(i-1,remain) # no take
+                res=max(res,1+dp(i-1,remain-nums[i])) # take
+                memo[i][remain]=res
+            return memo[i][remain]
+        
+        ans=dp(N-1,target)
+        
+        if ans==-inf:
+            return -1
+        
+        return ans
+```
+
+改成遞推當然也可以過。  
+
+```python
+class Solution:
+    def lengthOfLongestSubsequence(self, nums: List[int], target: int) -> int:
+        N=len(nums)
+        dp=[[-inf]*(target+1) for _ in range(N+1)]
+        dp[0][0]=0
+        
+        for i,x in enumerate(nums):
+            for remain in range(target+1):
+                res=dp[i][remain]
+                if remain>=x:
+                    res=max(res,1+dp[i][remain-x])
+                dp[i+1][remain]=res
+        
+        ans=dp[N][target]
+        if ans==-inf:
+            return -1
+        
+        return ans
+```
