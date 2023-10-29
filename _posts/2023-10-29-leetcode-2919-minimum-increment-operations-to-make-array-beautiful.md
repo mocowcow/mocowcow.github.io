@@ -67,3 +67,28 @@ class Solution:
             
         return ans
 ```
+
+改寫成遞推版本。  
+
+```python
+class Solution:
+    def minIncrementOperations(self, nums: List[int], k: int) -> int:
+        N=len(nums)
+        dp=[[inf]*3 for _ in range(N+1)]
+        for free in range(3):
+            dp[N][free]=0
+        
+        for i in reversed(range(N)):
+            for free in range(3):
+                cost=max(0,k-nums[i])
+                res=cost+dp[i+1][2] # take
+                if free>0: # no take
+                    res=min(res,dp[i+1][free-1])
+                dp[i][free]=res
+                
+        ans=inf
+        for i in range(3):
+            ans=min(ans,dp[i][0])
+            
+        return ans
+```
