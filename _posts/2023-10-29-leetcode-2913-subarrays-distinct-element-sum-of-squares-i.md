@@ -88,3 +88,91 @@ Q4的nums長度高達10^5，大概得找個小於O(N^2)的方法才行。
 > i = 3  
 > sub = [[1,3,1,2],[3,1,2],[1,2],[2]], dis = [3,3,2,1]  
 > dis平方總合 = 9+9+4+1 = 23  
+
+到目前為止，方法簡化成：  
+
+- 遍歷每個nums[i]=x  
+- 找到x上次出現的位置j  
+- 平方總合 += sum( dis[idx]*2+1 FOR ALL j<idx<=i)  
+- dis[idx] += 1 FOR ALL j<idx<=i  
+
+但這樣還只是O(N^2)，還要繼續優化。  
+
+假設有j-i=cnt個符合的索引。  
+可以把dis[idx]*2+1拆成兩部分，+1的部分就是一開始用到的j-i。  
+dis[idx]加總則交給**線段樹**來做**區間查詢**。  
+
+時間複雜度O(N log N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def sumCounts(self, nums: List[int]) -> int:
+        # 區間查詢
+        # 回傳[i, j]的總和
+        def query(id, L, R, i, j):
+            if i <= L and R <= j:  # 當前區間被目標範圍包含
+                return tree[id]
+            push_down(id, L, R)
+            ans = 0
+            M = (L+R)//2
+            if i <= M:
+                ans += query(id*2, L, M, i, j)
+            if M+1 <= j:
+                ans += query(id*2+1, M+1, R, i, j)
+            return ans
+
+
+        # 區間更新
+        # 對[i, j]每個索引都增加val
+        def update(id, L, R, i, j, val):
+            if i <= L and R <= j:  # 當前區間被目標範圍包含
+                tree[id] += (R-L+1)*val
+                lazy[id] += val  # 標記每個位置都加val
+                return
+            push_down(id, L, R)
+            M = (L+R)//2
+            if i <= M:
+                update(id*2, L, M, i, j, val)
+            if M+1 <= j:
+                update(id*2+1, M+1, R, i, j, val)
+            push_up(id)
+
+
+        # 將區間懶標加到答案中
+        # 下推懶標記給左右子樹
+        def push_down(id, L, R):
+            M = (L+R)//2
+            if lazy[id]:
+                lazy[id*2] += lazy[id]
+                tree[id*2] += lazy[id]*(M-L+1)
+                lazy[id*2+1] += lazy[id]
+                tree[id*2+1] += lazy[id]*(R-(M+1)+1)
+                lazy[id] = 0
+
+
+        # 以左右子樹更新答案
+        def push_up(id):
+            tree[id] = tree[id*2]+tree[id*2+1]
+
+
+        MOD=10**9+7
+        N = len(nums)
+        tree = [0]*(N*4)
+        lazy = [0]*(N*4)
+    
+        last={}
+        ans=0
+        sub=0
+        for i,x in enumerate(nums):
+            j=last[x] if x in last else -1 # last position we saw "x" 
+            # dis[j+1, i] will be increase
+            # delta = (d+1)^2 - d^2 = 2d + 1
+            sub+=i-j # (i-j)*1
+            sub+=query(1,0,N-1,j+1,i)*2 # sum(dis[j+1, i])*2 
+            ans=(ans+sub)%MOD
+            update(1,0,N-1,j+1,i,1) # dis[j+1, i] increased by 1
+            last[x]=i
+            
+        return ans
+```
