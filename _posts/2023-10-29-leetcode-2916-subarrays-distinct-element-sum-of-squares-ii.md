@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2916. Subarrays Distinct Element Sum of Squares II
-tags        : LeetCode Hard Array HashTable Math BIT SegmentTree
+tags        : LeetCode Hard Array HashTable Math SegmentTree
 ---
 雙周賽116。
 
