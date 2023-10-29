@@ -96,3 +96,27 @@ class Solution:
         
         return ans
 ```
+
+老樣子，dp只會依賴於上一個i的狀態，只要保留上次的結果就行。  
+而且remain也只依賴於較小值，可以倒序更新。  
+
+時間複雜度O(N\*target)。  
+空間複雜度O(target)。  
+
+```python
+class Solution:
+    def lengthOfLongestSubsequence(self, nums: List[int], target: int) -> int:
+        N=len(nums)
+        dp=[-inf]*(target+1)
+        dp[0]=0
+    
+        for i,x in enumerate(nums):
+            for remain in reversed(range(x,target+1)):
+                dp[remain]=max(dp[remain],1+dp[remain-x])
+        
+        ans=dp[target]
+        if ans==-inf:
+            return -1
+        
+        return ans
+```
