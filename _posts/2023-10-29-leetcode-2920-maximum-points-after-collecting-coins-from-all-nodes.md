@@ -46,16 +46,12 @@ class Solution:
         def dp(i,fa,div):
             val=coins[i]>>div
             op1=(val>>div)-k
-            for j in g[i]:
-                if j==fa:
-                    continue
-                op1+=dp(j,i,div)
-                
             op2=val//2
             div2=min(14,div+1)
             for j in g[i]:
                 if j==fa:
                     continue
+                op1+=dp(j,i,div)
                 op2+=dp(j,i,div2)
             return max(op1,op2)            
         
