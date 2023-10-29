@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2913. Subarrays Distinct Element Sum of Squares I
-tags        : LeetCode Easy Array HashTable
+tags        : LeetCode Easy Array HashTable Math BIT SegmentTree
 ---
 雙周賽116。既是Q1又是Q4，測資範圍不同，難度大概差了二十倍。  
 
