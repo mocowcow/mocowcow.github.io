@@ -92,3 +92,52 @@ class Solution:
             
         return ans
 ```
+
+上面的dp(i,free)定義是有幾次**不增量的機會**。還有其他定義方式。  
+
+定義dp(i,step)：使得nums[0,i]子陣列美麗的最小增量次數，且nums[i+step]處不滿足k。  
+轉移方程式：dp(i,step) = min( dp(i-1,step)+cost, dp(i-1,step+1) )  
+base cases：當step>=3，已經無法變得美麗，回傳inf；當i<0，陣列處理完畢，回傳0。  
+
+遞迴的入口只剩下一個dp(N-1,0)，比起前一種定義好像方便不少。  
+
+時間複雜度O(N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def minIncrementOperations(self, nums: List[int], k: int) -> int:
+        N=len(nums)
+        
+        @cache
+        def dp(i,step):
+            if step>=3:
+                return inf
+            if i<0:
+                return 0
+            cost=max(0,k-nums[i])
+            res=dp(i-1,0)+cost # take
+            res=min(res,dp(i-1,step+1)) # no take
+            return res
+        
+        return dp(N-1,0)
+```
+
+改成遞推版本。  
+
+```python
+class Solution:
+    def minIncrementOperations(self, nums: List[int], k: int) -> int:
+        N=len(nums)
+        dp=[[0]*3 for _ in range(N+1)]
+        
+        for i,x in enumerate(nums):
+            for step in range(3):
+                cost=max(0,k-x)
+                res=dp[i][0]+cost
+                if step<2:
+                    res=min(res,dp[i][step+1])
+                dp[i+1][step]=res
+        
+        return dp[N][0]
+```
