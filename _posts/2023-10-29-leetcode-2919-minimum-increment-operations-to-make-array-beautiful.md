@@ -145,6 +145,8 @@ class Solution:
 每個dp[i]只會參考到dp[i-1]，可以使用滾動陣列，只保留上一次結果。  
 反正也只有0,1,2三種距離，直接寫成變數更方便。  
 
+只需要常數空間，而且運行時間只需要其他版本的50%不到，非常簡潔有力。  
+
 時間複雜度O(N)。  
 空間複雜度O(1)。  
 
@@ -155,7 +157,9 @@ class Solution:
         for i,x in enumerate(nums):
             cost=max(0,k-x)
             take=dp0+cost
-            dp0,dp1,dp2=min(take,dp1),min(take,dp2),take
+            dp0=min(take,dp1)
+            dp1=min(take,dp2)
+            dp2=take
             
         return dp0
 ```
