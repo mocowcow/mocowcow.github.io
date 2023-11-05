@@ -29,8 +29,8 @@ tags        : LeetCode Medium Array Graph DFS
 枚舉隊伍i，試著從i開始出發，遍歷整個圖。  
 若能成功抵達n個節點，則代表他就是冠軍。  
 
-時間複雜度O(n^2)。  
-空間複雜度O(n+m)。  
+時間複雜度O(n \* (n+m))。  
+空間複雜度O(n + m)。  
 
 ```python
 class Solution:
