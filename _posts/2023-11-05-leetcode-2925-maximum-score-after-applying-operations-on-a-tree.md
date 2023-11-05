@@ -18,7 +18,7 @@ tags        : LeetCode Medium Array Graph Tree DP
 - 得到values[i]分  
 - 將values[i]變成0  
 
-若從根節點出發至任意節點的路徑**價值總合**都不為0，則稱此樹是**健康的**。  
+若從根節點出發至**任意葉節點**的路徑**價值總合**都不為0，則稱此樹是**健康的**。  
 
 求任意次操作後，在樹依然**健康**的情況下，可以獲得的**最大分數**。  
 
@@ -41,7 +41,7 @@ tags        : LeetCode Medium Array Graph Tree DP
 拿分數=values[i]+sum(dp(j,True))；不拿分數=sum(dp(j,health))
 base case：若i為葉節點，且祖先路徑都不健康，則必須**不拿values[i]**。  
 
-每個路徑只有健康/不健康兩種狀態。  
+每個路徑只有健康/不健康兩種狀態，每個狀態轉移兩次。  
 時間複雜度O(N)。  
 空間複雜度O(N)。  
 
@@ -55,24 +55,17 @@ class Solution:
             g[b].append(a)
         
         @cache
-        def dp(i,fa,ok):
-            leaf=True
-            for j in g[i]:
-                if j==fa:continue
-                leaf=False
-                break
-                
-            if leaf and not ok:
+        def dp(i,fa,health):
+            # leaf and no health
+            # must keep values[i] to make it healthy
+            if len(g[i])==1 and g[i][0]==fa and not health:
                 return 0
             
             take=values[i]
-            for j in g[i]:
-                if j==fa:continue
-                take+=dp(j,i,ok)
-                
             notake=0
             for j in g[i]:
                 if j==fa:continue
+                take+=dp(j,i,health)
                 notake+=dp(j,i,True)
             return max(take,notake)
         
