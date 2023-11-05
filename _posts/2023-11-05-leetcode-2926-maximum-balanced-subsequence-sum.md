@@ -1,0 +1,86 @@
+---
+layout      : single
+title       : LeetCode 2926. Maximum Balanced Subsequence Sum
+tags        : LeetCode Hard Array DP SegmentTree HashTable
+---
+周賽370。想半天才想通，結果動態開點線段樹模板效能不佳，最後一個測資跑不過。最後優化來不及，好虧啊。  
+
+## 題目
+
+輸入整數陣列nums。  
+
+一個nums的長度k子序列，其包含的索引為i<sub>0</sub> < i<sub>1</sub> < ... < i<sub>k-1</sub>。  
+若滿足以下條件則稱為**平衡的**：  
+
+- 對於每個在[1, k-1]之間的j，滿足nums[i<sub>j</sub>] - nums[i<sub>j-1</sub>] >= i<sub>j</sub> - i<sub>j-1</sub>  
+
+長度為1的子序列永遠是平衡的。  
+
+求nums平衡子序列可以得到的**最大元素總和**。  
+
+## 解法
+
+對於j<i的nums[j]和nums[i]來說，只有nums[i]-nums[j] >= i-j，才可以把nums[i]接在nums[j]後面。  
+
+但是隨著i改變，每個i-j和nums[i]-nums[j]值都要重新計算，這樣複雜度會高達O(N^2)。  
+後來靈機一動，發現可以把式子變形：  
+> nums[i]-nums[j] >= i-j  
+> 移項得到nums[i]-i >= nums[j]-j  
+
+把nums[i]-i看成一個變數，就叫他diff[i]好了。  
+如此條件就簡化成：只要diff[j]小於等diff[i]，可則nums[i]接在nums[j]後面。  
+
+依序枚舉nums[i]，找到diff[i]的值，記做d。  
+找到以小於等於d的nums[j]結尾的最大子序列總和best。則以nums[i]結尾的最大總和sub即是max(0,best)+nums[i]。  
+然後以sub更新以d結尾的子序列最大值。  
+遍歷完，答案就是所有d結尾的子序列最大值。  
+
+上述操作需要單點修改，區間查詢，使用**線段樹**來達成。  
+d的範圍大約在[-10^9, 10^9]之間，理論上動態開點線段樹應該也能過，誰知道就是會TLE。  
+最後我使用**離散化**+普通線段樹才通過。  
+
+時間複雜度O(N log N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def maxBalancedSubsequenceSum(self, nums: List[int]) -> int:
+        # 區間查詢
+        # 回傳[i, j]的max
+        def query(id, L, R, i, j):
+            if i <= L and R <= j:  # 當前區間目標範圍包含
+                return tree[id]
+            ans = -inf
+            M = (L+R)//2
+            if i <= M:
+                ans = max(ans,query(id*2, L, M, i, j))
+            if M+1 <= j:
+                ans  = max(ans,query(id*2+1, M+1, R, i, j))
+            return ans
+
+
+        # 單點更新
+        # 對索引i改成val
+        def update(id, L, R, i, val):
+            if L == R:  # 當前區間目標範圍包含
+                tree[id] = val
+                return
+            M = (L+R)//2
+            if i <= M:
+                update(id*2, L, M, i, val)
+            else:
+                update(id*2+1, M+1, R, i, val)
+            tree[id] = max(tree[id*2],tree[id*2+1])  # 以左右子樹更新答案
+            
+        diff=[x-i for i,x in enumerate(nums)]
+        mp={x:i for i,x in enumerate(sorted(set(diff)))}
+        N=len(diff)+5
+        tree = [-inf]*(N*4)
+        for i,d in enumerate(diff):
+            d=mp[d]
+            best=query(1,0,N-1,0,d)
+            sub=max(best,0)+nums[i]
+            update(1,0,N-1,d,sub)
+            
+        return query(1,0,N-1,0,N-1)
+```
