@@ -38,3 +38,6 @@ class Solution:
             else:
                 return j
 ```
+
+仔細想想，那會不會有兩個隊伍一樣強的情況？  
+測資保證了當i!=j時，grid[i][j]!=grid[j][i]，所以兩個不同的隊伍強度必定不等。  
