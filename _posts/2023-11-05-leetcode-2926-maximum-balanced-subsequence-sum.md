@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2926. Maximum Balanced Subsequence Sum
-tags        : LeetCode Hard Array DP SegmentTree HashTable
+tags        : LeetCode Hard Array DP SegmentTree HashTable PrefixSum BIT
 ---
 周賽370。想半天才想通，結果動態開點線段樹模板效能不佳，最後一個測資跑不過。最後優化來不及，好虧啊。  
 
@@ -83,4 +83,48 @@ class Solution:
             update(1,0,N-1,d,sub)
             
         return query(1,0,N-1,0,N-1)
+```
+
+雖然說是區間查詢，但事實每次查詢的起點都是0(離散化後對應diff最小值)，也就是**前綴**最大值。  
+既然是前綴，可以改用常數更小的**樹狀陣列**。  
+
+注意：樹狀陣列用來求極值時，只能求**前綴極值**。若是max，則值只能增大；求min，則值只能減少。  
+
+時間複雜度O(N log N)。  
+空間複雜度O(N)。  
+
+雖然複雜度相同，但執行時間不到線段樹的一半，空間也只需要1/4。  
+
+```python
+class Solution:
+    def maxBalancedSubsequenceSum(self, nums: List[int]) -> int:
+        diff=[x-i for i,x in enumerate(nums)]
+        mp={x:i for i,x in enumerate(sorted(set(diff)))}
+        N=len(diff)
+        bit=BIT(N)
+        for i,d in enumerate(diff):
+            d=mp[d]
+            best=bit.query(d)
+            sub=max(best,0)+nums[i]
+            bit.update(d,sub)
+            
+        return bit.query(N-1)
+    
+class BIT:
+    def __init__(self,N):
+        self.tree=[-inf]*(N+1)
+            
+    def update(self,pos,val):
+        i=pos+1
+        while i<len(self.tree):
+            self.tree[i]=max(self.tree[i],val)
+            i+=i&(-i)
+    
+    def query(self,pos):
+        i=pos+1
+        res=-inf
+        while i>0:
+            res=max(res,self.tree[i])
+            i-=i&(-i)
+        return res
 ```
