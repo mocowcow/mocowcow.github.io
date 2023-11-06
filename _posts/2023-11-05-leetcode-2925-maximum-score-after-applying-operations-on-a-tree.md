@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2925. Maximum Score After Applying Operations on a Tree
-tags        : LeetCode Medium Array Graph Tree DP
+tags        : LeetCode Medium Array Graph Tree DP DFS
 ---
 周賽370。上次有樹狀dp，這次也有。  
 
@@ -73,4 +73,43 @@ class Solution:
         dp.cache_clear()
         
         return ans
+```
+
+另外一種方式是逆向思考，將問題轉換成：使得樹健康的**最小成本**。  
+values總和扣掉最小成本正好就是能得到分數的最大值。  
+
+定義dp(i)：使得以i為根的子樹健康的最小成本。  
+轉移方程式：dp(i)=min(拿分數, 不拿分數)  
+拿分數=values[i]；不拿分數=sum(dp(j))  
+base case：當i為葉節點，必須**拿**才能使得樹健康。  
+
+這裡的拿/不拿定義和上面相反，拿了才能使樹健康，不拿則必須讓子樹另外找分數拿。  
+而且遞迴的順序固定，不需要記憶化。  
+
+時間複雜度O(N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def maximumScoreAfterOperations(self, edges: List[List[int]], values: List[int]) -> int:
+        N=len(edges)+1
+        g=[[] for _ in range(N)]
+        for a,b in edges:
+            g[a].append(b)
+            g[b].append(a)
+    
+        # convert problem:
+        # min cost to make tree healthy
+        def dp(i,fa):
+            if len(g[i])==1 and fa==g[i][0]: # leaf
+                return values[i]
+            
+            take=values[i]
+            notake=0
+            for j in g[i]:
+                if j==fa:continue
+                notake+=dp(j,i)
+            return min(take,notake)
+        
+        return sum(values)-dp(0,-1)
 ```
