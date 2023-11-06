@@ -57,3 +57,31 @@ class Solution:
             
         return -1
 ```
+
+後來才發現想太多了，其實沒這麼複雜，只有兩個重點：  
+
+1. 冠軍一定是根節點，沒有輸過(無入度)  
+2. 只能有一個根節點  
+
+時間複雜度O(n + m)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def findChampion(self, n: int, edges: List[List[int]]) -> int:
+        ind=[0]*n
+        for _,b in edges:
+            ind[b]+=1
+            
+        root_cnt=0
+        ans=-1
+        for i in range(n):
+            if ind[i]==0:
+                ans=i
+                root_cnt+=1
+                
+        if root_cnt>1:
+            return -1
+        
+        return ans
+```
