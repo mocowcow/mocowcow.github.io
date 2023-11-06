@@ -24,7 +24,7 @@ grid[i][j]是說i比j強，若grid[i][j]為1，只能告訴我們**j不是冠軍
 先枚舉j，裡面再來一次迴圈枚舉i，只要沒有grid[i][j]為1，則當前j就是答案。  
 
 時間複雜度O(n^2)。  
-空間複雜度O(n^2)。  
+空間複雜度O(1)。  
 
 ```python
 class Solution:
@@ -41,3 +41,17 @@ class Solution:
 
 仔細想想，那會不會有兩個隊伍一樣強的情況？  
 測資保證了當i!=j時，grid[i][j]!=grid[j][i]，所以兩個不同的隊伍強度必定不等。  
+
+既然如此，那麼冠軍一定會比自己以外的N-1個隊伍都強。  
+
+時間複雜度O(N^2)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def findChampion(self, grid: List[List[int]]) -> int:
+        N=len(grid)
+        for i in range(N):
+            if sum(grid[i])==N-1:
+                return i
+```
