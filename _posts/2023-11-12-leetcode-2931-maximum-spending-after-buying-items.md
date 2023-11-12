@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2931. Maximum Spending After Buying Items
-tags        : LeetCode Hard Array Matrix Greedy Heap
+tags        : LeetCode Hard Array Matrix Greedy Heap Sorting
 ---
 雙周賽117。本次比賽第二個吐槽點，Q4比Q3甚至Q2還簡單。  
 若不是Q2有洩題嫌移，搞不好過得人還比Q4少。  
@@ -54,4 +54,17 @@ class Solution:
                 heappush(h,[values[r][c-1],r,c-1])
                 
         return ans
+```
+
+根據剛才非遞減的特性，可以得到更簡單的結論：不管怎樣都能由大到小購買所有商品。  
+直接把價格攤平排序，依序購買。  
+
+時間複雜度O(mn log mn)。  
+空間複雜度O(mn)。  
+
+```python
+class Solution:
+    def maxSpending(self, values: List[List[int]]) -> int:
+        a=sorted(p for shop in values for p in shop)
+        return sum(a[d]*(d+1) for d in range(len(a)))
 ```
