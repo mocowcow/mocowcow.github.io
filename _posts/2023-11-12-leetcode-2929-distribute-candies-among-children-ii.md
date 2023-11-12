@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2929. Distribute Candies Among Children II
-tags        : LeetCode
+tags        : LeetCode Medium Simulation Math
 ---
 雙周賽117。
 
