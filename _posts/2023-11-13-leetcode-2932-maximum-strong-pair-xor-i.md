@@ -100,8 +100,9 @@ def kill(root,x,MX):
         
 class Solution:
     def maximumStrongPairXor(self, nums: List[int]) -> int:
-        MX=max(x.bit_length() for x in nums)
         nums.sort()
+        MX=nums[-1].bit_length()
+
         root=Trie()
         ans=0
         j=0
@@ -112,6 +113,50 @@ class Solution:
                 j+=1
             build(root,x,MX)
             ans=max(ans,getXOR(root,x,MX))
+                
+        return ans
+```
+
+和原題一樣，也可以從最高位開始構造前綴。  
+
+假設MX=4，nums = [0b1000, 0b1011]：  
+> 嘗試構造前綴0b1xxx  
+> 只存在0b1xxx的前綴，構造失敗，這一位必為0  
+> 嘗試構造前綴0b01xx  
+> 只存在0b10xx的前綴，構造失敗，這一位必為0  
+> 嘗試構造前綴0b001x  
+> 有兩個前綴0b100x和0b101x，滿足條件，答案前綴為0b001x  
+> 嘗試構造前綴0b0011  
+> 有兩個前綴0b1000和0b1011，滿足條件，答案前綴為0b0011  
+
+構造前綴每個位元時，透過類似於two sum的技巧，枚舉x，維護y，並以x前綴和x的值做映射。  
+構造第i位元時，若其前綴為x_pre的整數x來說，存在另一個前綴y_pref為的整數y，滿足2y>=x，則答案的第i位元可以為1。  
+
+時間複雜度O(N log N + N log MX)。  
+空間複雜度O(N)。  
+
+雖然時間複雜度一樣，但不需要創建一堆物件，實際上運行時間大概只有1/10左右。  
+但這方法很難憑空想出來，至少我是重寫複習完原題才搞懂的。  
+
+```python
+class Solution:
+    def maximumStrongPairXor(self, nums: List[int]) -> int:
+        nums.sort()
+        MX=nums[-1].bit_length()
+        
+        ans=0
+        pref_mask=0
+        for i in reversed(range(MX)):
+            pref_mask|=(1<<i)
+            try_ans=ans|(1<<i)
+            seen={}
+            for x in nums:
+                x_pref=x&pref_mask
+                y_pref=try_ans^x_pref
+                if y_pref in seen and seen[y_pref]*2>=x:
+                    ans=try_ans
+                    break
+                seen[x_pref]=x
                 
         return ans
 ```
