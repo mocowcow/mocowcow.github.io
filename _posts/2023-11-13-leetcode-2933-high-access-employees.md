@@ -31,6 +31,9 @@ tags        : LeetCode Medium Array String HashTable Sorting Simulation
 枚舉存取時間i，可以透過二分、滑動窗口等方式找到間。  
 但我們只需要知道有沒有三次，而不在乎時間段內的總次數，直接判斷i+2和i的差小於60或否即可。  
 
+時間複雜度O(N log N)。  
+空間複雜度O(N)。  
+
 ```python
 def f(s):
     h=int(s[:2])
