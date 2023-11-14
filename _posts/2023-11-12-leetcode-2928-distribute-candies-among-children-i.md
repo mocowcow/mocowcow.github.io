@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2928. Distribute Candies Among Children I
-tags        : LeetCode Easy Simulation Math
+tags        : LeetCode Easy Simulation Math DP
 ---
 雙周賽117。最近周賽真的是越來越扯，前兩題分別是分糖果1和2。但是在開賽的前幾日，分糖果3竟然以**付費題**的形式出現。  
 而且內容完全一樣，只是測資範圍變大，直接向下兼容本次兩題。真的是pay to win。  
@@ -16,7 +16,7 @@ tags        : LeetCode Easy Simulation Math
 
 首先是暴力法，枚舉三個小孩的糖果數，剛好對上總數n就合法。  
 
-時間複雜度O(limit^3)。  
+時間複雜度O(min(n,limit)^3)。  
 空間複雜度O(1)。  
 
 ```python
@@ -55,7 +55,7 @@ j最多肯定可以拿到limit個，故上界是limit。
 得到min(j) = jk-limit，這就是下界。  
 所以j的範圍是[min(j), limit]。  
 
-時間複雜度O(limit)。  
+時間複雜度O(min(n,limit))。  
 空間複雜度O(1)。  
 
 ```python
@@ -73,4 +73,30 @@ class Solution:
                 ans+=hi-lo+1
                 
         return ans
+```
+
+其實也可以用dp來解，但不是最好的辦法。  
+有點類似於上面的方法，就是枚舉第一人拿多少，剩下的再給第二人拿多少，最後全部留給第三人。  
+
+定義dp(ppl,candy)：將candy分給ppl個人，且每個人最多只能拿limit時，共有幾種分法。  
+轉移方程式：dp(ppl,candy) = sum(dp(ppl-1, candy-take)) FOR ALL 0<=take<=min(candy,limit)  
+base case：當ppl=0且candy=0，代表剛好分完，回傳1；沒分完就不合法，回傳0。  
+
+時間複雜度O(n\*min(n,limit))。  
+空間複雜度O(n)。  
+
+```python
+class Solution:
+    def distributeCandies(self, n: int, limit: int) -> int:
+        
+        @cache
+        def dp(ppl,candy):
+            if ppl==0:
+                return int(candy==0)
+            res=0
+            for take in range(min(limit,candy)+1):
+                res+=dp(ppl-1,candy-take)
+            return res
+        
+        return dp(3,n)
 ```
