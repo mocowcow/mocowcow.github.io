@@ -179,3 +179,26 @@ class Solution:
 
         return dp[n]
 ```
+
+維護前綴和時，需要用到dp[ppl-1][candy]和dp[ppl-1][candy-(limit+1)]，都在於左上方。  
+如果改成倒著枚舉candy，也把前綴和倒著拆解，可以只用一個一維陣列。  
+
+但是反而比兩個一維陣列慢了一些，比較帥而已。  
+
+```python
+class Solution:
+    def distributeCandies(self, n: int, limit: int) -> int:
+        dp=[0]*(n+1)
+        dp[0]=1
+        for ppl in range(1,4):
+            start=max(0,n-limit)
+            ps=sum(dp[start:])
+            for candy in reversed(range(n+1)):
+                t=dp[candy] # dp[ppl-1][candy]
+                dp[candy]=ps
+                ps-=t 
+                if candy>limit:
+                    ps+=dp[candy-(limit+1)] 
+
+        return dp[n]
+```
