@@ -158,3 +158,24 @@ candy=3時，比起前一個式子，依然多出一個**完全不拿**的選法
 
         return dp[3][n]
 ```
+
+dp[ppl]只會參考到dp[ppl-1]的狀態，可以用滾動陣列優化，只需要一維陣列。  
+雖然空間複雜度一樣不變就是，但至少快了一些。  
+
+```python
+class Solution:
+    def distributeCandies(self, n: int, limit: int) -> int:
+        dp=[0]*(n+1)
+        dp[0]=1
+        for ppl in range(1,4):
+            dp2=[0]*(n+1)
+            ps=0
+            for candy in range(n+1):
+                ps+=dp[candy]
+                if candy>limit:
+                    ps-=dp[candy-(limit+1)]
+                dp2[candy]=ps
+            dp=dp2
+
+        return dp[n]
+```
