@@ -202,3 +202,68 @@ class Solution:
 
         return dp[n]
 ```
+
+重頭戲來了，O(1)的數學最佳解，也就是付費題的標準答案。  
+根據排容原理，若總共有tot種分法，其中有ex種是**不合法**的，則有tot-ex種**合法**分法。  
+
+把n個物品分給k個人，可以利用高中教過的**隔板法**，也就是C(n+k-1, k-1)。  
+符號o代表物品，符號|代表板子。要把2個物品分給3人，有以下幾種情況：  
+
+- oo||  
+- o|o|  
+- o||o  
+- |oo|  
+- |o|o  
+- ||oo  
+
+物品+板子共有4個，有4!種排列。扣掉板子的2!種排列，再扣掉物品的2!種排列，總共是4!/(2!2)!=6種組合。  
+本題是n分給三個人，正是C(n+2,2)。  
+
+C(n,2)這個東西可以直接套公式=n\*(n-1)/2。  
+全部的分法求出來之後，再看看怎麼找**不合法**的。  
+
+以O表示沒超過，X表示超過，不合法的情況有：  
+
+- 3個OXX
+- 3個OOX  
+- 1個OOO  
+
+如果有人至少拿了limit+1個糖果，則這個人就是**超過**。  
+將limit+1記做over，三個人分配記做share：  
+
+- 若先讓一人拿了over個，剩下n-over再share，可以得到**至少一人**超過的分法  
+  1個OXX、2個OOX、1個OOO  
+- 讓兩人都拿over，剩下剩下n-over\*2再share，得到**至少二人**超過的分法  
+  1個OOX、1個OOO  
+- 讓三人都拿over，剩下n-over\*3再share，得到**三人**都超過的分法  
+  1個OOO  
+
+要湊到3個OXX，所以要有3次n-over。得到3個OXX、6個OOX、3個OOO。  
+這樣OOX又多算3個了，所以扣掉3次n-over\*2。得到3個OXX、3個OOX。  
+然後OOO又不見了，補上n-over\*3。得到3個OXX、3個OOX、一個OOO。  
+
+最終答案就是tot - share(n-over)\*3 - share(n-over*2)\*3 - share(n-over-3)。  
+
+注意：在n不夠時，share會出現負數，則直接回傳0。當然也可以在外層先判斷。  
+
+時間複雜度O(1)。  
+空間複雜度O(1)1。  
+
+```python
+def C2(n): # C(n,2) = n!/(2!(n-2)!))
+    return n*(n-1)//2
+
+def share(n): # 3 ppl share n candies
+    if n<0:
+        return 0
+    return C2(n+2)
+
+class Solution:
+    def distributeCandies(self, n: int, limit: int) -> int:
+        over=(limit+1)
+        tot=share(n)
+        exclude=3*share(n-over) # at least 1ppl exceed limit
+        exclude-=3*share(n-over*2) # at least 2ppl exceed limit
+        exclude+=share(n-over*3) # at least 3ppl exceed limit
+        return tot-exclude  
+```
