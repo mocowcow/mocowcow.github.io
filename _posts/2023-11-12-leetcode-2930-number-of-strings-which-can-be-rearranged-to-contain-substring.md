@@ -123,3 +123,20 @@ class Solution:
         
         return (tot-exclude)%MOD
 ```
+
+式子加起來變成這樣。  
+老實說還是DP寫比較快。  
+
+```python
+class Solution:
+    def stringCount(self, n: int) -> int:
+        MOD=10**9+7
+        tot=pow(26,n,MOD)
+        exclude=(
+            pow(25,n,MOD)*3 + n*pow(25,n-1,MOD)  
+            - (pow(24,n,MOD)*3 + n*pow(24,n-1,MOD)*2)
+            + pow(23,n,MOD) + n*pow(23,n-1,MOD)
+        )
+        
+        return (tot-exclude)%MOD
+```
