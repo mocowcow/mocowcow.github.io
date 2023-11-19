@@ -38,3 +38,22 @@ class Solution:
             
         return tot-(i+1)*3
 ```
+
+zip函數的輸出長度是取決於最短的輸入，無法成對的部分會被丟棄，剛好適用本題。  
+看來是我python不夠流暢。  
+
+```python
+class Solution:
+    def findMinimumOperations(self, s1: str, s2: str, s3: str) -> int:
+        tot=sum(len(x) for x in [s1,s2,s3])
+        i=-1
+        for a,b,c in zip(s1,s2,s3):
+            if a!=b or b!=c:
+                break
+            i+=1
+        
+        if i==-1:
+            return -1
+            
+        return tot-(i+1)*3
+```
