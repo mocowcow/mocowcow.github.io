@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2940. Find Building Where Alice and Bob Can Meet
-tags        : LeetCode Hard Array SegmentTree BinarySearch
+tags        : LeetCode Hard Array SegmentTree BinarySearch Heap
 ---
 周賽372。前陣子在整理線段樹模板，剛好練習到相似題[2286. booking concert tickets in groups]({% post_url 2022-05-30-leetcode-2286-booking-concert-tickets-in-groups %})。  
 樹是有成功搞出來，但是誤會題目的要求，有些小問題會算出錯誤答案，好可惜。  
@@ -141,4 +141,41 @@ class SegmentTree:
             if res!=-1:
                 return res
         return self.bisect(id*2+1,M+1,R,i,limit)
+```
+
+我在比賽中的做法是偏序排序+離線查詢，高度由高至低處理查詢在樹上二分，再將等高於查詢的建築加入樹中。  
+看完大佬的題解，發現離線根本不用這麼囉嗦，只要一個heap就行。  
+而且也不用偏序排序，只要以索引為鍵值將查詢分組(其實用heap也行，只要保證出發點有序)。  
+
+同樣根據剛才分類討論的結果，先把可以在b點會合的查詢填上答案。其餘剩下的查詢都是要從b出發。  
+例如某次查詢q=[a,b]滿足a<b但是H[a]>H[b]，所以他要找一個索引至少為b+1、高度至少為H[a]+1的建築。  
+因此維護陣列query_todo，其中query_todo[i]保存所有從b出發的查詢qid，將該查詢加入query_todo[b]之中。  
+
+查詢所要求的**高度限制**越小，則越有可能被滿足。因此使用min heap，以高度為鍵值來維護等待回答的查詢。  
+從左到右遍歷建築，可以保證當前建築索引i比先前的建築j更大。  
+剩下只要把heap中，高度小於當前建築的查詢都填上答案，再把之前從query_todo[b]中的查詢加入heap中。  
+
+```python
+class Solution:
+    def leftmostBuildingQueries(self, heights: List[int], queries: List[List[int]]) -> List[int]:
+        N=len(heights)
+        ans=[-1]*len(queries)
+        query_todo=[[] for _ in range(N)]
+        for qid,(a,b) in enumerate(queries):
+            if a>b: # keep a<b
+                a,b=b,a
+            if a==b or heights[a]<heights[b]: # meet at b
+                ans[qid]=b
+            else: # find somewhere later
+                query_todo[b].append([heights[a],qid]) # [h, qid]
+            
+        h=[]
+        for i,height in enumerate(heights):
+            while h and h[0][0]<height: # answer valid query
+                _,qid=heappop(h)
+                ans[qid]=i
+            for x in query_todo[i]: # enqueue query that start from i
+                heappush(h,x)
+        
+        return ans
 ```
