@@ -42,3 +42,27 @@ class Solution:
         
         return ans
 ```
+
+提供另一種思考方法。  
+
+當s=11010，要把第一個0移到左邊，需要越過兩個1，然後變成01110。  
+01110要把第二個0移到左邊，又要越過三個1，最後變成00111。  
+
+每次移動0，移動次數就是左方1的個數。  
+
+時間複雜度O(N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def minimumSteps(self, s: str) -> int:
+        ans=0
+        cnt1=0
+        for i,c in enumerate(s):
+            if c=="0":
+                ans+=cnt1
+            else:
+                cnt1+=1
+        
+        return ans
+```
