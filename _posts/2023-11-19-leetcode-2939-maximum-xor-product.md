@@ -99,3 +99,54 @@ class Solution:
 
         return (p*q)%MOD
 ```
+
+試想a=1111, b=0000的情況下，要怎麼分給p,q？  
+當(2^i)-1等於所有0<=j<i的2^j總和，差不多就是一半。其中一者拿最高位的1，剩下都給另一邊。  
+分配後是p=1000, q=0111。  
+就算a的1不多，例如a=101, b=000，也是同樣的分法，畢竟沒有辦法分得更平均。  
+
+上述情況是p,q只能選一者放1，稱為single。拿a和b做XOR後，保持1的位元可以擇一設為1。  
+若在第i位上，a,b都是1或0，則p,q都可以變成1，這種情況稱作double。拿n位全是1的遮罩和single做XOR，保持1的位元可以**兩者**都設為1。  
+
+別忘了，我們只能對後n位做調整，超過的部分必須保持原樣。  
+所以p,q超出n位的部分要先保留，然後兩者各加上double，最後才來分配single。  
+
+如果沒有超出n位的值，則p和q都相等，就按照剛才所說過的p拿最大位元，其餘給q。  
+否則兩者的絕對差至少2^n，就算把所有single都加上也不足夠，所以全部給較小者。  
+
+時間複雜度O(1)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def maximumXorProduct(self, a: int, b: int, n: int) -> int:
+        MOD=10**9+7
+        
+        p=(a>>n)<<n # clean last n bits
+        q=(b>>n)<<n
+        a^=p # keep only last n bits
+        b^=q
+        
+        single=a^b # only a or b can be 1
+        last_n=(1<<n)-1
+        double=last_n^single # both a and b are 1
+        
+        # apply double 1
+        p|=double 
+        q|=double
+        
+        # assign single 1 if any
+        if single>0:
+            if p==q: # assign largest bit to p, others to q
+                m=single.bit_length()
+                largest=1<<(m-1)
+                other=single^largest
+                p^=largest
+                q|=other
+            else: # assign all to smaller one
+                if p>q: # keep p<q
+                    p,q=q,p
+                p|=single
+                
+        return (p*q)%MOD
+```
