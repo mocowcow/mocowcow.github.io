@@ -45,6 +45,9 @@ a和b都要和x做XOR，我們要決定x的每個位是1還是0。
 
 注意：a和b的二進位有可能超過n位，沒辦法改變。例如a=8, b=0, n=0時，答案為0。  
 
+時間複雜度O(n)。  
+空間複雜度O(1)。  
+
 ```python
 class Solution:
     def maximumXorProduct(self, a: int, b: int, n: int) -> int:
