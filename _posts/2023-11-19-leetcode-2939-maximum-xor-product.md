@@ -68,3 +68,34 @@ class Solution:
             
         return (a*b)%MOD
 ```
+
+上面這種要換不換或許有點難理解，這邊改另一種方式來思考。  
+不對a,b本身做修改，而是去構造a,b經過XOR之後的結果p,q，使得p\*q最大。  
+
+記得，我們只能對後面n位做處理，所以p,q超過n位的地方都和a,b是相同的。  
+同樣地，為了使乘積盡可能大，要讓p,q的絕對差最小化。  
+倒序處理n個位，若a,b的第i位都是1或0，則p,q都可以是1；否則將1丟給較小的一方，把絕對差變小。  
+
+時間複雜度O(n)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def maximumXorProduct(self, a: int, b: int, n: int) -> int:
+        MOD=10**9+7
+        p=(a>>n)<<n # clean last n bits for a
+        q=(b>>n)<<n # clean last n bits for b
+        for i in reversed(range(n)):
+            mask=(1<<i)
+            am=a&mask
+            bm=b&mask
+            if am==bm: # am==bm==0 or am==bm==1
+                p|=mask
+                q|=mask
+            elif p>q:
+                q|=mask
+            else:
+                p|=mask
+
+        return (p*q)%MOD
+```
