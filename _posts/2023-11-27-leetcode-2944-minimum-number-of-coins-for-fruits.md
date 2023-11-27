@@ -78,3 +78,21 @@ class Solution:
             
         return dp(1)
 ```
+
+改寫成遞推。  
+
+```python
+class Solution:
+    def minimumCoins(self, prices: List[int]) -> int:
+        N=len(prices)
+        dp=[0]*(N+2)
+        for i in reversed(range(1,N+1)):
+            res=inf            
+            for free in range(i+1):
+                if i+free+1>=len(dp):
+                    break
+                res=min(res,dp[i+free+1])
+            dp[i]=res+prices[i-1]
+            
+        return dp[1]
+```
