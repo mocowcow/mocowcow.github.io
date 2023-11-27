@@ -24,8 +24,8 @@ tags        : LeetCode Medium Array DP
 > If you purchase the ith fruit at prices[i] coins, you can get the next i fruits for free.  
 
 題目也沒說要按照什麼順序買，鬼才知道next i是什麼意思。看範例才確定是指從i開始往右邊數i個。  
-
 買了水果只有右邊的會免費，因此由左到右遍歷每個水果i。i可以選擇付費或不付費，考慮dp。  
+
 定義dp(i,free)：依序購買第i\~N個水果，且當前免費次數剩下free次時，所需的最小花費。  
 轉移方程式：dp(i,free) = max(付費, 免費)  
 付費=dp(i+1,i)+prices[i-1]；免費=dp(i+1,free-1)  
@@ -50,4 +50,31 @@ class Solution:
             return min(pay,free)
         
         return dp(1,0)
+```
+
+換個方式來思考，不是計算免費次數，而是直接跳過免費的水果。  
+
+定義dp(i)：依序購買第i\~N個水果，所需的最小花費。  
+轉移方程式：dp(i)=min(dp(i+free+1)) FOR ALL 0<=free<=i  
+base case：當i>N代表水果買完，回傳0。  
+
+狀態只剩下N個，但每個狀態最多轉移N次。時間複雜度不變，空間變小。  
+時間複雜度O(N^2)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def minimumCoins(self, prices: List[int]) -> int:
+        N=len(prices)
+        
+        @cache
+        def dp(i):
+            if i>N:
+                return 0
+            res=inf
+            for free in range(i+1):
+                res=min(res,dp(i+free+1))
+            return res+prices[i-1]
+            
+        return dp(1)
 ```
