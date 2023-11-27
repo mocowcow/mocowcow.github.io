@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2944. Minimum Number of Coins for Fruits
-tags        : LeetCode Medium Array DP
+tags        : LeetCode Medium Array DP MonotonicQueue
 ---
 雙周賽118。這題描述也挺爛的，範例也很爛，看半天才知道他想幹嘛。  
 
@@ -93,6 +93,41 @@ class Solution:
                     break
                 res=min(res,dp[i+free+1])
             dp[i]=res+prices[i-1]
+            
+        return dp[1]
+```
+
+注意到dp[i]從dp[i+1, i\*2+1]任一轉移而來；  
+然後dp[i+1]從dp[i+1+1, (i+1)\*2+1]任一轉移。  
+
+發現dp[i]和dp[i+1]的轉移來源有大量重疊。只要把出界的部分刪掉，然後多一個dp[i+1]就好。  
+我們只要選擇這些來源中**成本最小**者，這邊可以用單調隊列進行優化，如此一來，每個狀態可以O(1)轉移。  
+
+單調隊列主要有三步驟：  
+
+1. 刪除過期(出界)的  
+2. 刪除比最新選項還沒用的  
+3. 加入最新選項  
+
+時間複雜度O(N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def minimumCoins(self, prices: List[int]) -> int:
+        N=len(prices)
+        dp=[0]*(N+2)
+        q=deque()
+        q.append([N+1,0]) # [idx, cost]
+        for i in reversed(range(1,N+1)):
+            # out of bound
+            while q and q[0][0]>i*2+1:
+                q.popleft()
+            # monotonic increasing
+            while q and dp[i+1]<q[-1][1]:
+                q.pop()
+            q.append([i+1,dp[i+1]])
+            dp[i]=q[0][1]+prices[i-1]
             
         return dp[1]
 ```
