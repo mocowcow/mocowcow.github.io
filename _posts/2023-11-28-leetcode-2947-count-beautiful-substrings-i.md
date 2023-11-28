@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 2947. Count Beautiful Substrings I
 tags        : LeetCode Medium Array PrefixSum Math
 ---
-周賽373。
+周賽373。寫完題解才發現，本次周賽的主軸是modulo，貫穿了Q124。  
 
 ## 題目
 
