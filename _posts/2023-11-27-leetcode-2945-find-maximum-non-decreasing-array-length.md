@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2945. Find Maximum Non-decreasing Array Length
-tags        : LeetCode
+tags        : LeetCode Hard Array DP PrefixSum Math MonotonicStack Stack BinarySearch
 ---
 雙周賽118。我連怎麼下手都不知道，最後不到50個人做出來的樣子，有機會刷新全站最高難度。  
 
@@ -67,4 +67,63 @@ class Solution:
                     last[i]=sm
                     
         return dp[N-1]
+```
+
+要把nums[j+1,i]做為結尾時，須滿足last[j]<=ps[i]-ps[j]。  
+在i改變時，對於每個j的結果都不同，全都要重新計算。  
+將式子變形得：last[j]+ps[j]<=ps[i]，那麼last[j]+ps[j]就變成固定的值了。暫且記last[j]+ps[j]為v[j]。  
+
+剛才ps[i]和ps[j]是前綴和，理所當然是非遞減的。那麼last[j]呢？  
+在dp[j-1]==dp[j]的時候last[j]是遞增，但是當dp[j-1]>dp[j]時，last[j]就會突然遞減。  
+例如nums=[4,3,1,6]：  
+> ps=[4,7,8,14]  
+> dp=[1,1,2,3]  
+> last=[4,7,4,6]  
+> v=[8,14,12,20]  
+
+觀察v的變化，大概就像是心電圖。只是右方的波谷不可能低於左方的波谷，畢竟都是正整數。  
+雖然i可以從任意合法的j轉移過來，但剛才也說過，j越大，dp[j]推出的dp[i]也越大。  
+看到dp[2]不僅大於dp[1]，連v[2]都小於v[1]。只要能選j=2的情形，肯定能選j=1；反之，能選j=1時可不一定能選j=2。  
+乾脆把沒用的選項刪掉。這就是**單調堆疊**，堆疊中只保留著遞增的v值。  
+
+刪除掉沒用的選項後，v=[8,14,_,20]。  
+如果nums後面再加一個元素3：  
+> nums=[4,2,1,6,3], ps[4]=17  
+> 在v中找最後一個小於等於17的元素，也就是14，對應的索引j=1  
+
+在單調遞增的集合中查找，當然就是二分搜了。  
+找到j之後，以j更新dp[i]和v[i]，並刪掉比v[i]還差的v[j]。最後堆疊頂端元素一定是dp[N-1]，也就是答案。  
+
+時間複雜度O(N log N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def findMaximumLength(self, nums: List[int]) -> int:
+        N=len(nums)
+        ps=list(accumulate(nums))+[0]
+        st=[[-1,0,0]] # [j, v[j], dp[j]]
+        
+        for i,x in enumerate(nums):
+            # last[j] <= ps[i]-ps[j]
+            # v[j] = last[j]+ps[j] <= ps[i]
+            lo=0
+            hi=len(st)
+            while lo<hi:
+                mid=(lo+hi)//2
+                if st[mid][1]<=ps[i]: # v[j]<=ps[i]
+                    lo=mid+1
+                else:
+                    hi=mid
+                    
+            # found j
+            j,vj,dpj=st[lo-1]
+            lasti=ps[i]-ps[j]
+            vi=ps[i]+lasti
+            dpi=dpj+1
+            while st and vi<=st[-1][1]:
+                st.pop()
+            st.append([i,vi,dpi])
+                    
+        return st[-1][2] # dp[N-1]
 ```
