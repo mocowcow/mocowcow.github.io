@@ -30,8 +30,8 @@ tags        : LeetCode
 
 從範例三可以看出，貪心的合併並不是最佳解，轉去想dp吧。  
 定義dp[i]：以i結尾的子陣列，經過任意次合併後，滿足非遞減時的**最大長度**。  
-從滿足j<i的索引j轉移過來，而nums[j+1,i]這串全部合併起來，結尾元素sum(nums[j+1,i])記做last[i]。  
-轉移方程式：dp[i]=max(dp[j]+1 FOR ALL -1<=j<i)，且滿足last[j]<=last[i]  
+要從滿足j<i的索引j轉移過來，把nums[j+1,i]這串全部合併起來，sm=sum(nums[j+1,i])，記做last[i]。  
+轉移方程式：dp[i]=max(dp[j]+1 FOR ALL -1<=j<i)，且滿足last[j]<=sm  
 base case：為了允許從空陣列轉移，使-1代表空陣列，dp[-1]和last[-1]都為0。  
 
 在dp[i]最大化的前提下，last[i]應該越小越好，這樣更有利於之後接續的新元素。  
