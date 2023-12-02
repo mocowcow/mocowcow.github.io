@@ -40,3 +40,23 @@ class Solution:
                 
         return True
 ```
+
+其實可以不用考慮左移或右移。  
+
+i右移k次之後抵達j，若位移之後相同，代表i和j一定也相同。  
+那麼改成左移呢？實際上等價於i+k位置的元素左移k次，也就是j左移k次抵達i，本質上是一樣的。  
+
+時間複雜度O(mn)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def areSimilar(self, mat: List[List[int]], k: int) -> bool:
+        N=len(mat[0])
+        for row in mat:
+            for j,x in enumerate(row):
+                if x!=row[(j+k)%N]:
+                    return False
+                
+        return True
+```
