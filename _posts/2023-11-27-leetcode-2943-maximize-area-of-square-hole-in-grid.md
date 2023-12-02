@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2943. Maximize Area of Square Hole in Grid
-tags        : LeetCode Medium Array Sorting
+tags        : LeetCode Medium Array Sorting Greedy
 ---
 雙周賽118。剛開始看到一堆人答錯，沒人答對，感覺有陷阱。雖然的第一直覺是正確的，但是猶豫了好久。~~猶豫就會敗北~~。  
 
@@ -65,4 +65,26 @@ class Solution:
         side=min(h,v)
         
         return side**2
+```
+
+有個叫**分組循環**的技巧，適用於把陣列中的元素分成幾個相鄰的區段。  
+外層迴圈枚舉左端點，內層迴圈擴展右端點。停止擴展後即可進行處理邏輯(本題為更新最大連續數)，然後更新左端點。  
+
+```python
+def f(bars):
+    N=len(bars)
+    bars.sort()
+    i=0
+    mx=0
+    while i<N:
+        j=i
+        while j+1<N and bars[j]+1==bars[j+1]:
+            j+=1
+        mx=max(mx,j-i+1) # [i, j] in same group
+        i=j+1
+    return mx+1
+
+class Solution:
+    def maximizeSquareHoleArea(self, n: int, m: int, hBars: List[int], vBars: List[int]) -> int:
+        return min(f(hBars),f(vBars))**2
 ```
