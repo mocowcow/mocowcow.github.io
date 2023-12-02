@@ -71,3 +71,33 @@ class Solution:
             
         return ans
 ```
+
+這邊也可以使用**分組循環**的技巧，外層迴圈紀錄左端點、處理分組後的邏輯，內層迴圈負責找右端點。  
+除了寫起來簡潔，也不用怕忘記特判最後一組。  
+
+時間複雜度O(N log N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def lexicographicallySmallestArray(self, nums: List[int], limit: int) -> List[int]:
+        N=len(nums)
+        ans=[0]*N
+        
+        a=sorted(enumerate(nums),key=itemgetter(1))
+        i=0
+        while i<N:
+            idx=[a[i][0]]
+            j=i
+            # find group
+            while j+1<N and a[j+1][1]-a[j][1]<=limit:
+                j+=1
+                idx.append(a[j][0])
+            # fill elements
+            idx.sort()
+            for j in idx:
+                ans[j]=a[i][1]
+                i+=1
+                
+        return ans
+```
