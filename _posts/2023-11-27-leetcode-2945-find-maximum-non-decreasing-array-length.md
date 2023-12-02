@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2945. Find Maximum Non-decreasing Array Length
-tags        : LeetCode Hard Array DP PrefixSum Math MonotonicStack Stack BinarySearch
+tags        : LeetCode Hard Array DP PrefixSum Math MonotonicStack Stack BinarySearch MonotonicQueue
 ---
 雙周賽118。我連怎麼下手都不知道，最後不到50個人做出來的樣子，有機會刷新全站最高難度。  
 
@@ -126,4 +126,41 @@ class Solution:
             st.append([i,vi,dpi])
                     
         return st[-1][2] # dp[N-1]
+```
+
+其實單調堆疊已經可以AC了，但還能更快。  
+
+若存在某個索引j，滿足v[j] = last[j]+ps[j] <= ps[i]，隨著i增大，ps[i]也會增加，而v[j]對於更大的i來說永遠也都是合法的。
+因此，我們只需要保留一個最大可用的索引i做為轉移來源，非最大的選項都可以刪掉。  
+左右兩端都及時刪除無效選項，這就是**單調隊列**。  
+
+注意：至少要保留一個可用的，所以從隊首刪除時，**至少**要兩個合法來源，才能刪掉最小那個。  
+因此是檢查隊列中**第二項**，而非隊首。  
+
+時間複雜度O(N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def findMaximumLength(self, nums: List[int]) -> int:
+        N=len(nums)
+        ps=list(accumulate(nums))+[0]
+        q=deque()
+        q.append([-1,0,0]) # [j, v[j], dp[j]]
+        for i,x in enumerate(nums):
+            # last[j] <= ps[i]-ps[j]
+            # v[j] = last[j]+ps[j] <= ps[i]
+            while len(q)>1 and q[1][1]<=ps[i]: # at least keep 1 valid 
+                q.popleft()
+                    
+            # found j
+            j,vj,dpj=q[0]
+            lasti=ps[i]-ps[j]
+            vi=ps[i]+lasti
+            dpi=dpj+1
+            while q and vi<=q[-1][1]:
+                q.pop()
+            q.append([i,vi,dpi])
+            
+        return q[-1][2]
 ```
