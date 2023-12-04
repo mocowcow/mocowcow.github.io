@@ -51,7 +51,7 @@ tags        : LeetCode Hard Array Math
 
 先預處理所有會用到的階乘，以及用於除法的模反元素(乘法逆元)。  
 
-時間複雜度O(N log N)。  
+時間複雜度O(m log n)，其中m為sick長度。  
 空間複雜度O(1)，預處理空間不計入。  
 
 ```python
