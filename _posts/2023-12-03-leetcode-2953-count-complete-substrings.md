@@ -35,26 +35,26 @@ class Solution:
     def countCompleteSubstrings(self, word: str, k: int) -> int:
         N=len(word)
         
-        def f(s,e,char_cnt): # char_cnt different chars appear k times
-            size=char_cnt*k
-            if e-s+1<size:
-                return 0
+        def f(s):
             res=0
-            d=Counter()
-            ok=0 # appear exactly k times
-            left=s
-            for right in range(s,e+1):
-                c=word[right]
-                d[c]+=1
-                if d[c]==k:
-                    ok+=1
-                if right-left+1==size:
-                    if ok==char_cnt: # all k times
-                        res+=1
-                    if d[word[left]]==k:
-                        ok-=1
-                    d[word[left]]-=1
-                    left+=1
+            for char_cnt in range(1,27):
+                size=char_cnt*k
+                if size>len(s):
+                    break
+                left=0
+                d=Counter()
+                ok=0 # exactly k times
+                for right,c in enumerate(s):
+                    d[c]+=1
+                    if d[c]==k:
+                        ok+=1
+                    if right-left+1==size:
+                        if ok==char_cnt:
+                            res+=1
+                        if d[s[left]]==k:
+                            ok-=1
+                        d[s[left]]-=1
+                        left+=1
             return res
         
         ans=0
@@ -63,9 +63,9 @@ class Solution:
             j=i
             while j+1<N and abs(ord(word[j])-ord(word[j+1]))<=2:
                 j+=1
-            for char_cnt in range(1,27): # find k ~ 26k in s[i, j]
-                ans+=f(i,j,char_cnt)
+            sub=word[i:j+1]
+            ans+=f(sub) # find k~26k in substring
             i=j+1
-                
+            
         return ans
 ```
