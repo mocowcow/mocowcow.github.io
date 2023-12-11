@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2960. Count Tested Devices After Test Operations
-tags        : LeetCode Easy Array Simulation
+tags        : LeetCode Easy Array Simulation PrefixSum
 ---
 周賽375。
 
@@ -38,6 +38,43 @@ class Solution:
                 for j in range(i+1,N):
                     if batteryPercentages[j]>0: # no need 
                         batteryPercentages[j]-=1
+                    
+        return ans
+```
+
+若機器i受測，後面所有裝置電量都必須減1。  
+可以理解成左方的**受測機器**等於**損失電量**。  
+
+也可以維護差分，然後對差分做前綴和，得到當前位置的變化量。  
+當i受測時，則使i+1的差分設為-1。  
+
+時間複雜度O(N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def countTestedDevices(self, batteryPercentages: List[int]) -> int:
+        ans=0
+        for i,x in enumerate(batteryPercentages):
+            if x-ans>0:
+                ans+=1
+                    
+        return ans
+```
+
+```python
+class Solution:
+    def countTestedDevices(self, batteryPercentages: List[int]) -> int:
+        ans=0
+        ps=0
+        diff=0
+        for i,x in enumerate(batteryPercentages):
+            ps+=diff
+            if x+ps>0:
+                ans+=1
+                diff=-1
+            else:
+                diff=0
                     
         return ans
 ```
