@@ -19,10 +19,9 @@ tags        : LeetCode Medium Array Simulation
 
 ## 解法
 
-一樣模擬題意。  
-就算不用快速冪也能過，有點意外。  
+一樣模擬題意，就算不用快速冪也能過。  
 
-時間複雜度O(N \* b \* c)。  
+時間複雜度O(N \* (b+c))。  
 空間複雜度O(1)。  
 
 ```python
@@ -48,7 +47,7 @@ class Solution:
 
 python自帶的快速冪是真的方便。  
 
-時間複雜度O(N \* log b \* log c)。  
+時間複雜度O(N \* log (b+c))。  
 空間複雜度O(1)。  
 
 ```python
