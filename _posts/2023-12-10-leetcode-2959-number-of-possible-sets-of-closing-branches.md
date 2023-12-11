@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2959. Number of Possible Sets of Closing Branches
-tags        : LeetCode Hard Array Graph BitManipulation Bitmask
+tags        : LeetCode Hard Array Graph BitManipulation Bitmask DP
 ---
 雙周賽119。好像刷新個人最快AK紀錄，23分32秒。  
 
