@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2963. Count the Number of Good Partitions
-tags        : LeetCode Hard Array Greedy HashTable
+tags        : LeetCode Hard Array Greedy HashTable Math
 ---
 周賽375。
 
@@ -33,7 +33,6 @@ tags        : LeetCode Hard Array Greedy HashTable
 class Solution:
     def numberOfGoodPartitions(self, nums: List[int]) -> int:
         MOD=10**9+7
-        N=len(nums)
         
         last={x:i for i,x in enumerate(nums)}
         cnt=0
@@ -43,5 +42,32 @@ class Solution:
             if i==rb: # nums[i] is right bound of a interval
                 cnt+=1
         
+        return pow(2,cnt-1,MOD)
+```
+
+另一種思路是將每種數字看成一個獨立的區間，然後將重疊的區間合併。  
+
+時間複雜度O(N log N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def numberOfGoodPartitions(self, nums: List[int]) -> int:
+        MOD=10**9+7
+        d={}
+        for i,x in enumerate(nums):
+            if x not in d:
+                d[x]=[i,i]
+            else: # right bound
+                d[x][1]=i
+                
+        a=sorted(d.values())
+        cnt=1
+        rb=0
+        for s,e in a: # merge intervals
+            if s>rb:
+                cnt+=1
+            rb=max(rb,e)
+            
         return pow(2,cnt-1,MOD)
 ```
