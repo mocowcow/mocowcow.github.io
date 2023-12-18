@@ -66,3 +66,55 @@ class Solution:
             
         return ans
 ```
+
+預處理所有小於10^9的回文數，然後二分找到最接近中位數的兩個回文數，分別更新答案。  
+
+每次只要枚舉左半邊的的數x，並將其反轉連接後就是**偶數**位回文數x+x；至於奇數只要多枚舉中心點mid，構造成x+mid+x的。  
+回文數最多只有9位數，也就是說左半邊的枚舉範圍只從[1,9999]而已，非常小。  
+總共大約有P=10^5個回文數。  
+
+時間複雜度O(N log N + log P)，其中P為回文數個數。預處理時間不計。  
+空間複雜度O(1)，預處理空間不計。  
+
+```python
+pa=[]
+for x in range(1,10):
+    pa.append(x)
+
+for x in range(1,10000):
+    # even: x+x
+    left=right=x
+    while right>0:
+        right,r=divmod(right,10)
+        left=left*10+r
+    pa.append(left)
+    
+    # odd: x+mid+x
+    for mid in range(10):
+        left=x*10+mid
+        right=x
+        while right>0:
+            right,r=divmod(right,10)
+            left=left*10+r
+        pa.append(left)
+    
+pa.sort()
+print(len(pa))
+class Solution:
+    def minimumCost(self, nums: List[int]) -> int:
+        N=len(nums)
+        nums.sort()
+        median=(nums[(N-1)//2]+nums[N//2])//2
+        
+        idx=bisect_right(pa,median)
+        ans=inf
+        for i in [idx-1,idx]:
+            if i>=0 and i<len(pa):
+                t=pa[i]
+                tot=0
+                for x in nums:
+                    tot+=abs(t-x)
+                ans=min(ans,tot)
+        
+        return ans
+```
