@@ -72,3 +72,37 @@ class Solution:
                 
         return lo
 ```
+
+仔細想想，**單調性**同樣也存在窗口本身存在。  
+當窗口左邊界不變，右邊界不斷擴展時，總修改成本**只增不減**。  
+也就是說對於如果[left, right]區間不合法，那麼left對於大於right的右邊界來說肯定也不合法，所以可以直接收縮左邊界。  
+
+只需要保留上面方法計算修改成本的部分，在成本大於k時收縮左邊界，最後以當前窗口大小更新答案即可。  
+
+雖然瓶頸依然在於排序，但是找區間加速很多。  
+時間複雜度O(N log N)。  
+空間複雜度O(N)。  
+
+```python
+class Solution:
+    def maxFrequencyScore(self, nums: List[int], k: int) -> int:
+        N=len(nums)
+        nums.sort()
+        ps=list(accumulate(nums,initial=0))
+        ans=0
+        
+        def get_cost(left,right):
+            mid=(right+left)//2
+            median=nums[mid]
+            cost=(mid-left+1)*median-(ps[mid+1]-ps[left])
+            cost+=(ps[right+1]-ps[mid])-(right-mid+1)*median
+            return cost
+
+        left=0
+        for right,x in enumerate(nums):
+            while get_cost(left,right)>k:
+                left+=1
+            ans=max(ans,right-left+1)
+                
+        return ans
+```
