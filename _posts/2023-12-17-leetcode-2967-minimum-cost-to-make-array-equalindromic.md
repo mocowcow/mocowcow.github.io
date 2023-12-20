@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2967. Minimum Cost to Make Array Equalindromic
-tags        : LeetCode Medium Array Math Sorting
+tags        : LeetCode Medium Array Math Sorting Greedy
 ---
 周賽376。應該算是奇怪的數學題。和付費每周題有點相關，~~有不公平的嫌疑~~。  
 

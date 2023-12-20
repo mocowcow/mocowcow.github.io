@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2968. Apply Operations to Maximize Frequency Score
-tags        : LeetCode Hard Array TwoPointers SlidingWindow BinarySearch PrefixSum Math
+tags        : LeetCode Hard Array TwoPointers SlidingWindow BinarySearch PrefixSum Math Greedy
 ---
 周賽376。腦子被Q3搞壞掉，寫Q4的時候已經沒腦力了。其實只需要幾個常見技巧結合而已。  
 
