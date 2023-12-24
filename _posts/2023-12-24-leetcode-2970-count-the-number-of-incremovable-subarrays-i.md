@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2970. Count the Number of Incremovable Subarrays I
-tags        : LeetCode Easy Array Simulation
+tags        : LeetCode Easy Array Simulation TwoPointers
 ---
 雙周賽120。這個incremovable還真不知道怎麼翻譯，中國站翻做**移除遞增**。  
 想了半天，最後AC的時候比賽剛好結束，太苦了。  
