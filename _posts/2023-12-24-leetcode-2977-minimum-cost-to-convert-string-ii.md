@@ -44,7 +44,7 @@ C++好像不是噴MLE而是TLE，一樣需要對轉移剪枝才行。
 > 因為兩者共通前綴a，也可以不修改  
 > 縮減成更小的子問題"bb"和"cc"  
 
-再看看cost長度上限變成100，那麼修改前/後最多會有各100種不同的字串，圖中最多200個端點。  
+再看看cost長度上限變成100，那麼修改前/後最多會有各100種不同的字串，圖中最多200個端點、100種長度。  
 這樣要做floyd好像也還行。  
 
 而source長度上限變成1000，代表O(N^2)的作法應該可以接受。  
@@ -59,12 +59,17 @@ base case：當i等於N，子字串修改完畢，成本0。
 dp轉移過程中會需要多次使用到重覆的子字串，因此可以先預處理所有子字串(或快取)。  
 最後f(0)就是答案。  
 
-時間複雜度O(V^3 + N^2)。其中V=len(cost)\*2。  
-空間複雜度O(V^2 + N^2)。  
+最多只會有200種不同的端點(子字串)，也就是200種不同的長度。  
+floyd大約是200^3 = 8\*10^6次運算。  
 
-其實到目前為止，理論上應該是能過的，誰知道他偏不放行，還需要更多優化。  
-回想到最多只會有200種不同的端點(子字串)，也就是200種不同的長度。  
-在轉移的過程中，只枚舉合法子字串的長度，這樣每個狀態最多只需要轉移200次，而非原本的1000次。  
+dp轉移的過程中，只枚舉合法子字串的長度，這樣每個狀態最多只需要轉移M=100次，而非原本的N=1000次。
+共有N個狀態，每次轉移需要構造子字串，每次O(N)，每個狀態轉移M次。
+dp的部分大約是1000^2 \* 100 = 10^8次運算。  
+
+雖然10^8看起來很慢，但可能python字串切片太快了，確實是能夠AC。  
+
+時間複雜度O(V^3 + N^2 \* M)。其中V=len(cost)\*2，M=len(cost)。  
+空間複雜度O(V^2 + N)。  
 
 ```python
 class Solution:
@@ -92,24 +97,21 @@ class Solution:
                     new_dist=dp[i][k]+dp[k][j]
                     if new_dist<dp[i][j]:
                         dp[i][j]=new_dist
-        # O(N^2)   
-        @cache
-        def get(i,j):
-            return [source[i:j],target[i:j]]
         
-        # O(N^2)   
+        # O(N^2 * M)   
         @cache
-        def f(i):
+        def f(i): # O(N)
             if i==N:
                 return 0
             res=inf
             if source[i]==target[i]: 
                 res=f(i+1)
-            for size in sizes:
+            for size in sizes: # O(M)
                 j=i+size
                 if j>N:
                     break
-                s,t=get(i,j)
+                s=source[i:j] # O(N)
+                t=target[i:j]
                 if s in dp and t in dp[s] and dp[s][t]!=inf:
                     res=min(res,dp[s][t]+f(j))
             return res
