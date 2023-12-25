@@ -71,6 +71,11 @@ dp的部分大約是1000^2 \* 100 = 10^8次運算。
 時間複雜度O(V^3 + N^2 \* M)。其中V=len(cost)\*2，M=len(cost)。  
 空間複雜度O(V^2 + N)。  
 
+其實在floyd部分的耗時佔了非常大的比例，因為不同長度之間的字串不可能相互修改，造成大量無效計算。  
+試想有100個字串長度都不同，那floyd跑完跟沒跑一樣。  
+如果以字串長度來分組計算會更加有效率。或是在枚舉[i,k,j]路徑時，發現ik不通就直接跳過。  
+原本python大概需要跑13000ms，加上這行剪枝直接加速到1000ms左右。就連golang剪枝後也可以AC。  
+
 ```python
 class Solution:
     def minimumCost(self, source: str, target: str, original: List[str], changed: List[str], cost: List[int]) -> int:
@@ -93,6 +98,8 @@ class Solution:
                 
         for k in ss:
             for i in ss:
+                if dp[i][k]==inf: # very important pruning
+                    continue
                 for j in ss:
                     new_dist=dp[i][k]+dp[k][j]
                     if new_dist<dp[i][j]:
