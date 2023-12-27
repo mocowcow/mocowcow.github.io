@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2977. Minimum Cost to Convert String II
-tags        : LeetCode Hard Array String Graph DP HashTable
+tags        : LeetCode Hard Array String Graph DP HashTable Trie
 ---
 周賽377。應該刷新個人最佳，名次66。  
 這題太多瑕疵，可能我吃過太多次同口味的屎，很快就知道要怎麼吞下肚，因禍得福吧。  
@@ -193,6 +193,104 @@ class Solution:
                 res=min(res,dijkstra(s)[t]+f(j))
             return res
         
+        ans=f(0)
+        f.cache_clear()
+        
+        if ans==inf:
+            return -1
+        
+        return ans
+```
+
+其實上面這些感覺有點逃課。  
+不僅依賴了方便的defaultdict，更是多虧了快速字串切片才能過。最正統的解法應該是：  
+
+1. 把子字串離散化，以整數id編號  
+2. 使用id代替子字串做為節點，求最短路  
+3. 將子字串加入Trie中，並記錄其id
+4. 之後f(i)做轉移時，枚舉從i開始的子字串時，每次只需O(1)  
+
+時間複雜度O(V^3 + N^2 + VN)。  
+空間複雜度O(V^2 + N + VN)。  
+
+```python
+class Trie:
+    def __init__(self):
+        self.child=defaultdict(Trie)
+        self.cnt=0
+        self.id=-1
+        
+def add(root,s,id):
+    curr=root
+    for c in s:
+        curr=curr.child[c]
+    curr.id=id
+
+class FloydWarshall:
+    def __init__(self, n):
+        self.n = n
+        self.dp = [[inf]*n for _ in range(n)]
+        for i in range(n):
+            self.dp[i][i] = 0
+
+    def add(self, a, b, c):
+        if c < self.dp[a][b]:
+            self.dp[a][b] = c
+
+    def get(self, a, b):
+        return self.dp[a][b]
+
+    def build(self):
+        for k in range(self.n):
+            for i in range(self.n):
+                if self.dp[i][k] == inf:  # pruning
+                    continue
+                for j in range(self.n):
+                    new_dist = self.dp[i][k]+self.dp[k][j]
+                    if new_dist < self.dp[i][j]:
+                        self.dp[i][j] = new_dist
+
+class Solution:
+    def minimumCost(self, source: str, target: str, original: List[str], changed: List[str], cost: List[int]) -> int:
+        N=len(source)
+        vertexes=set(original+changed)
+        V=len(vertexes)
+        mp={x:i for i,x in enumerate(vertexes)}
+        root=Trie()
+        
+        # O(V^3) + O(N^2)
+        fw=FloydWarshall(V)
+        for a,b,c in zip(original,changed,cost):
+            id1=mp[a]
+            id2=mp[b]
+            # add edge in graph
+            fw.add(id1,id2,c) 
+            # insert into trie
+            add(root,a,id1)
+            add(root,b,id2)
+            
+        fw.build()
+        
+        # O(N^2)   
+        N=len(source)
+        @cache
+        def f(i): # O(N)
+            if i==N:
+                return 0
+            res=inf 
+            s=root
+            t=root
+            if source[i]==target[i]: 
+                res=f(i+1)
+            for j in range(i,N): # O(N)
+                if source[j] not in s.child or target[j] not in t.child:
+                    break
+                s=s.child[source[j]]
+                t=t.child[target[j]]
+                if s.id>=0 and t.id>=0:
+                    res=min(res,fw.get(s.id,t.id)+f(j+1))
+            return res
+
         ans=f(0)
         f.cache_clear()
         
