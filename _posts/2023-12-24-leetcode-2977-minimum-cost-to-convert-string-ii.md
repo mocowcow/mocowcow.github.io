@@ -44,7 +44,7 @@ C++好像不是噴MLE而是TLE，一樣需要對轉移剪枝才行。
 > 因為兩者共通前綴a，也可以不修改  
 > 縮減成更小的子問題"bb"和"cc"  
 
-再看看cost長度上限變成100，那麼修改前/後最多會有各100種不同的字串，圖中最多200個端點、100種長度。  
+再看看cost長度上限變成100，那麼修改前/後最多會有各100種不同的字串，圖中最多200個節點、100種字串長度。  
 這樣要做floyd好像也還行。  
 
 而source長度上限變成1000，代表O(N^2)的作法應該可以接受。  
@@ -59,7 +59,7 @@ base case：當i等於N，子字串修改完畢，成本0。
 dp轉移過程中會需要多次使用到重覆的子字串，因此可以先預處理所有子字串(或快取)。  
 最後f(0)就是答案。  
 
-最多只會有200種不同的端點(子字串)，也就是200種不同的長度。  
+最多只會有200種不同的節點(子字串)，也就是200種不同的長度。  
 floyd大約是200^3 = 8\*10^6次運算。  
 
 dp轉移的過程中，只枚舉合法子字串的長度，這樣每個狀態最多只需要轉移M=100次，而非原本的N=1000次。
@@ -69,7 +69,7 @@ dp的部分大約是1000^2 \* 100 = 10^8次運算。
 雖然10^8看起來很慢，但可能python字串切片太快了，確實是能夠AC。  
 
 時間複雜度O(V^3 + N^2 \* M)。其中V=len(cost)\*2，M=len(cost)。  
-空間複雜度O(V^2 + N)。  
+空間複雜度O(V^2 + N^2)。  
 
 其實在floyd部分的耗時佔了非常大的比例，因為不同長度之間的字串不可能相互修改，造成大量無效計算。  
 試想有100個字串長度都不同，那floyd跑完跟沒跑一樣。  
@@ -77,6 +77,29 @@ dp的部分大約是1000^2 \* 100 = 10^8次運算。
 原本python大概需要跑13000ms，加上這行剪枝直接加速到1000ms左右。就連golang剪枝後也可以AC。  
 
 ```python
+class FloydWarshallDict:
+    def __init__(self, vertexes):
+        self.dp = defaultdict(lambda: defaultdict(lambda: inf))
+        for v in vertexes:
+            self.dp[v][v] = 0
+
+    def add(self, a, b, c):
+        if c < self.dp[a][b]:
+            self.dp[a][b] = c
+
+    def get(self, a, b):
+        return self.dp[a][b]
+
+    def build(self):
+        for k in self.dp:
+            for i in self.dp:
+                if self.dp[i][k] == inf:  # pruning
+                    continue
+                for j in self.dp:
+                    new_dist = self.dp[i][k]+self.dp[k][j]
+                    if new_dist < self.dp[i][j]:
+                        self.dp[i][j] = new_dist
+
 class Solution:
     def minimumCost(self, source: str, target: str, original: List[str], changed: List[str], cost: List[int]) -> int:
         N=len(source)
@@ -84,26 +107,10 @@ class Solution:
         sizes=sorted(set(len(x) for x in ss))
         
         # O(V^3)
-        dp=defaultdict(dict)
-        for a in ss:
-            for b in ss:
-                if a==b:
-                    dp[a][b]=0
-                else:
-                    dp[a][b]=inf
-                
+        fw=FloydWarshallDict(ss)
         for a,b,c in zip(original,changed,cost):
-            if c<dp[a][b]:
-                dp[a][b]=c
-                
-        for k in ss:
-            for i in ss:
-                if dp[i][k]==inf: # very important pruning
-                    continue
-                for j in ss:
-                    new_dist=dp[i][k]+dp[k][j]
-                    if new_dist<dp[i][j]:
-                        dp[i][j]=new_dist
+            fw.add(a,b,c)
+        fw.build()
         
         # O(N^2 * M)   
         @cache
@@ -119,8 +126,71 @@ class Solution:
                     break
                 s=source[i:j] # O(N)
                 t=target[i:j]
-                if s in dp and t in dp[s] and dp[s][t]!=inf:
-                    res=min(res,dp[s][t]+f(j))
+                res=min(res,fw.get(s,t)+f(j))
+            return res
+        
+        ans=f(0)
+        f.cache_clear()
+        
+        if ans==inf:
+            return -1
+        
+        return ans
+```
+
+回顧一下，最多有V=200個端點，還有E=100條邊(同時也是100種字串長度)。  
+
+floyd是找出**任意兩節點之間**的最短路相較之下，dijkstra是計算**單點到所有節點**的最短路。  
+剛才用floyd的複雜度是O(V^3)，大約8\*10^6次運算。  
+而dijkstra跑一次是O(E log E)，對V=200個點各跑一次，大約10^5次運算，其實比floyd還快。  
+
+時間複雜度O(VE log E + N^2 \* M)。其中V=len(cost)\*2，M=len(cost)。  
+空間複雜度O(V^2 + N^2)。  
+
+```python
+class Solution:
+    def minimumCost(self, source: str, target: str, original: List[str], changed: List[str], cost: List[int]) -> int:
+        ss=set(original+changed)
+        sizes=sorted(set(len(x) for x in ss))
+        g=defaultdict(list)
+        for a,b,c in zip(original,changed,cost):
+            g[a].append([b,c])
+        
+        # heap optimized dijkstra
+        # O(E log E)
+        @cache
+        def dijkstra(src):
+            dis = defaultdict(lambda: inf)
+            dis[src] = 0
+            heap = [(0, src)]
+            while heap:
+                cost, curr = heappop(heap)
+                if cost > dis[curr]:
+                    continue
+                dis[curr] = cost
+                for adj, c in g[curr]:
+                    new_cost = cost+c
+                    if new_cost < dis[adj]:
+                        dis[adj] = new_cost  # important pruning
+                        heappush(heap, (new_cost, adj))
+            return dis
+        
+        # O(N^2 * M)   
+        N=len(source)
+        @cache
+        def f(i): # O(N)
+            if i==N:
+                return 0
+            res=inf
+            if source[i]==target[i]: 
+                res=f(i+1)
+            for size in sizes: # O(M)
+                j=i+size
+                if j>N:
+                    break
+                s=source[i:j] # O(N)
+                t=target[i:j]
+                res=min(res,dijkstra(s)[t]+f(j))
             return res
         
         ans=f(0)
