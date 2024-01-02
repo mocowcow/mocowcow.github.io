@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 2981. Find Longest Special Substring That Occurs Thrice I
-tags        : LeetCode Medium String TwoPointers SlidingWindow BinarySearch HashTable
+tags        : LeetCode Medium String TwoPointers SlidingWindow BinarySearch HashTable Heap
 ---
 周賽378。這題真的很垃圾，常數不知道在卡什麼意思，基本上只有O(N)的能過，O(N log N)很大機率吃TLE。  
 本以為是卡python，換了golang來寫，結果過的測資反而更少。目前只有看過C++能用O(N log N)過。  
@@ -96,6 +96,52 @@ class Solution:
             if freq>=3:
                 ans=max(ans,size)
         
+        if ans==0:
+            return -1
+        
+        return ans
+```
+
+剛才說到，size可以貢獻size-2三次。也就是說，保存小於size-2的大小沒有意義。  
+我們只需要每個字元前三大的字串長度，分別記做a,b,c。
+
+答案的來源可能有三種情況：  
+
+- a,b,c三個都相等，答案是c  
+- 從a中找三個a-2，答案是a-2  
+- 從b中找b，從a中找兩個b，答案是min(a-1,b)  
+
+第三種情況有點小陷阱有在a=b時，可以找到三個a-1；如果a>b，可以找到三個b。合併起來才變成min(a-1,b)。  
+
+老實說不太好想，但是只需要對26個字母各維護3個最大值，常數空間還是很厲害的。  
+
+時間複雜度O(N)。  
+空間複雜度O(1)。  
+
+```python
+class Solution:
+    def maximumLength(self, s: str) -> int:
+        N=len(s)
+        char_size=[[0]*3 for _ in range(26)]
+        i=0
+        while i<N:
+            j=i
+            while j+1<N and s[j]==s[j+1]: # group by same char
+                j+=1
+            c=ord(s[i])-97
+            size=j-i+1
+            heappushpop(char_size[c],size)
+            i=j+1
+            
+        ans=0
+        for vals in char_size:
+            a,b,c=nlargest(3,vals)
+            ans=max(ans,
+                    c,
+                    min(a-1,b),
+                    a-2
+                   )
+            
         if ans==0:
             return -1
         
