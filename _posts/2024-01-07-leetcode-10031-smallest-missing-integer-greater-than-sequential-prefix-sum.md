@@ -16,17 +16,25 @@ tags        : LeetCode Easy Array PrefixSum Simulation HashTable
 
 ## 解法
 
+先找到等差為1的最長前綴nums[0..j]，計算前綴和x。  
+
+把nums轉成集合，以供O(1)查詢x是否存在。
+若x存在，則嘗試x+1，直到不存在為止。最多只會嘗試N次。  
+
+時間複雜度O(N)。  
+空間複雜度O(N)。  
+
 ```python
 class Solution:
     def missingInteger(self, nums: List[int]) -> int:
         N=len(nums)
-        j=0
-        while j+1<N and nums[j+1]==nums[j]+1:
-            j+=1
+        i=0
+        while i+1<N and nums[i+1]==nums[i]+1:
+            i+=1
         
         # find missing
         s=set(nums)
-        x=sum(nums[:j+1])
+        x=sum(nums[:i+1])
         while x in s:
             x+=1
             
