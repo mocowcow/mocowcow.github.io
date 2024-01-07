@@ -48,3 +48,15 @@ class Solution:
                 
         return ans
 ```
+
+其實**XOR結果和k不同**這部分，也可以把兩者做XOR求出。  
+不同的位元會是1，計算剩下幾個1位元即可。  
+
+```python
+class Solution:
+    def minOperations(self, nums: List[int], k: int) -> int:
+        for x in nums:
+            k^=x
+            
+        return k.bit_count()
+```
