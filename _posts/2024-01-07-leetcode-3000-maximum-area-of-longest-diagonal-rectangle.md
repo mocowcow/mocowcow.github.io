@@ -1,6 +1,6 @@
 ---
 layout      : single
-title       : LeetCode 10035. Maximum Area of Longest Diagonal Rectangle
+title       : LeetCode 3000. Maximum Area of Longest Diagonal Rectangle
 tags        : LeetCode Easy Array Simulation
 ---
 周賽379。變數名稱太長就容易打錯，這時候不用宣告就成了python缺點，賦值時拼錯字也不會報錯。

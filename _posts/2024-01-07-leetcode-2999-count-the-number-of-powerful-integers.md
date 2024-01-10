@@ -1,6 +1,6 @@
 ---
 layout      : single
-title       : LeetCode 10034. Count the Number of Powerful Integers
+title       : LeetCode 2999. Count the Number of Powerful Integers
 tags        : LeetCode Hard String DP
 ---
 雙周賽121。一眼就知道是數位dp。可惜我被那個 limit 搞死，這場周賽真的和我不合。  

@@ -1,6 +1,6 @@
 ---
 layout      : single
-title       : LeetCode 10031. Smallest Missing Integer Greater Than Sequential Prefix Sum
+title       : LeetCode 2996. Smallest Missing Integer Greater Than Sequential Prefix Sum
 tags        : LeetCode Easy Array PrefixSum Simulation HashTable
 ---
 雙周賽121。

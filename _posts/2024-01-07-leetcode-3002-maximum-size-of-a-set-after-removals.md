@@ -1,6 +1,6 @@
 ---
 layout      : single
-title       : LeetCode 10037. Maximum Size of a Set After Removals
+title       : LeetCode 3002. Maximum Size of a Set After Removals
 tags        : LeetCode Medium Array Math HashTable
 ---
 周賽379。想了二十分鐘，想到個很神奇的解，送出去還真對了。  

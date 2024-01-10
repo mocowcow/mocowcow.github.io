@@ -1,6 +1,6 @@
 ---
 layout      : single
-title       : LeetCode 10036. Minimum Moves to Capture The Queen
+title       : LeetCode 3001. Minimum Moves to Capture The Queen
 tags        : LeetCode Medium Simulation
 ---
 周賽379。又打錯變數名稱，再喜提一隻BUG。  

@@ -1,6 +1,6 @@
 ---
 layout      : single
-title       : LeetCode 10032. Minimum Number of Operations to Make Array XOR Equal to K
+title       : LeetCode 2997. Minimum Number of Operations to Make Array XOR Equal to K
 tags        : LeetCode Array BitManipulation
 ---
 雙周賽121。

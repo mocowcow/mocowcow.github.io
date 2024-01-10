@@ -1,6 +1,6 @@
 ---
 layout      : single
-title       : LeetCode 10033. Minimum Number of Operations to Make X and Y Equal
+title       : LeetCode 2998. Minimum Number of Operations to Make X and Y Equal
 tags        : LeetCode Medium Array Graph BFS
 ---
 雙周賽121。真的被這題搞死了，腦筋完全轉不過來，一直以為有奇怪的數學解。  
