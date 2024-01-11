@@ -38,3 +38,14 @@ class Solution:
                 
         return ans
 ```
+
+python 一行版本。
+
+在比較大小時，有兩個關鍵字：**對角線**和**面積**。  
+先比對角線，再比面積。直接把這兩個做成 tuple 或 list 比較。  
+
+```python
+class Solution:
+    def areaOfMaxDiagonal(self, dimensions: List[List[int]]) -> int:
+        return max([x**2 + y**2, x * y] for x, y in dimensions)[1]
+```
