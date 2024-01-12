@@ -18,6 +18,7 @@ tags        : LeetCode Medium Array Math HashTable Greedy
 
 將 n/2 記做 m。  
 兩者最多合計貢獻 n 個元素。  
+考慮 nums1, nums2 分別能夠向答案**加入**那些元素。  
 
 最理想的狀況下，當然是 nums1, nums2 各擁有 n 個的元素，且**無交集**。例如：  
 > nums1 = [1,2], nums2 = [3,4], union = {1,2,3,4}  
@@ -34,7 +35,7 @@ tags        : LeetCode Medium Array Math HashTable Greedy
 > nums1 = [1,2,3], nums2 = [3,4,5], union = {1,2,3,4,5}  
 
 一樣**有交集**，而且這次聯集大小超過 n。  
-但是一邊最多只能提供 m 個，所以 nums1 最多提供 min(len(set(nums1)), m) 個；nums2 同理。  
+但是一邊最多只能提供 m 個，所以 nums1 最多提供 min(set_size(nums1), m) 個；nums2 同理。  
 
 可以發現，聯集大小滿足 n 並不代表一定能找滿 n 個元素；但是聯集大小不足 n，一定找不滿 n 個。  
 答案就是**聯集大小**和**兩者貢獻**取最小值。  
@@ -58,13 +59,12 @@ class Solution:
         )
 ```
 
-上面的方式是考慮 nums1, nums2 分別能夠向答案**加入**那些元素。  
 現在換成考慮答案中要**刪除**那些元素。  
 
-兩者的**聯集** union 包含所有不同的元素。如果超出 N 個元素，則需要選擇一些刪除。  
-優先刪除同時存在於 nums1, nums2 中的元素，也就是兩者的**交集** inter。  
+兩者的**聯集** union 包含所有不同的元素。如果超出 n 個元素，則需要選擇一些刪除。  
+**優先刪除**同時存在於 nums1, nums2 中的元素，也就是兩者的**交集** inter。  
 
-如果 nums1 大於 M 個元素，則必須刪掉 len(nums1) - M 個多餘元素。  
+如果 nums1 大於 m 個元素，則必須刪掉 set_size(nums1) - m 個多餘元素。  
 優先從從交集中刪除；如果交集元素不夠，不得已才刪除 nums1 獨有的元素，這時候會使聯集變小。  
 num2 同理，先從聯集刪，不夠才從交集刪。  
 
