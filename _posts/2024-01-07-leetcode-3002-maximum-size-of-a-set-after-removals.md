@@ -100,3 +100,40 @@ class Solution:
                 
         return union
 ```
+
+另外一種**加入**的思路，是同時構造兩者的子集。  
+
+若某個數 x 只在 nums1 或 nums2 其一出現，那麼先選 x 肯定是更好的。  
+先分別找出兩者特有的元素數量。  
+
+如果兩者還找不滿各 m 個，才在共有的**交集**元素中選擇。放到哪邊都無所謂，只要有空位就可以放。  
+
+最後答案是兩子集大小加總。  
+
+```python
+class Solution:
+    def maximumSetSize(self, nums1: List[int], nums2: List[int]) -> int:
+        N = len(nums1)
+        M = N // 2
+        
+        s1 = set(nums1)
+        s2 = set(nums2)
+        inter = s1 & s2
+        
+        cnt1 = cnt2 = 0
+        for x in s1:
+            if cnt1 < M and x not in s2:
+                cnt1 += 1
+                
+        for x in s2:
+            if cnt2 < M and x not in s1:
+                cnt2 += 1
+                
+        for x in inter:
+            if cnt1 < M:
+                cnt1 += 1
+            elif cnt2 < M:
+                cnt2 += 1
+                
+        return cnt1 + cnt2
+```
