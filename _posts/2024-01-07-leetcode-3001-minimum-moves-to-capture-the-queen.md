@@ -76,3 +76,62 @@ class Solution:
         
         return 2
 ```
+
+棋盤大小是常數，不記入複雜度，因此上面方法才是 O(1)。  
+如果棋盤超大，那上面方法就會超時。  
+直接透過座標判斷是否**共線**才能做到真正的常數時間。  
+
+透過 x, y 座標可以很簡單的判斷水平 / 垂直共線，而 x-y 可判斷是否同處一條**反斜線**， x+y 可判斷同處**斜線**。  
+
+城堡直接吃皇后，必須和皇后共線，且滿足以下之一：  
+
+1. 主教不共線 或  
+2. 主線共線但沒擋在中間  
+
+主教吃皇后同理。  
+
+為了快速判斷三者共線但某者不擋住中間，把邏輯提取成函數 ok(left ,mid, right)：只要 mid 不夾在中間就是 true。  
+當然有時候順序會相反，例如 [城堡, 主教, 皇后] 等價於 [皇后, 主教, 城堡]，只要左右兩值互換即可。  
+
+時間複雜度 O(1)。  
+空間複雜度 O(1)。  
+
+```python
+def ok(left, mid, right): # check if [left, right] not blocked by mid
+    return not (min(left, right) < mid < max(left, right))
+    
+class Chess:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.slash = self.x + self.y
+        self.r_slash = self.x - self.y
+
+class Solution:
+    def minMovesToCaptureTheQueen(self, a: int, b: int, c: int, d: int, e: int, f: int) -> int:
+        rook = Chess(a, b)
+        bishop = Chess(c, d)
+        queen = Chess(e, f)
+        
+        # rook to queen
+        # horizontal 
+        if rook.x == queen.x and \
+            (rook.x != bishop.x or ok(rook.y, bishop.y, queen.y)):
+                return 1
+        # vertical
+        if rook.y == queen.y and \
+            (rook.y != bishop.y or ok(rook.x, bishop.x, queen.x)):
+                return 1
+            
+        # priest to queen
+        # slash
+        if bishop.slash == queen.slash and \
+            (bishop.slash != rook.slash or ok(bishop.x, rook.x, queen.x)):
+                return 1
+        # reversed slash
+        if bishop.r_slash == queen.r_slash and \
+            (bishop.r_slash != rook.r_slash or ok(bishop.x, rook.x, queen.x)):
+                return 1
+        
+        return 2
+```
