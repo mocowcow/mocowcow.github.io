@@ -110,18 +110,15 @@ class Solution:
 
         def ok(num):
             cnt1 = 0
-            for i in count(1):
+            for i in range(1, num.bit_length() + 1):
                 if i % x != 0:
                     continue
                     
-                bit = 1 << (i - 1)
-                if bit > num:
-                    break
-                
                 # "rep" elements for a repetition
                 # first half are 0s
                 # and last half are 1s
                 rep = 1 << i 
+                
                 # [0 ~ num] are "num + 1" elements, group them of "rep"
                 # there are "rep_cnt" full repetitions and "remain" elements alone
                 rep_cnt, remain = divmod(num + 1, rep)  
