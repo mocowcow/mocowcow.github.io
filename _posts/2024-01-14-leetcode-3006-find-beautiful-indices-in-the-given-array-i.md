@@ -59,3 +59,57 @@ class Solution:
         
         return ans
 ```
+
+上面方法找子字串開頭的複雜度是 O(MN)，在 Q2 的時候子字串長度最多才 10，完全沒問題。  
+但是到 Q4 直接上升到 10^5，肯定要想其他方法。  
+
+隨便找一種能夠 O(N) 匹配子字串的演算法換掉就行，例如 KMP 或是 rolling hash 之類的。  
+這邊直接拿準備好的 KMP 模板貼上去就結束了。  
+
+時間複雜度 O(N log N)，其中 N = len(s)，M = max(len(a), len(b))。  
+空間複雜度 O(N)。  
+
+```python
+def prefix_function(s):
+    N = len(s)
+    pmt = [0]*N
+    for i in range(1, N):
+        j = pmt[i - 1]
+        while j > 0 and s[i] != s[j]:
+            j = pmt[j - 1]
+        if s[i] == s[j]:
+            j += 1
+        pmt[i] = j
+    return pmt
+
+def KMP(s, p):  
+    M, N = len(s), len(p)
+    pmt = prefix_function(p)
+    j = 0
+    res = []
+    for i in range(M):
+        while j > 0 and s[i] != p[j]:
+            j = pmt[j-1]
+        if s[i] == p[j]:
+            j += 1
+        if j == N:
+            res.append(i - j + 1)
+            j = pmt[j-1]
+    return res
+
+class Solution:
+    def beautifulIndices(self, s: str, a: str, b: str, k: int) -> List[int]:
+        i_indexes = KMP(s, a)
+        j_indexes = KMP(s, b)
+                
+        ans = []
+        for i in i_indexes:
+            lo = i-k
+            hi = i+k
+            j_pos = bisect_left(j_indexes, lo)
+            
+            if j_pos < len(j_indexes) and lo <= j_indexes[j_pos] <= hi:
+                ans.append(i)
+        
+        return ans
+```
