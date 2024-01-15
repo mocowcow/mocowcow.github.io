@@ -73,3 +73,70 @@ class Solution:
 
         return lo
 ```
+
+這種位元運算類型的題目，通常可以把每個位元分開處理計算，稱作**拆位**。  
+
+先照著範例2 的答案，列出 1\~9 的二進位看看：  
+| num | binary |
+| --- | ------ |
+| 0   | 0000   |
+| 1   | 0001   |
+| 2   | 0010   |
+| 3   | 0011   |
+| 4   | 0100   |
+| 5   | 0101   |
+| 6   | 0110   |
+| 7   | 0111   |
+| 8   | 1000   |
+| 9   | 1001   |
+
+發現這些數的第 1 個位元，是由 01 01.. 的規律循環組成。  
+第 2 個位元是 0011 0011..；第 3 個位元是 000011111..。  
+可得結論：第 i 個位元由 2^i 個數為一次循環。其中，前半 2^(i-1) 個位元都是 0，後半 2^(i-1) 個位元都是 1。  
+
+注意：循環是**從 num = 0 開始**，總共有 num + 1 個數。  
+
+將這 num + 1 個數字分組，每組有 2^i 個數，看能循環幾次。每次循環會貢獻 2^(i-1) 個 1位元。  
+至於剩下沒分到組的數字，忽略掉前半的 0位元，只取後半的 1位元。  
+
+最後判斷 1位元的總數是否小於等於 k。  
+
+時間複雜度 O((log k)^2)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def findMaximumNumber(self, k: int, x: int) -> int:
+
+        def ok(num):
+            cnt1 = 0
+            for i in count(1):
+                if i % x != 0:
+                    continue
+                    
+                bit = 1 << (i - 1)
+                if bit > num:
+                    break
+                
+                # "rep" elements for a repetition
+                # first half are 0s
+                # and last half are 1s
+                rep = 1 << i 
+                # [0 ~ num] are "num + 1" elements, group them of "rep"
+                # there are "rep_cnt" full repetitions and "remain" elements alone
+                rep_cnt, remain = divmod(num + 1, rep)  
+                cnt1 += rep_cnt * (rep // 2) # full rep
+                cnt1 += max(0, remain - (rep // 2)) # only last half are 1s
+            return cnt1 <= k
+
+        lo = 1
+        hi = 10**15
+        while lo < hi:
+            mid = (lo + hi + 1) // 2
+            if not ok(mid):
+                hi = mid - 1
+            else:
+                lo = mid
+
+        return lo
+```
