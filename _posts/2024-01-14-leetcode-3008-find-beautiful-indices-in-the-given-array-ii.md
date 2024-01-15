@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3008. Find Beautiful Indices in the Given Array II
-tags        : LeetCode Hard String BinarySearch
+tags        : LeetCode Hard String BinarySearch SlidingWindow TwoPointers
 ---
 周賽380。
 
