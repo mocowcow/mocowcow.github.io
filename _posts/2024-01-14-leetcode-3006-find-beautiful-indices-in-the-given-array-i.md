@@ -66,7 +66,7 @@ class Solution:
 隨便找一種能夠 O(N) 匹配子字串的演算法換掉就行，例如 KMP 或是 rolling hash 之類的。  
 這邊直接拿準備好的 KMP 模板貼上去就結束了。  
 
-時間複雜度 O(N log N)，其中 N = len(s)，M = max(len(a), len(b))。  
+時間複雜度 O(N log N)。  
 空間複雜度 O(N)。  
 
 ```python
@@ -107,6 +107,59 @@ class Solution:
             lo = i-k
             hi = i+k
             j_pos = bisect_left(j_indexes, lo)
+            
+            if j_pos < len(j_indexes) and lo <= j_indexes[j_pos] <= hi:
+                ans.append(i)
+        
+        return ans
+```
+
+其實也不需要二分，這些合法開頭索引都是有序的。  
+維護滑動窗口，枚舉 i 的過程中將小於 lo 的 j 移出窗口，最後檢查窗口內第一個 j 是否界於 [lo, hi] 內。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。  
+
+```python
+def prefix_function(s):
+    N = len(s)
+    pmt = [0]*N
+    for i in range(1, N):
+        j = pmt[i - 1]
+        while j > 0 and s[i] != s[j]:
+            j = pmt[j - 1]
+        if s[i] == s[j]:
+            j += 1
+        pmt[i] = j
+    return pmt
+
+def KMP(s, p):  
+    M, N = len(s), len(p)
+    pmt = prefix_function(p)
+    j = 0
+    res = []
+    for i in range(M):
+        while j > 0 and s[i] != p[j]:
+            j = pmt[j-1]
+        if s[i] == p[j]:
+            j += 1
+        if j == N:
+            res.append(i-j+1)
+            j = pmt[j-1]
+    return res
+
+class Solution:
+    def beautifulIndices(self, s: str, a: str, b: str, k: int) -> List[int]:
+        i_indexes = KMP(s, a)
+        j_indexes = KMP(s, b)
+                
+        ans = []
+        j_pos = 0
+        for i in i_indexes:
+            lo = i-k
+            hi = i+k
+            while j_pos < len(j_indexes) and j_indexes[j_pos] < lo:
+                j_pos += 1
             
             if j_pos < len(j_indexes) and lo <= j_indexes[j_pos] <= hi:
                 ans.append(i)
