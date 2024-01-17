@@ -140,12 +140,12 @@ def KMP(s, p):
     res = []
     for i in range(M):
         while j > 0 and s[i] != p[j]:
-            j = pmt[j-1]
+            j = pmt[j - 1]
         if s[i] == p[j]:
             j += 1
         if j == N:
-            res.append(i-j+1)
-            j = pmt[j-1]
+            res.append(i - j + 1)
+            j = pmt[j - 1]
     return res
 
 class Solution:
