@@ -30,3 +30,30 @@ class Solution:
         a = sorted(nums[1:])
         return nums[0] + sum(a[:2])
 ```
+
+直接維護最小、次小值只要常數空間，而且也只要一次遍歷。  
+
+當然要用 heap 也可以。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def minimumCost(self, nums: List[int]) -> int:
+        N = len(nums)
+        mn1 = mn2 = inf
+        
+        for i in range(1, N):
+            x = nums[i]
+            if x < mn1:
+                mn2 = mn1
+                mn1 = x
+            elif x < mn2:
+                mn2 = x
+            
+        return nums[0] + mn1 + mn2
+        
+        # using heap
+        # return nums[0] + sum(nsmallest(2, nums[1:]))
+```
