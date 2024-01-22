@@ -74,3 +74,25 @@ class Solution:
         
         return max(1, (cnt+1) // 2)
 ```
+
+換個角度想，其時也不一定要是 gcd。  
+若原本 nums 中的最小值是 mn，只要隨便搞出一個小於 mn 的數，都可以把 nums 刪到剩下一個元素。  
+
+遍歷 nums，若存在任何一個不是 mn 倍數的元素 x，則餘數必定不為 0 且**小於** mn。答案是 1。  
+否則只能剩下 cnt 個 mn 相消，答案 (cnt+1) / 2。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def minimumArrayLength(self, nums: List[int]) -> int:
+        mn = min(nums)
+        for x in nums:
+            if x % mn != 0:
+                return 1
+            
+        cnt = nums.count(mn)
+            
+        return (cnt+1) // 2
+```
