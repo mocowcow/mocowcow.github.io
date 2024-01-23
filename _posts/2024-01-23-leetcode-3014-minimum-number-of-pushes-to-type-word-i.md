@@ -44,3 +44,31 @@ class Solution:
             
         return ans
 ```
+
+如果有重複按鍵，為了使總按鍵次數較小，優先把**出現次數的較多的**字元對應到**按鍵次數較少**的位置上。  
+
+先統計各字元出現次數，並依照出現次數遞減排序。  
+一樣從按鍵次數 1 開始分配，每分配 8 次，按鍵次數上升 1。  
+
+雖然有排序，但其實最多只有 26 個字元，可以當作常數。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def minimumPushes(self, word: str) -> int:
+        d = Counter(word)
+        ks = sorted(d.keys(), reverse=True, key=lambda x:d[x])
+        q = deque(ks)
+        
+        cost = 1
+        ans = 0
+        while q:
+            for _ in range(min(len(q), 8)):
+                x = q.popleft()
+                ans += d[x] * cost
+            cost += 1
+        
+        return ans
+```
