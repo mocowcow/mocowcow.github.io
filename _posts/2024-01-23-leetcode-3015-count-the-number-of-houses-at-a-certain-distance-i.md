@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3015. Count the Number of Houses at a Certain Distance I
-tags        : LeetCode Medium Array Graph
+tags        : LeetCode Medium Array Graph BFS
 ---
 周賽381。
 
@@ -76,4 +76,42 @@ class FloydWarshall:
                     new_dist = self.dp[i][k]+self.dp[k][j]
                     if new_dist < self.dp[i][j]:
                         self.dp[i][j] = new_dist
+```
+
+直接枚舉出發做 bfs 也可以，不管是時間還是空間都大有改善。  
+
+時間複雜度 O(n^2)。  
+空間複雜度 O(n)。  
+
+```python
+class Solution:
+    def countOfPairs(self, n: int, x: int, y: int) -> List[int]:
+        g = [[] for _ in range(n+1)]
+        for i in range(2, n+1):
+            g[i].append(i-1)
+            g[i-1].append(i)
+         
+        g[x].append(y)
+        g[y].append(x)
+        
+        ans = [0]*n
+        for i0 in range(1, n+1):
+            # bfs from i0
+            vis = [False]*(n+1)
+            vis[i0] = True
+            q = deque()
+            q.append(i0)
+            dist = 0
+            while q:
+                for _ in range(len(q)):
+                    i = q.popleft()
+                    for j in g[i]:
+                        if vis[j]:
+                            continue
+                        vis[j] = True
+                        ans[dist] += 1
+                        q.append(j)
+                dist += 1
+            
+        return ans
 ```
