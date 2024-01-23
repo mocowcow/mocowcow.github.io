@@ -59,20 +59,19 @@ class Solution:
     def minimumCost(self, nums: List[int], k: int, dist: int) -> int:
         N = len(nums)
         ans = inf
-        s1 = SL() # k-1 smallest 
+        s1 = SL() # k-2 smallest 
         s2 = SL() # other candidates
         cost = nums[0]
         
         # we need k-1 smallest 
-        # enumerate last(k-th) subarray
+        # enumerate last(k-th) element
         # and keep k-2 other smallest
         for right in range(1, N):
             x = nums[right]
-            # enough for total k-1 subarrays
+            # enough for total k-1 elements
             # update ans and pop expired element
             if len(s1) == k-2:
                 ans = min(ans, cost + x)
-                lb = right - dist
                 # pop expired
                 left = right - dist
                 if left >= 1:
