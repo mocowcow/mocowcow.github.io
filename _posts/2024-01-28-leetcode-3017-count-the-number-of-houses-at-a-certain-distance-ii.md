@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 3017. Count the Number of Houses at a Certain Distance II
 tags        : LeetCode Hard Array Graph BFS PrefixSum
 ---
-周賽381。
+周賽381。搞了我好多天，畫了一堆圖才弄懂。  
 
 ## 題目
 
