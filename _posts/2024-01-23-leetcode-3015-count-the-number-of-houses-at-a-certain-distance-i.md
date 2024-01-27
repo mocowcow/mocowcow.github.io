@@ -21,6 +21,8 @@ tags        : LeetCode Medium Array Graph BFS
 
 ## 解法
 
+從 1 開始數真的很煩。總之先把所有點減 1，把範圍調整成 [0, n-1]。  
+
 其實一組房子所需經的**最小道路數**，就是兩點之間的**最短距離**，每條道路的距離都是 1。  
 然後還要求任意兩點的最短距離，基本上就知道可以用 Floyd-Warshall 了。  
 
@@ -33,13 +35,14 @@ tags        : LeetCode Medium Array Graph BFS
 ```python
 class Solution:
     def countOfPairs(self, n: int, x: int, y: int) -> List[int]:
+        x, y = x-1, y-1
         fw = FloydWarshall(n)
         for i in range(1, n):
             fw.add(i, i-1, 1)
             fw.add(i-1, i, 1)
             
-        fw.add(x-1, y-1, 1)
-        fw.add(y-1, x-1, 1)
+        fw.add(x, y, 1)
+        fw.add(y, x, 1)
         fw.build()
        
         ans = [0]*n
@@ -86,18 +89,18 @@ class FloydWarshall:
 ```python
 class Solution:
     def countOfPairs(self, n: int, x: int, y: int) -> List[int]:
-        g = [[] for _ in range(n+1)]
-        for i in range(2, n+1):
+        x, y = x-1, y-1
+        g = [[] for _ in range(n)]
+        g[x].append(y)
+        g[y].append(x)
+        for i in range(1, n):
             g[i].append(i-1)
             g[i-1].append(i)
          
-        g[x].append(y)
-        g[y].append(x)
-        
         ans = [0]*n
-        for i0 in range(1, n+1):
+        for i0 in range(n):
             # bfs from i0
-            vis = [False]*(n+1)
+            vis = [False]*n
             vis[i0] = True
             q = deque()
             q.append(i0)
