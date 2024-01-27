@@ -78,7 +78,7 @@ class FloydWarshall:
                         self.dp[i][j] = new_dist
 ```
 
-直接枚舉出發做 bfs 也可以，不管是時間還是空間都大有改善。  
+直接枚舉出發點做 bfs 也可以，不管是時間還是空間都大有改善。  
 
 時間複雜度 O(n^2)。  
 空間複雜度 O(n)。  
