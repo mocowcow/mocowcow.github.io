@@ -57,3 +57,21 @@ class Solution:
                 
         return ans
 ```
+
+後來再想想，既然都可以直接求 x 的奇偶數，那 y 不也可以？  
+根據乘法原理，答案是：  
+> **偶數x** \* **奇數y** + **奇數x** \* **偶數y**
+
+時間複雜度 O(1)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def flowerGame(self, n: int, m: int) -> int:
+        x_even = n // 2
+        x_odd = n - x_even
+        y_even = m // 2
+        y_odd = m - y_even
+
+        return x_even * y_odd + x_odd * y_even
+```
