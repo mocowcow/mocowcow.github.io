@@ -165,7 +165,7 @@ n 的範圍高達 10^5 就很難辦了。
 
 這些排列隨便看看就好，不太重要。  
 反正就是，使用 xy 做為捷徑，則路徑會經過 (i, x, y, j) 四個點，距離是 abs(i-x) + 1 + abs(y-j)。  
-如果直接走 (i, y) 的距離比起 (i, x, y) 還要短，那**捷徑根本沒用**。  
+如果直接走 (i, y) 的距離比起 (i, x, y) 相同或更短，那**捷徑根本沒用**。  
 對於某個 i 來說：  
 
 - 如果**捷徑沒用**，直接按照上面講的差分做法，計算從 i 走到 [i+1, n-1] 所有點的貢獻。  
@@ -209,7 +209,7 @@ class Solution:
             
         for i in range(n):
             ixy_cost = abs(i - x) + 1 # i to x to y
-            if ixy_cost > abs(i - y): # no need path xy
+            if ixy_cost >= abs(i - y): # no need path xy
                 # go directly from i to j
                 # for all j between [i + 1, n - 1] 
                 # distance contribution range is [1, n - 1 - i]
