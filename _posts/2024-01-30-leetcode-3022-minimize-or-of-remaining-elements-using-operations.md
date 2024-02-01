@@ -89,6 +89,13 @@ OR 運算只有兩個位元都是 0 時，結果才會是 0，否則都是 1。�
 時間複雜度 O(N log MX)，其中 MX = max(nums)，此為 10^9。  
 空間複雜度 O(1)。  
 
+---
+
+細心的同學可能會想起來，剛才說過某位元沒有 0 的話沒辦法刪除，怎麼沒有特別判斷？  
+本題中有規定 k < nums.length，依照上述邏輯，沒法刪除的話得到的操作數 ops 會正好等於 nums.length，不會觸發更新答案的條件。  
+
+如果 k 沒有這個限制的話，可能就要額外將 nums 中所有數先 AND 起來，判斷結果是否為 0。  
+
 ```python
 class Solution:
     def minOrAfterOperations(self, nums: List[int], k: int) -> int:
