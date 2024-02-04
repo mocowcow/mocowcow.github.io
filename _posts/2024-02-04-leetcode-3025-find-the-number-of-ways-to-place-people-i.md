@@ -106,3 +106,23 @@ class Solution:
                 
         return ans
 ```
+
+有些朋友可能覺得從右下角往左上角框出一個矩形很不舒服，因此提供**左上往右下**框的版本。  
+邏輯大致相同，只是改成固定左上角，向右枚舉右下角，並且右下角的 y 軸高度變成**嚴格遞增**。  
+
+```python
+class Solution:
+    def numberOfPairs(self, points: List[List[int]]) -> int:
+        N = len(points)
+        points.sort(key=lambda x: (x[0], -x[1])) 
+        ans = 0
+        for i, (_, y1) in enumerate(points):
+            y_limit = -inf
+            for j in range(i+1, N):
+                y2 = points[j][1]
+                if y1 >= y2 and y2 > y_limit:
+                    ans += 1
+                    y_limit = y2
+                
+        return ans
+```
