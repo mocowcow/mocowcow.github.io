@@ -35,7 +35,6 @@ tags        : LeetCode Medium Array PrefixSum HashTable
 ```python
 class Solution:
     def maximumSubarraySum(self, nums: List[int], k: int) -> int:
-        N = len(nums)
         ans = -inf
         d = defaultdict(lambda: inf)
         ps = 0
@@ -49,6 +48,33 @@ class Solution:
                 ps - d[x + k],
                 ps - d[x - k]
             )
+        
+        if ans == -inf:
+            return 0
+        
+        return ans
+```
+
+附上不使用 defaultdict 的版本。  
+
+其實 defaultdict 就只是一個給定預設值的字典，如果以不存在的 key 取值的話就會拿到預設值，而不會報錯。  
+用普通字典的話就要一直檢查 key 是否存在。  
+
+```python
+class Solution:
+    def maximumSubarraySum(self, nums: List[int], k: int) -> int:
+        ans = -inf
+        d = {}
+        ps = 0
+
+        for x in nums:
+            if x not in d or ps < d[x]:
+                d[x] = ps
+            ps += x
+            
+            for y in [x + k, x - k]:
+                if y in d:
+                    ans = max(ans, ps - d[y])
         
         if ans == -inf:
             return 0
