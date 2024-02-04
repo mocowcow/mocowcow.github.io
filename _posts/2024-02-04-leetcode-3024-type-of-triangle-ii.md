@@ -22,6 +22,9 @@ tags        : LeetCode Easy Array Sorting HashTable
 
 小技巧：像這種有夠長的字串千萬不要自己手打，直接複製題目比較安全。  
 
+時間複雜度 O(1)。  
+空間複雜度 O(1)。  
+
 ```python
 class Solution:
     def triangleType(self, nums: List[int]) -> str:
