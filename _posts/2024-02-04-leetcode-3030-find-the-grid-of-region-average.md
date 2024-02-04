@@ -10,7 +10,7 @@ tags        : LeetCode Medium Array Matrix Simulation
 輸入 m\*n 的網格 image，代表一個灰階圖片，其中 image[i][j] 代表一個像素的亮度。亮度都介於 [0..255]之間。  
 另外還有非負整數 threshold。  
 
-兩個像素 image[a][b] 和 image[c][d] 若滿足 |a - c| + |b - d| == 1，則稱為**相鄰**。  
+兩個像素 image[a][b] 和 image[c][d] 若滿足 \|a - c\| + \|b - d\| == 1，則稱為**相鄰**。  
 
 **區域**指的是一個 3\*3的子網格，其中任意兩個**相鄰**像素的**絕對差**都小於等於 threshold。  
 區域中的所有像素都屬於該區域，且一個像素可以數於多個區域。  
