@@ -19,16 +19,16 @@ tags        : LeetCode Medium Array String Simulation
 
 ## 解法
 
-長度 N 的陣列中，需要切出長度為 M+1 的子陣列，共有 N-M 個。  
+長度 M 的陣列中，需要切出長度為 N+1 的子陣列，共有 M-N 個。  
 枚舉所有子陣列，並與 pattern 試著匹配，若成功則答案加 1。  
 
 時間複雜度 O(MN)。  
-空間複雜度 O(M)。  
+空間複雜度 O(N)。  
 
 ```python
 class Solution:
     def countMatchingSubarrays(self, nums: List[int], pattern: List[int]) -> int:
-        N, M = len(nums), len(pattern)
+        M, N = len(nums), len(pattern)
         
         def ok(sub):
             for j, sign in enumerate(pattern):
@@ -44,8 +44,8 @@ class Solution:
             return True
         
         ans = 0
-        for i in range(N - M):
-            sub = nums[i:i+M+1]
+        for i in range(M - N):
+            sub = nums[i:i+N+1]
             if ok(sub):
                 ans += 1
         
@@ -70,8 +70,8 @@ class Solution:
 問題轉換成：在字串 a 裡面，找到有幾個子字串 pattern。  
 直接套個 KMP 就過了。  
 
-時間複雜度 O(N+M)。  
-空間複雜度 O(M)。  
+時間複雜度 O(M+N)。  
+空間複雜度 O(N)。  
 
 ```python
 class Solution:
@@ -117,4 +117,64 @@ def KMP_all(s, p):
             res.append(i - j + 1)
             j = pmt[j - 1]
     return res
+```
+
+根據[靈神影片](https://www.bilibili.com/video/BV1x4421w7ba/)提供一些優化技巧。  
+c1 和 c2 做比較時，分別以 1, 0, -1 來表示三種狀態：  
+
+- c2 > c1 為 1  
+- c2 == c1 為 0  
+- c2 < c1 為 -1  
+
+直接寫成 (c2 > c1) - (c2 < c1) 也可以得到相同結果。  
+
+---
+
+本題其實也可以使用上禮拜的 z-function 來做。  
+對於字串 s 來說，z[i] 定義的是 s 和 s[i..] 的最長共通前綴 LCP。  
+
+乍看之下，s 只能和自己做匹配，沒辦法和額外的 pattern 產生關聯。  
+那如果把 pattern 加在 s 的前面，z[i] 就變成**pattern 開頭的子字串**與其他子字串的 LCP。  
+
+從 pattern 結束後的位置開始遍歷 z[i]，只要 LCP 長度大於等於 pattern 的長度，則代表匹配成功。  
+
+時間複雜度 O(M+N)。  
+空間複雜度 O(M+N)。  
+
+```python
+class Solution:
+    def countMatchingSubarrays(self, nums: List[int], pattern: List[int]) -> int:
+        M, N = len(nums), len(pattern)
+        a = [(c2 > c1) - (c2 < c1) for c1, c2 in pairwise(nums)]
+        z = z_function(pattern + a)
+        
+        ans = 0
+        for i in range(N, M+N-1):
+            if z[i] >= N:
+                ans += 1
+                
+        return ans
+                
+def z_function(s):
+    N = len(s)
+    z = [0]*N
+    z[0] = N
+    L = R = 0  # right most z-box
+
+    for i in range(1, N):
+        if i > R:  # not covered by z-box
+            pass  # z[i] = 0
+        else:
+            j = i-L
+            if j+z[j] < z[L]:  # fully covered
+                z[i] = z[j]
+            else:  # partial covered
+                z[i] = R-i+1
+
+        while i+z[i] < N and s[z[i]] == s[i+z[i]]:  # remaining substring
+            z[i] += 1
+        if i+z[i]-1 > R:  # R out of prev z-box, update R
+            L = i
+            R = i+z[i]-1
+    return z
 ```
