@@ -42,8 +42,8 @@ tags        : LeetCode Medium Array String HashTable Greedy Sorting
 
 但答案應為 2。正確作法是在 single 不足時隨便挑一組成對的拆開來用，剩下的丟回 single。  
 
-時間複雜度 O(N log N)。  
-空間複雜度 O(N log N)。  
+時間複雜度 O(N log N + L)，其中 L = sum(words[i].length)。  
+空間複雜度 O(N)。  
 
 ```python
 class Solution:
@@ -81,3 +81,33 @@ class Solution:
 
         return ans
 ```
+
+其實根本不必在乎回文中間的字母。  
+他可以是落單的字母、或是拆開成對的字母，反正塞什麼都可以，只要考慮兩邊成對的字母夠不夠就行。  
+
+```python
+class Solution:
+    def maxPalindromesAfterOperations(self, words: List[str]) -> int:
+        sizes = []
+        d = Counter()
+        for w in words:
+            sizes.append(len(w))
+            d += Counter(w)
+            
+        pair = 0
+        for v in d.values():
+            pair += v // 2 * 2
+                
+        sizes.sort()
+        ans = 0
+        for x in sizes:
+            pair_need = x // 2 * 2
+            if pair >= pair_need:
+                ans += 1
+                pair -= pair_need
+
+        return ans
+```
+
+時間複雜度 O(N log N + L)，其中 L = sum(words[i].length)。  
+空間複雜度 O(N)。  
