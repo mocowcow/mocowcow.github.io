@@ -46,11 +46,11 @@ tags        : LeetCode Hard String DP BitManipulation Bitmask
 
 - 不修改 s[i]：  
   - 加入 s[i] 後超過 k 個字元，只能以 s[i] 做新的前綴起點。轉移 dp(i+1, mask(s[i]), changed)  
-  - 否則直接加入 s[i]，轉移 dp(i+1, mask(s[i]) | mask, changed)  
+  - 否則直接加入 s[i]，轉移 dp(i+1, mask(s[i]) \| mask, changed)  
 
 - 若可以修改，則枚舉修改的目標字元 char：  
   - 加入 char 後超過 k 個字元，只能以 s[i] 做新的前綴起點。轉移 dp(i+1, mask(char), true)  
-  - 否則直接加入 char，轉移 dp(i+1, mask(char) | mask, true)  
+  - 否則直接加入 char，轉移 dp(i+1, mask(char) \| mask, true)  
 
 從以上的可用狀態中取最大者就是答案。  
 
