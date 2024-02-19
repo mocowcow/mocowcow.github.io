@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3043. Find the Length of the Longest Common Prefix
-tags        : LeetCode Medium Array String Simulation
+tags        : LeetCode Medium Array String Simulation Trie
 ---
 周賽385。直接上字典樹模板。省了打字時間，結果有地方沒改好，拿一隻蟲，虧死。  
 
@@ -53,7 +53,7 @@ class Solution:
 去掉右邊數字只需要簡單的除法，不用轉來轉去，方便很多。  
 比較大小的時候直接用整數來比就行，最後才把整數轉成字串算長度。  
 
-時間複雜度 O((M+N) log MX)，其中 M 為 arr1 長度，N 為 arr2 長度。  
+時間複雜度 O((M+N) log MX)。  
 空間複雜度 O(M log MX)。  
 
 ```python
@@ -76,4 +76,50 @@ class Solution:
             return 0
                 
         return len(str(ans))
+```
+
+字典樹，又稱**前綴樹**，當然可以用來解前綴問題。  
+
+一樣先把 arr1 所有數轉成字串，加入字典樹中。  
+然後遍歷 arr2，找到最長的前綴，更新答案。  
+
+時間複雜度 O((M+N) log MX)。  
+空間複雜度 O(M log MX)。  
+
+```python
+class Solution:
+    def longestCommonPrefix(self, arr1: List[int], arr2: List[int]) -> int:
+        t = Trie()
+        for s in arr1:
+            t.add(str(s))
+            
+        ans = 0
+        for s in arr2:
+            size = 0
+            curr = t.root
+            for c in str(s):
+                curr = curr.child[c]
+                if curr.cnt == 0:
+                    break
+                size += 1
+            ans = max(ans, size)
+            
+        return ans
+        
+        
+class TrieNode:
+    def __init__(self) -> None:
+        self.child = defaultdict(TrieNode)
+        self.cnt = 0
+
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def add(self, s) -> None:
+        curr = self.root
+        for c in s:
+            curr = curr.child[c]
+            curr.cnt += 1  # count prefix
 ```
