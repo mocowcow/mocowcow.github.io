@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3042. Count Prefix and Suffix Pairs I
-tags        : LeetCode Easy String
+tags        : LeetCode Easy String Trie
 ---
 周賽385。最近字串題是真的很多，有好好補題的同學應該上了不少分。  
 
@@ -40,4 +40,87 @@ class Solution:
                     ans += 1
                     
         return ans
+```
+
+測資大一點就不行了，要想想優化方法。  
+對於前綴後綴問題，**字典樹**是個不錯的選擇。  
+
+根據不同的遍歷順序，可以在字典樹中維護其**前綴**或是**後綴**。  
+按照這個邏輯，我們要檢查某字串是否是其他人的**前後綴**，那麼維護兩個字典樹不就好了？  
+試想以下例子：  
+> words = ["a", "ab", "ba"]  
+> 前綴樹 = []  
+> 後綴樹 = []  
+> words[i] = "ba"，找不到前後綴  
+> 前綴樹 = ["b", "ba"]  
+> 後綴樹 = ["a", "ba"]  
+> words[i] = "ab"，找不到前後綴  
+> 前綴樹 = ["b", "ba", "a", "ab"]  
+> 後綴樹 = ["a", "ba", "b", "ab"]  
+> worwds[i] = "a"，在前後綴樹都找到 "a"  
+
+但前綴 "a" 是來自 "ab"，而後綴的 "a" 是來自 "ba"，根本不屬於同移個字串。  
+這種作法還得判斷是誰生出來的，比如在節點上維護來源字串的索引，在對兩節點上的編號求交集。  
+但但又會衍生別的問題。試想以下例子：  
+> words = ["a", "a", "a", ...]  
+
+每個 words[i] 都會產生前後綴 "a"，所以節點上維護的來源索引會不斷增長到 N 個。  
+這樣求兩節點交集的時候，複雜度是 O(N)。而且總共要求 N 次，總共需要 O(N^2)，還是無法接受。  
+
+---
+
+我想了半小時，才想到解決方案：把前後綴**綁在一起**判定不就好了？  
+> words[i] = "abc"  
+> 前綴是依照 a, b, c 的順序生成  
+> 後綴是依照 c, b, a 的順序生成  
+> 把前後綴的字綁在一起  
+> 變成 (a, c), (b, b), (c, a)  
+
+隨便找一個前後綴都是 "abc" 的字串驗證看看：  
+> words[j] = "abc...abc"  
+> 前後綴 (a, c), (b, b), (c, a) ...
+
+還真沒錯。那麼只要在經過的每個節點上維護**前後綴**數量即可。  
+
+---
+
+在 i < j 的前提下，我們想要知道 words[i] 是那些 words[j] 的前後綴。  
+因此 words[j] 需要比 words[i] 更先插入字典樹中，故採倒序遍歷。  
+
+對於 words[i] 來說，有兩件事情要做：  
+
+1. 在字典樹中按照 words[i] 的前後綴路徑走，將最後節點 (即相同前後綴的 words[j]) 的計數加入答案  
+2. 將 words[i] **所有**前後綴節點的計數加 1  
+
+這兩件事情其實可以在一起完成，只是最後節點的計數已經被加了 1，所以加到答案的計數要記得扣掉 1。  
+
+時間複雜度 O(L)，其中 L = sum(words[i])，題目保證不超過 5\*10^5 。  
+空間複雜度 O(L)。  
+
+```python
+class Solution:
+    def countPrefixSuffixPairs(self, words: List[str]) -> int:
+        t = Trie()
+        ans = 0
+        for w in reversed(words):
+            curr = t.root
+            # build trie with pref / suffix
+            for key in zip(w, w[::-1]):
+                curr = curr.child[key]
+                curr.cnt += 1
+                
+            # count of words[j] with same prefix / suffix
+            ans += curr.cnt - 1
+            
+        return ans
+        
+class TrieNode:
+    def __init__(self) -> None:
+        self.child = defaultdict(TrieNode)
+        self.cnt = 0
+
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
 ```
