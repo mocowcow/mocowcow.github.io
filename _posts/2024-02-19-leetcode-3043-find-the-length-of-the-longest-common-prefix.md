@@ -23,7 +23,7 @@ tags        : LeetCode Medium Array String Simulation
 先把 arr1 的前綴加入集合，然後枚舉 arr2 的前綴，若有出現過則以當前前綴長度更新答案。  
 
 數字上限 MX = max(arr[i]) = 10^8，轉成字串也就 8 個字元。  
-數字轉字串需要 O(log MX)。然後有 O(log MX) 個前綴，每次字串切片也要 O(log MX)。  
+數字轉字串需要 O(log MX)。然後有 O(log MX) 個前綴，每次字串切片、轉回整數也要 O(log MX)。  
 
 時間複雜度 O((M+N) \* log MX \* log MX)，其中 M 為 arr1 長度，N 為 arr2 長度。  
 空間複雜度 O(M \* log MX \* log MX)。  
@@ -45,4 +45,35 @@ class Solution:
                     ans = max(ans, i+1)
                     
         return ans
+```
+
+也可以直接用整數來表示。  
+一個數不斷的去掉最右邊的數字，得到的數正好是前綴。  
+
+去掉右邊數字只需要簡單的除法，不用轉來轉去，方便很多。  
+比較大小的時候直接用整數來比就行，最後才把整數轉成字串算長度。  
+
+時間複雜度 O((M+N) log MX)，其中 M 為 arr1 長度，N 為 arr2 長度。  
+空間複雜度 O(M log MX)。  
+
+```python
+class Solution:
+    def longestCommonPrefix(self, arr1: List[int], arr2: List[int]) -> int:
+        pref = set()
+        for x in arr1:
+            while x > 0:
+                pref.add(x)
+                x //= 10
+                
+        ans = 0
+        for x in arr2:
+            while x > 0:
+                if x in pref:
+                    ans = max(ans, x)
+                x //= 10
+        
+        if ans == 0:
+            return 0
+                
+        return len(str(ans))
 ```
