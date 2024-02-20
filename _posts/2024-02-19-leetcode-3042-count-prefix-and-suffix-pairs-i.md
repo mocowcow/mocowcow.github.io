@@ -100,10 +100,10 @@ class Solution:
 ```python
 class Solution:
     def countPrefixSuffixPairs(self, words: List[str]) -> int:
-        t = Trie()
+        root = TrieNode()
         ans = 0
-        for w in reversed(words):
-            curr = t.root
+        for w in reversed(words): # enumerate words[i]
+            curr = root
             # build trie with pref / suffix
             for key in zip(w, w[::-1]):
                 curr = curr.child[key]
@@ -119,8 +119,32 @@ class TrieNode:
         self.child = defaultdict(TrieNode)
         self.cnt = 0
 
+```
 
-class Trie:
-    def __init__(self):
-        self.root = TrieNode()
+上面的方法是枚舉 words[i]，其實改成枚舉 words[j] 也可以。  
+只是變成在建樹的過程中，檢查先前有多少字串和當前的前後綴相同。  
+建完樹後，才對完整的前後綴計數加 1。  
+
+```python
+class Solution:
+    def countPrefixSuffixPairs(self, words: List[str]) -> int:
+        root = TrieNode()
+        ans = 0
+        for w in words: # enumerate words[j]
+            curr = root
+            # build trie with pref / suffix
+            for key in zip(w, w[::-1]):
+                curr = curr.child[key]
+                ans += curr.cnt
+                
+            # increase pref / suff count 
+            curr.cnt += 1
+            
+        return ans
+        
+class TrieNode:
+    def __init__(self) -> None:
+        self.child = defaultdict(TrieNode)
+        self.cnt = 0
+
 ```
