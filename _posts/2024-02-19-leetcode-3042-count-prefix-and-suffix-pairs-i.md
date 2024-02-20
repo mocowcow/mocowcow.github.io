@@ -146,5 +146,64 @@ class TrieNode:
     def __init__(self) -> None:
         self.child = defaultdict(TrieNode)
         self.cnt = 0
+```
 
+其實看到**前綴**和**後綴**，應該會想到 z-z_function。但我比賽中沒想通，還得賽後讓人提點提點。  
+
+根據定義，z[i] 指的是 s 和 s[i..] 的最長共通前綴 LCP。  
+對於 s 來說，存在某個長度為 i+1 的前綴 s[..i+1]。若其同時是 s 的後綴，那麼對應 z[len(s) - 1 - i] 的值應該正好等於 前綴長度，也就是 i+1。  
+
+透過 z 值的幫助下，先確定 words[j] 的某段前綴是否**等於**相同長度的後綴。若相等才需要找等同於該前綴的 words[i]。  
+如此一來，字典樹便回歸最初始的功能：字串計數。  
+
+注意：一般來說 z-function 的 z[0] 值不會計算，因為字串 s 和自己匹配沒有意義，故維持 0。  
+在本題來說卻代表了與 s 相同的前後綴，所以要填上 len(s)。
+
+```python
+class Solution:
+    def countPrefixSuffixPairs(self, words: List[str]) -> int:
+        root = TrieNode()
+        ans = 0
+        for w in words: # enumerate words[j]
+            curr = root
+            z = z_function(w)
+            # build trie with pref
+            for i, c in enumerate(w):
+                curr = curr.child[c]
+                pref_size = i + 1
+                if z[-pref_size] == pref_size:
+                    ans += curr.cnt
+                
+            # increase pref count 
+            curr.cnt += 1
+            
+        return ans
+        
+class TrieNode:
+    def __init__(self) -> None:
+        self.child = defaultdict(TrieNode)
+        self.cnt = 0
+        
+def z_function(s):
+    N = len(s)
+    z = [0]*N
+    z[0] = N # important !!
+    L = R = 0
+    for i in range(1, N):
+        if R < i:  # not covered by previous z-box
+            # z[i] = 0
+            pass
+        else:  # partially or fully covered
+            j = i-L
+            if j+z[j] < z[L]:  # fully covered
+                z[i] = z[j]
+            else:
+                z[i] = R-i+1
+
+        while i+z[i] < N and s[i+z[i]] == s[z[i]]:  # remaining substring
+            z[i] += 1
+        if i+z[i]-1 > R:  # R out of prev z-box, update R
+            L = i
+            R = i+z[i]-1
+    return z
 ```
