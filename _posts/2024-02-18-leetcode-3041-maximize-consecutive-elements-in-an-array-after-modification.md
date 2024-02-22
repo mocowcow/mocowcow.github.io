@@ -101,15 +101,16 @@ class Solution:
             target = nums[i] + inc_i
             for inc_j in range(2):
                 # find last nums[j] + inc_j + 1 < target
-                lo = 0
-                hi = i - 1
-                while lo < hi:
-                    mid = (lo + hi + 1) // 2
-                    if nums[mid] + inc_j >= target:
-                        hi = mid - 1
-                    else:
-                        lo = mid
-                j = lo
+                # lo = 0
+                # hi = i - 1
+                # while lo < hi:
+                #     mid = (lo + hi + 1) // 2
+                #     if nums[mid] + inc_j >= target:
+                #         hi = mid - 1
+                #     else:
+                #         lo = mid
+                # j = lo
+                j = bisect_left(nums, target, hi = i, key=lambda x:x+ inc_j) - 1
                 if nums[j] + inc_j + 1 ==  target:
                     res = max(res, dp(j, inc_j) + 1)
             return res
@@ -118,6 +119,34 @@ class Solution:
         for i in range(N):
             for inc_i in range(2):
                 ans = max(ans, dp(i, inc_i))
+        
+        return ans
+```
+
+改成遞推寫法。  
+
+注意：dp[0] 需要特判設成 1，不然就是要檢查二分找出來的索引 j 是否界於合法範圍 [0, i-1]，否則會得到錯誤答案。  
+
+```python
+class Solution:
+    def maxSelectedElements(self, nums: List[int]) -> int:
+        nums.sort()
+        N = len(nums)
+        dp = [[1, 1] for _ in range(N)]
+        for i in range(1, N): # dp[0] is base case!!
+            for inc_i in range(2):
+                res = 1
+                target = nums[i] + inc_i
+                for inc_j in range(2):
+                    j = bisect_left(nums, target, hi = i, key=lambda x:x+ inc_j) - 1
+                    if nums[j] + inc_j + 1 ==  target:
+                        res = max(res, dp[j][inc_j] + 1)
+                dp[i][inc_i] = res
+        
+        ans = 0
+        for i in range(N):
+            for inc_i in range(2):
+                ans = max(ans, dp[i][inc_i])
         
         return ans
 ```
