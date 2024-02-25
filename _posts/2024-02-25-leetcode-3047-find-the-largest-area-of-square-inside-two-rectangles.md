@@ -24,6 +24,8 @@ tags        : LeetCode Medium Array Matrix
 原本想排序，但只能保證 x軸有序，要另外判斷 y軸。  
 又自己透過交換保證 y軸大小後，又沒辦法處理完全包含的情況，非常麻煩。  
 
+然後輸入變數的名稱也很臭長，建議自己改短成 bl 和 rt 之類的。  
+
 ---
 
 **交集區域**是由兩個維度組成，相當於 **x軸交集**和 **y軸交集**的乘積。分開求兩項東西就簡單很多：  
@@ -124,4 +126,21 @@ def get_height(A, B):
 # override min/max
 min = lambda x, y:  x if x < y else y 
 max = lambda x, y:  x if x > y else y
+```
+
+寫成 O(1) 空間濃縮版本就是這樣，反正我是覺得可讀性很差。  
+~~至少我沒辦法一次性寫成這樣~~。  
+
+```python
+class Solution:
+    def largestSquareArea(self, bl: List[List[int]], tr: List[List[int]]) -> int:
+        N = len(bl)
+        ans = 0
+        for i in range(N):
+            for j in range(i):
+                w = min(tr[i][0], tr[j][0]) - max(bl[i][0], bl[j][0])
+                h = min(tr[i][1], tr[j][1]) - max(bl[i][1], bl[j][1])
+                ans = max(ans, min(w, h))
+    
+        return ans ** 2
 ```
