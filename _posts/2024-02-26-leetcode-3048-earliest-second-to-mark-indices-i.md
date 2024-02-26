@@ -23,13 +23,19 @@ tags        : LeetCode Medium Array HashTable BinarySearch Greedy
 有[題解](https://leetcode.cn/problems/earliest-second-to-mark-indices-i/solutions/2653101/er-fen-da-an-pythonjavacgo-by-endlessche-or61/)比喻的非常妙：  
 
 - nums 代表 n 門課程，各需要 nums[i] 天做複習。每天只能複習一門課程  
-- 而第 i 天也可以選擇參加第 changeIndices[i] 門的考試，但考試就不能複習  
+- 而第 s 天也可以選擇參加第 changeIndices[s] 門課的考試，但考試就不能複習  
 
-求所有課程複習完 + 考試總共要多少天。  
+每門課程都各自需要複習 nums[i] 次，然後參加一次考試。  
+求所有課程**複習且考試完**最快要多久。  
 
 這個比喻的玄妙之處，繼續看下去才會理解。  
 
 ---
+
+反正對於第 i 天來說，只有兩個有效選項：  
+
+1. 複習任意課程  
+2. 參加第 changeIndices[s] 門課的考試  
 
 對於某門課程若需要 x 次複習，然後有好幾個考試日期可以選擇，那當然是選**越晚**的考試日，複習天數**越充足**。  
 所以每門課程都選**最晚的日期**來考試，考過比較重要。  
