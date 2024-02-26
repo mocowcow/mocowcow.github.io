@@ -13,7 +13,7 @@ tags        : LeetCode Medium Array HashTable BinarySearch Greedy
 依序從 1\~m 中的第 s 秒，你可以執行以下操作**之一**：  
 
 - 選擇 [1, n] 之間的索引 i，並使 nums[i] 減 1  
-- 如果 nums[changeIndices[s]] 等於 0，則標記 changeIndices[s]  
+- 如果 nums[changeIndices[s]] 等於 0，則標記索引 changeIndices[s]  
 - 不做任何事  
 
 求 [1, m] 之間的一個整數，代表在最佳情況下，能夠標記**所有**索引的**最早秒數**。若無法全部標記則回傳 -1。  
