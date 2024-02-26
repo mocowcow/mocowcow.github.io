@@ -61,18 +61,18 @@ class Solution:
         
         def ok(time):
             sub = changeIndices[:time]
-            marked = 0
+            exam = 0
             last = {x:i for i, x in enumerate(sub)}
-            cnt = 0 # ops
+            study = 0 # days can study
             for i, x in enumerate(sub):
                 if i == last[x]:
-                    marked += 1
-                    cnt -= nums[x-1]
-                    if cnt < 0:
+                    exam += 1
+                    study -= nums[x-1]
+                    if study < 0:
                         return False
                 else:
-                    cnt += 1
-            return marked == N
+                    study += 1
+            return exam == N
         
         lo = 1
         hi = M
@@ -87,4 +87,38 @@ class Solution:
             return -1
         
         return lo
+```
+
+二分可以把範圍改成 [1, M+1]，判斷答案大於 M 就回傳 -1。  
+
+二分內部邏輯也可以逆向處理。  
+從最後一天開始倒序遍歷，首次碰到的考試日就直接考，把需要的複習天數記起來，之後非考試日在來複習。  
+最後檢查是否考過 N 個科目，且需要複習日為 0 即可。  
+
+```python
+class Solution:
+    def earliestSecondToMarkIndices(self, nums: List[int], changeIndices: List[int]) -> int:
+        N = len(nums)
+        M = len(changeIndices)
+        
+        def ok(time):
+            vis = set()
+            study = 0 # days need to study
+            exam = 0
+            for i in reversed(range(time)):
+                x = changeIndices[i]
+                if x not in vis:
+                    vis.add(x)
+                    exam += 1
+                    study += nums[x-1]
+                elif study > 0:
+                    study -= 1
+            return exam == N and study == 0 
+        
+        ans = 1 + bisect_left(range(1, M + 1), True, key=ok)
+        
+        if ans > M:
+            return -1
+        
+        return ans
 ```
