@@ -152,3 +152,33 @@ class Solution:
         
         return ans
 ```
+
+參考 awice 大神的[題解](https://leetcode.com/problems/earliest-second-to-mark-indices-ii/discuss/4778732/Python3-Binary-Search-%2B-Heap)，他的貪心邏輯真的是有夠簡潔。  
+
+只要是快速複習日，不管空閒日夠不夠，都直接塞進 min heap。因為：  
+
+- 空閒日夠，那就空閒加 1  
+- 不夠  
+  - 能退，退出最小的，空閒加 1
+  - 不能退，退出**當前的**，空閒加 1  
+
+處理邏輯剛好相符，整個濃縮起來。  
+
+```python
+        def ok(limit):
+            cnt = 0 # 空閒日
+            h = [] # 已完成的快速複習
+            for day in reversed(range(limit)):
+                idx = changeIndices[day] - 1
+                val = nums[idx]
+                if not day in fast_day: # 非快速複習日，即空閒日  
+                    cnt += 1
+                else: # 快速複習日
+                    heappush(h, val)
+                    if cnt > 0: # 有空閒日，快速複習，並拿一天空閒來考試
+                        cnt -= 1 
+                    else: # 不管有沒有退成功，至少一天會變空閒
+                        cnt += 1
+                        heappop(h)
+            return cnt + len(h) >= tot - sum(h) # 空閒日 + 已考試日 >= 基本天數 - 已省天數
+```
