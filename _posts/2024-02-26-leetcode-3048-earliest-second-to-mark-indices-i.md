@@ -64,14 +64,14 @@ class Solution:
     def earliestSecondToMarkIndices(self, nums: List[int], changeIndices: List[int]) -> int:
         N = len(nums)
         M = len(changeIndices)
-        
-        def ok(time):
-            sub = changeIndices[:time]
+
+        def ok(limit):
+            sub = changeIndices[:limit]
             exam = 0
-            last = {x:i for i, x in enumerate(sub)}
-            study = 0 # days can study
-            for i, x in enumerate(sub):
-                if i == last[x]:
+            last_day = {x: i for i, x in enumerate(sub)}
+            study = 0  # days can study
+            for day, x in enumerate(sub):
+                if day == last_day[x]:
                     exam += 1
                     study -= nums[x-1]
                     if study < 0:
@@ -79,7 +79,7 @@ class Solution:
                 else:
                     study += 1
             return exam == N
-        
+
         lo = 1
         hi = M
         while lo < hi:
@@ -88,11 +88,12 @@ class Solution:
                 lo = mid + 1
             else:
                 hi = mid
-        
+
         if not ok(lo):
             return -1
-        
+
         return lo
+
 ```
 
 二分可以把範圍改成 [1, M+1]，判斷答案大於 M 就回傳 -1。  
@@ -106,25 +107,26 @@ class Solution:
     def earliestSecondToMarkIndices(self, nums: List[int], changeIndices: List[int]) -> int:
         N = len(nums)
         M = len(changeIndices)
-        
-        def ok(time):
+
+        def ok(limit):
             vis = set()
-            study = 0 # days need to study
+            study = 0  # days need to study
             exam = 0
-            for i in reversed(range(time)):
-                x = changeIndices[i]
+            for day in reversed(range(limit)):
+                x = changeIndices[day]
                 if x not in vis:
                     vis.add(x)
                     exam += 1
                     study += nums[x-1]
                 elif study > 0:
                     study -= 1
-            return exam == N and study == 0 
-        
+            return exam == N and study == 0
+
         ans = 1 + bisect_left(range(1, M + 1), True, key=ok)
-        
+
         if ans > M:
             return -1
-        
+
         return ans
+
 ```
