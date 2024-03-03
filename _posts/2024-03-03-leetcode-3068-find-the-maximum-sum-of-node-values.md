@@ -73,3 +73,38 @@ class Solution:
         
         return dp(0, 0) # must be even
 ```
+
+改成遞推版本。  
+
+```python
+class Solution:
+    def maximumValueSum(self, nums: List[int], k: int, edges: List[List[int]]) -> int:
+        N = len(nums)
+        dp = [[0, 0] for _ in range(N + 1)]
+        dp[-1][1] = -inf
+        
+        for i in reversed(range(N)):
+            prev_even = dp[i+1][0]
+            prev_odd = dp[i+1][1]
+            dp[i][0] = max(nums[i] + prev_even, (nums[i] ^ k) + prev_odd)
+            dp[i][1] = max(nums[i] + prev_odd, (nums[i] ^ k) + prev_even)
+        
+        return dp[0][0]
+
+        
+```
+
+發現對於 dp(i) 來說只需要參考上一個狀態，空間可以壓縮掉。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def maximumValueSum(self, nums: List[int], k: int, edges: List[List[int]]) -> int:
+        even, odd = 0, -inf
+        for x in nums:
+            even, odd = max(even + x, odd + (x ^ k)), max(even + (x ^ k), odd + x)
+            
+        return even
+```
