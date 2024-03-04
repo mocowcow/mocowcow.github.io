@@ -76,3 +76,76 @@ def gc(sl, x):
     idx = sl.bisect_right(x)
     return len(sl) - 1 - idx + 1
 ```
+
+哩扣時間限制真的是很詭異，也不知道是時間累計還是 python 限制太嚴格。  
+直接開 [1, 1e9] 的動態開點線段樹會超時；如果按照各 TC 最小/最大值開點，還是要跑將近 9 秒，快要超時。  
+
+把 nums 離散化之後，動態開點變成 4 秒多。  
+但是都離散化了，那我乾脆用 BIT，只需要 2 秒。  
+
+以上這幾種方法的時間複雜度都一樣，但最快的還是 sorted list，耗時僅 1.5 秒。  
+
+```python
+from sortedcontainers import SortedList as SL
+
+class Solution:
+    def resultArray(self, nums: List[int]) -> List[int]:
+        N = len(nums)
+        mp = {x:i for i, x in enumerate(sorted(set(nums)))}
+        b1, b2 = BIT(N), BIT(N)
+        a1, a2 = [], []
+        
+        def append(b, a, x):
+            b.update(mp[x], 1)
+            a.append(x)
+        
+        append(b1, a1, nums[0])
+        append(b2, a2, nums[1])
+        for i in range(2, N):
+            x = nums[i]
+            mpx = mp[x]
+            gc1 = b1.query_range(mpx + 1, N - 1)
+            gc2 = b2.query_range(mpx + 1, N - 1)
+            if gc1 > gc2 or (gc1 == gc2 and len(a1) <= len(a2)):
+                append(b1, a1, x)
+            else:
+                append(b2, a2, x)
+
+        return a1 + a2
+
+class BIT:
+    """
+    tree[0]代表空區間，不可存值，基本情況下只有[1, n-1]可以存值。
+    offset為索引偏移量，若設置為1時正好可以對應普通陣列的索引操作。
+    """
+
+    def __init__(self, n, offset=1):
+        self.offset = offset
+        self.tree = [0]*(n+offset)
+
+    def update(self, pos, val):
+        """
+        將tree[pos]增加val
+        """
+        i = pos+self.offset
+        while i < len(self.tree):
+            self.tree[i] += val
+            i += i & (-i)
+
+    def query(self, pos):
+        """
+        查詢[1, pos]的前綴和
+        """
+        i = pos+self.offset
+        res = 0
+        while i > 0:
+            res += self.tree[i]
+            i -= i & (-i)
+        return res
+
+    def query_range(self, i, j):
+        """
+        查詢[i, j]的前綴和
+        """
+        return self.query(j)-self.query(i-1)
+```
