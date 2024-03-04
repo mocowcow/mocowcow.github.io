@@ -20,6 +20,9 @@ tags        : LeetCode Medium Array Matrix PrefixSum
 矩陣中不包含負數，因此若某右下角座標為 (r, c) 子矩陣，其總和超過 k，則 (r+1, c) 和 (r, c+1) 必定也不合法。  
 此作為一個小小的加速點，可以剪枝節省時間。  
 
+時間複雜度 O(MN)。  
+空間複雜度 O(MN)。  
+
 ```python
 class Solution:
     def countSubmatrices(self, grid: List[List[int]], k: int) -> int:
@@ -31,6 +34,32 @@ class Solution:
                 ps[r+1][c+1] = ps[r+1][c] + ps[r][c+1] - ps[r][c] + grid[r][c]
                 if ps[r+1][c+1] <= k:
                     ans += 1
+                else:
+                    break
+                    
+        return ans
+```
+
+在計算二維前綴和的同時就可以計算答案，而且都只是以 (0, 0) 為左上角，不需要扣除其他前綴和，因此只需要保留**上一列**的以及**左方格子**的前綴和即可。  
+
+時間複雜度 O(MN)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def countSubmatrices(self, grid: List[List[int]], k: int) -> int:
+        M, N = len(grid), len(grid[0])
+        ps_col = [0] * N
+        ans = 0
+        for r in range(M):
+            ps = 0 
+            for c in range(N):
+                ps += grid[r][c]
+                ps_col[c] += ps
+                if ps_col[c] <= k:
+                    ans += 1
+                else:
+                    break
                     
         return ans
 ```
