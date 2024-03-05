@@ -109,3 +109,29 @@ class Solution:
             
         return even
 ```
+
+延續剛才得到的結論：只能選偶數個節點做 XOR。  
+
+計算各個節點做 XOR 後的變化量 diff，並將變化量遞減排序。  
+根據貪心的想法，每次選剩餘最大的兩個。若變化量為正，選了肯定不虧。  
+
+時間複雜度 O(N log N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def maximumValueSum(self, nums: List[int], k: int, edges: List[List[int]]) -> int:
+        N = len(nums)
+        diff = [(x ^ k) - x for x in nums]
+        diff.sort(reverse=True)
+        
+        ans = sum(nums)
+        for i in range(0, N - 1, 2):
+            delta = diff[i] + diff[i+1]
+            if delta > 0:
+                ans += delta
+            else:
+                break
+                
+        return ans
+```
