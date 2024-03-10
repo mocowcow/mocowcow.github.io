@@ -34,7 +34,10 @@ N 為 arr 長度，M 為 max(arr[i])。
 每個字串有 M^2 個子字串，長度最多為 M，所以產生所有子字串需要 O(M^3)。  
 有 N 個字串，總共是 O(NM^3)。  
 
-時間複雜度 O(NM^3)。  
+但是還要排序 M^2 個子字串共 N 次，所以排序部分的成本是 O(NM^2 log M^2)。  
+這複雜度我自己寫得都覺得很怪。  
+
+時間複雜度 O(NM^3) + O(NM^2 log M^2)。  
 空間複雜度 O(NM^2)。  
 
 ```python
@@ -42,7 +45,7 @@ class Solution:
     def shortestSubstrings(self, arr: List[str]) -> List[str]:
         
         @cache
-        def get_sub(s):
+        def get_sub(s): # O(M^3)
             sub = set()
             for i in range(len(s)):
                 for j in range(i, len(s)):
@@ -50,20 +53,20 @@ class Solution:
             return sub
         
         d = Counter()
-        for s in arr:
+        for s in arr: # O(N) * O(M^2)
             sub = get_sub(s)
             for x in sub:
                 d[x] += 1
                 
-        ans = []
-        for s in arr:
-            sub = get_sub(s)
+        ans = [] 
+        for s in arr: # O(N) * O(M^2 log M^2)
+            sub = get_sub(s) 
             sub = sorted(sub, key=lambda x: (len(x), x)) # sort by size then lexicographic 
             for x in sub:
                 if d[x] == 1: # found
                     ans.append(x)
                     break
-            else: # not found
+            else:
                 ans.append("")
         
         return ans
