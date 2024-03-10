@@ -71,3 +71,35 @@ class Solution:
         
         return ans
 ```
+
+比較微妙的是純暴力法竟然能過，而且還更快。可能是有很多迴圈沒有執行到就中斷了。  
+
+時間複雜度 O(N^2 \* M^4)。  
+空間複雜度 O(M)。  
+
+```python
+class Solution:
+    def shortestSubstrings(self, arr: List[str]) -> List[str]:
+        
+        def ok(i, sub):
+            for j, s in enumerate(arr):
+                if i != j and sub in s:
+                    return False
+            return True
+        
+        ans = []
+        for i, s in enumerate(arr):
+            M = len(s)
+            res = ""
+            for size in range(1, M + 1):
+                for start in range(M - size + 1):
+                    sub = s[start:start+size]
+                    if (not res or sub < res) and ok(i, sub):
+                        res = sub
+                if res: # found
+                    break
+                        
+            ans.append(res)
+            
+        return ans
+```
