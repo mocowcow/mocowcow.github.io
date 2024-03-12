@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3077. Maximum Strength of K Disjoint Subarrays
-tags        : LeetCode Hard Array DP
+tags        : LeetCode Hard Array DP PrefixSum
 ---
 周賽388。真的得抱怨一下，題目原文非常爛，只講選擇 k 個不相交的子陣列，但沒有提到選擇的順序。  
 如果講清楚一點，我相信 AC 人數不至於這麼悲慘。  
@@ -62,6 +62,8 @@ BASE：當 need_grp 為負數，代表分割太多子陣列了，不合法，回
 時間複雜度 O(nk)。  
 空間複雜度 O(nk)。  
 
+雖然只有 2 \* 10^6 個狀態，竟然要跑到 10 秒。  
+
 ```python
 class Solution:
     def maximumStrength(self, nums: List[int], k: int) -> int:
@@ -96,4 +98,51 @@ class Solution:
         dp.cache_clear()
         
         return ans
+```
+
+狀態上的 take 變數有點不太好想。  
+通通用的劃分型 dp 寫法，其實是對於當前陣列 nums[i..]，枚舉分割點 j，並從 j+1 繼續分割。  
+
+對於從 i 開始的任意長度**子陣列** nums[i..j]，我們可以決定**選或不選**。  
+若選，就會得到 delta = sum(nums[i..j]) * weight，並從 j+1 繼續找 need_grp-1 個子陣列；  
+若不選 nums[i..j]，則直接跳到 j+1 繼續找 need_grp 個子陣列。  
+注意到，其實不選的話只需要跳到 i+1 就可以，因為 i+1 能夠繼續不選 i+2, i+3..。  
+
+定義 dp(i, need_grp)：從子陣列 nums[i..N-1] 中，求出 need_grp 個不相交子陣列的最大值。  
+轉移：dp(i, need_grp) = max( dp(i+1, need_grp),  dp(j+1, need_grp-1 + delta)...) FOR ALL i <= j < N  
+BASE：當 need_grp = 0，已經找到足夠的子陣列，回傳 0；否則當 i = N 且還找不滿時，為非法答案，回傳 -inf。  
+
+求 sum(nums[i..j]) 的部分，可以先預處理前綴和，可供 O(1) 時間查詢。  
+
+時間複雜度 O(n^2 \* k )。  
+空間複雜度 O(nk)。  
+
+複雜度多了一個 n，運算次數高達 10^10。需要繼續優化。  
+
+```python
+class Solution:
+    def maximumStrength(self, nums: List[int], k: int) -> int:
+        N = len(nums)
+        ps = list(accumulate(nums, initial=0))
+        @cache
+        def dp(i, need_grp):
+            if need_grp == 0:
+                return 0
+            
+            if i == N:
+                return -inf
+            
+            grp_id = k - need_grp + 1
+            weight = (k - grp_id + 1)
+            if grp_id % 2 == 0:
+                weight = -weight
+                
+            res = dp(i + 1, need_grp) # no take nums[i]
+            for j in range(i, N): # take nums[i..j]
+                sm = ps[j+1] - ps[i]
+                delta = sm * weight
+                res = max(res, dp(j + 1, need_grp - 1) + delta)
+            return res        
+        
+        return dp(0, k)
 ```
