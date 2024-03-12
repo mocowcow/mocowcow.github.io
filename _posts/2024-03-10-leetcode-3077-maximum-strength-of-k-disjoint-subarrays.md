@@ -124,6 +124,7 @@ class Solution:
     def maximumStrength(self, nums: List[int], k: int) -> int:
         N = len(nums)
         ps = list(accumulate(nums, initial=0))
+
         @cache
         def dp(i, need_grp):
             if need_grp == 0:
@@ -146,3 +147,56 @@ class Solution:
         
         return dp(0, k)
 ```
+
+這種劃分型 dp 通常有個優化點，那便是**轉移來源大量重疊**。  
+
+舉個例子：  
+> dp(i, need_grp)  
+> 選擇 num[i..i]，轉移來源 = dp(i+1, need_grp-1)  
+> 選擇 num[i..(i+1)]，轉移來源 = dp(i+2, need_grp-1)  
+> 選擇 num[i..(i+2)]，轉移來源 = dp(i+3, need_grp-1)  
+> ...
+> 選擇 num[i..(N-1)]，轉移來源 = dp(N, need_grp-1)  
+
+在看看他左邊的另外一個狀態：  
+> dp(i-1, need_grp)  
+> 選擇 num[(i-1)..(i-1)]，轉移來源 = dp(i, need_grp-1)  
+> 選擇 num[(i-1)..i]，轉移來源 = dp(i+1, need_grp-1)  
+> 選擇 num[(i-1)..(i+1)]，轉移來源 = dp(i+2, need_grp-1)  
+> ...
+> 選擇 num[i..(N-1)]，轉移來源 = dp(N, need_grp-1)  
+
+可以發現，dp(i-1, need_grp) 只比 dp(i, need_grp) 多一個轉移來源：  
+> dp(i, need_grp-1)  
+
+也就是說，計算 dp(i-1, need_grp) 的時候，只要拿 dp(i, need_grp) 剛才算過的東西取一次最大值就行。  
+這樣每個狀態的轉移成本就是 O(1)，而非原本的 O(N)。  
+
+為了修改成上述邏輯，要先把程式碼改成遞推版本。  
+
+```python
+class Solution:
+    def maximumStrength(self, nums: List[int], k: int) -> int:
+        N = len(nums)
+        ps = list(accumulate(nums, initial=0))
+        
+        dp = [[0] * (k + 1) for _ in range(N + 1)]
+        for need_grp in range(1, k + 1):
+            dp[N][need_grp] = -inf
+        
+        for need_grp in range(1, k + 1):
+            grp_id = k - need_grp + 1
+            weight = (k - grp_id + 1)
+            if grp_id % 2 == 0:
+                weight = -weight
+            for i in reversed(range(N)):
+                res = dp[i+1][need_grp] # no take nums[i]
+                for j in range(i, N): # take nums[i..j]
+                    sm = ps[j+1] - ps[i]
+                    delta = sm * weight
+                    res = max(res, dp[j+1][need_grp-1] + delta)
+                dp[i][need_grp] = res       
+        
+        return dp[0][k]
+```
+
