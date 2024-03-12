@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2478. Number of Beautiful Partitions
-tags        : LeetCode Hard String DP
+tags        : LeetCode Hard String DP PrefixSum
 ---
 周賽320。本來用python寫個O(k\*N^2)的dp解，可能沒睡醒才覺得又是py時間太嚴格，一氣之下跑去用go寫一次就過了。後來想想才發現不對，O(k\*N^2)將近10^9次運算，再怎樣都不會是正確答案，看來是golang執行快到一個誇張。  
 
@@ -112,4 +112,47 @@ class Solution:
             return res % MOD
         
         return dp(0, k)
+```
+
+拿 dp(i, z) 和 dp(i+1, z) 比較，發現只多了一個新的轉移來源：  
+> dp(i+minLength-1, z-1)  
+
+因此只須要維護轉移來源的前綴和 ps，將新的轉移來源加入 ps 後，就是當前答案。  
+每個狀態的轉移成本變成 O(1)。  
+
+時間複雜度 O(Nk)。  
+空間複雜度 O(Nk)。  
+
+```python
+prime = set("2357")
+MOD = 10**9 + 7
+
+class Solution:
+    def beautifulPartitions(self, s: str, k: int, minLength: int) -> int:
+        N = len(s)
+        
+        # first char must be prime
+        if s[0] not in prime:
+            return 0
+        
+        # last char must not be prime
+        if s[-1] in prime:
+            return 0
+        
+        def is_end(j):
+            return s[j] not in prime and (j+1 == N or s[j+1] in prime)
+
+        dp = [[0] * (k+1) for _ in range(N+1)]
+        dp[N][0] = 1
+        
+        for z in range(1, k+1):
+            ps = 0
+            for i in reversed(range(N)):
+                j = i + minLength - 1
+                if j < N and is_end(j):
+                    ps += dp[j+1][z-1]
+                    ps %= MOD
+                dp[i][z] = ps % MOD
+                
+        return dp[0][k]
 ```
