@@ -189,6 +189,7 @@ class Solution:
             weight = (k - grp_id + 1)
             if grp_id % 2 == 0:
                 weight = -weight
+                
             for i in reversed(range(N)):
                 res = dp[i+1][need_grp] # no take nums[i]
                 for j in range(i, N): # take nums[i..j]
@@ -200,7 +201,7 @@ class Solution:
         return dp[0][k]
 ```
 
-對於剩餘組數 need_grp，我們把可重複利用的部分記做 pre_mx，初始值為 dp[N][need_grp]。  
+對於剩餘組數 need_grp，我們把可重複利用的部分記做 pre_mx。初始值為 -inf，因為沒有任何來源。  
 
 根據剛才的推倒，求 dp(i, need_grp) 時，只需要拿 pre_mx 和 dp(i+1, need_grp-1) 取最大值，然後加上 nums[i] \* weight 即可。  
 
@@ -223,7 +224,8 @@ class Solution:
             weight = (k - grp_id + 1)
             if grp_id % 2 == 0:
                 weight = -weight
-            pre_mx = dp[N][need_grp]
+
+            pre_mx = -inf
             for i in reversed(range(N)):
                 res = dp[i+1][need_grp] # no take nums[i]
                 pre_mx = max(pre_mx, dp[i+1][need_grp-1]) + nums[i] * weight # take nums[i..j]
@@ -231,4 +233,36 @@ class Solution:
                 dp[i][need_grp] = res       
         
         return dp[0][k]
+```
+
+再看看 dp(i, need_grp) 只會參考到 dp(i+1, need_grp-1) 和 dp(i+1, need_grp)。  
+可以把空間優化掉，只保留 dp(i+1) 的狀態，這樣只需要兩個陣列。  
+
+時間複雜度 O(nk)。  
+空間複雜度 O(k)。  
+
+```python
+class Solution:
+    def maximumStrength(self, nums: List[int], k: int) -> int:
+        N = len(nums)
+        
+        dp = [0] * (N + 1)
+        
+        for need_grp in range(1, k + 1):
+            grp_id = k - need_grp + 1
+            weight = (k - grp_id + 1)
+            if grp_id % 2 == 0:
+                weight = -weight
+                
+            dp2 = [0] * (N + 1)
+            dp2[N] = -inf
+            pre_mx = -inf
+            for i in reversed(range(N)):
+                res = dp2[i+1] # no take nums[i]
+                pre_mx = max(pre_mx, dp[i+1]) + nums[i] * weight # take nums[i..j]
+                res = max(res, pre_mx)
+                dp2[i] = res       
+            dp = dp2
+        
+        return dp[0]
 ```
