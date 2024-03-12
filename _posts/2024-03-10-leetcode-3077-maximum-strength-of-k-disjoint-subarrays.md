@@ -22,6 +22,8 @@ x 個子陣列的強度定義為：
 
 ## 解法
 
+相似題 [2478. number of beautiful partitions]({% post_url 2022-11-21-leetcode-2478-number-of-beautiful-partitions %})。  
+
 比賽時因為這個爛描述，還以為選擇的子陣列是可以任意順序，完全不知道怎麼下手。  
 結束後看人家講才知道，原來他想講的是**從左到右**選擇子陣列。  
 
