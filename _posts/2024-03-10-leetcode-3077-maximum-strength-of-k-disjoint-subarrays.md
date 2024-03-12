@@ -152,24 +152,24 @@ class Solution:
 
 舉個例子：  
 > dp(i, need_grp)  
-> 選擇 num[i..i]，轉移來源 = dp(i+1, need_grp-1)  
-> 選擇 num[i..(i+1)]，轉移來源 = dp(i+2, need_grp-1)  
-> 選擇 num[i..(i+2)]，轉移來源 = dp(i+3, need_grp-1)  
-> ...
-> 選擇 num[i..(N-1)]，轉移來源 = dp(N, need_grp-1)  
+> 選擇 num[i..i]，轉移來源 = dp(i+1, need_grp-1) + sum(nums[i..i])  
+> 選擇 num[i..(i+1)]，轉移來源 = dp(i+2, need_grp-1) + sum(nums[i..(i+1)])  
+> 選擇 num[i..(i+2)]，轉移來源 = dp(i+3, need_grp-1) + sum(nums[i..(i+2)])  
+> ...  
+> 選擇 num[i..(N-1)]，轉移來源 = dp(N, need_grp-1) + sum(nums[i..(N-1)])  
 
 在看看他左邊的另外一個狀態：  
 > dp(i-1, need_grp)  
-> 選擇 num[(i-1)..(i-1)]，轉移來源 = dp(i, need_grp-1)  
-> 選擇 num[(i-1)..i]，轉移來源 = dp(i+1, need_grp-1)  
-> 選擇 num[(i-1)..(i+1)]，轉移來源 = dp(i+2, need_grp-1)  
-> ...
-> 選擇 num[i..(N-1)]，轉移來源 = dp(N, need_grp-1)  
+> 選擇 num[(i-1)..(i-1)]，轉移來源 = dp(i, need_grp-1) + sum(nums[(i-1)..(i-1)])  
+> 選擇 num[(i-1)..i]，轉移來源 = dp(i+1, need_grp-1) + sum(nums[(i-1)..i)])  
+> 選擇 num[(i-1)..(i+1)]，轉移來源 = dp(i+2, need_grp-1) + sum(nums[(i-1)..(i+1)])  
+> ...  
+> 選擇 num[i..(N-1)]，轉移來源 = dp(N, need_grp-1) + sum(nums[(i-1)..(N-1)])  
 
-可以發現，dp(i-1, need_grp) 只比 dp(i, need_grp) 多一個轉移來源：  
-> dp(i, need_grp-1)  
+可以發現，每個來源在 sum 的部分，都只差了一個 nums[i-1]。  
+然後多出一個新的來源 dp(i, need_grp-1) 而已。  
 
-也就是說，計算 dp(i-1, need_grp) 的時候，只要拿 dp(i, need_grp) 剛才算過的東西取一次最大值就行。  
+也就是說，計算 dp(i-1, need_grp) 的時候，只要拿 dp(i, need_grp) 剛才算過的東西，和 dp(i, need_grp-1) 取一次最大值，然後加上 nums[i-1] 就行。  
 這樣每個狀態的轉移成本就是 O(1)，而非原本的 O(N)。  
 
 為了修改成上述邏輯，要先把程式碼改成遞推版本。  
@@ -199,4 +199,3 @@ class Solution:
         
         return dp[0][k]
 ```
-
