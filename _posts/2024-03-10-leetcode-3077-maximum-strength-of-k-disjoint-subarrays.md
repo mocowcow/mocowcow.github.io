@@ -199,3 +199,36 @@ class Solution:
         
         return dp[0][k]
 ```
+
+對於剩餘組數 need_grp，我們把可重複利用的部分記做 pre_mx，初始值為 dp[N][need_grp]。  
+
+根據剛才的推倒，求 dp(i, need_grp) 時，只需要拿 pre_mx 和 dp(i+1, need_grp-1) 取最大值，然後加上 nums[i] \* weight 即可。  
+
+時間複雜度 O(nk)。  
+空間複雜度 O(nk)。  
+
+執行時間剩下 2.5 秒，快了非常多。  
+
+```python
+class Solution:
+    def maximumStrength(self, nums: List[int], k: int) -> int:
+        N = len(nums)
+        
+        dp = [[0] * (k + 1) for _ in range(N + 1)]
+        for need_grp in range(1, k + 1):
+            dp[N][need_grp] = -inf
+        
+        for need_grp in range(1, k + 1):
+            grp_id = k - need_grp + 1
+            weight = (k - grp_id + 1)
+            if grp_id % 2 == 0:
+                weight = -weight
+            pre_mx = dp[N][need_grp]
+            for i in reversed(range(N)):
+                res = dp[i+1][need_grp] # no take nums[i]
+                pre_mx = max(pre_mx, dp[i+1][need_grp-1]) + nums[i] * weight # take nums[i..j]
+                res = max(res, pre_mx)
+                dp[i][need_grp] = res       
+        
+        return dp[0][k]
+```
