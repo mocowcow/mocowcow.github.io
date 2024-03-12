@@ -78,8 +78,7 @@ class Solution:
             delta = 0 # contribution of nums[i]
             if take: 
                 grp_id = k - need_grp
-                grp_mul = k - grp_id + 1
-                delta = nums[i] * grp_mul
+                delta = nums[i] * (k - grp_id + 1)
                 if grp_id % 2 == 0:
                     delta = -delta
                 
