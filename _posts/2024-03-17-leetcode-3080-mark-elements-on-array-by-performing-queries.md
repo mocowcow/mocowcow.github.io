@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3080. Mark Elements on Array by Performing Queries
-tags        : LeetCode Medium Array Heap
+tags        : LeetCode Medium Array Heap Sorting
 ---
 雙周賽 126。
 
@@ -52,6 +52,37 @@ class Solution:
                     vis[i] = True
                     k -= 1
                     sm -= v
+                    
+            ans.append(sm)
+            
+        return ans
+```
+
+也可以不用 heap。  
+直接維護一個索引陣列，依照 [value, index] 排序後即可。  
+
+```python
+class Solution:
+    def unmarkedSumArray(self, nums: List[int], queries: List[List[int]]) -> List[int]:
+        N = len(nums)
+        a = sorted(range(N), key=lambda x:(nums[x], x))
+        j = 0
+        
+        sm = sum(nums)
+        vis = [False] * N
+        ans = []
+        for qi, k in queries:
+            if not vis[qi]:
+                vis[qi] = True
+                sm -= nums[qi]
+            
+            while j < N and k:
+                i = a[j]
+                j += 1
+                if not vis[i]:
+                    vis[i] = True
+                    k -= 1
+                    sm -= nums[i]
                     
             ans.append(sm)
             
