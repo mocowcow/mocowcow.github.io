@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 2940. Find Building Where Alice and Bob Can Meet
 tags        : LeetCode Hard Array SegmentTree BinarySearch Heap
 ---
-周賽372。前陣子在整理線段樹模板，剛好練習到相似題[2286. booking concert tickets in groups]({% post\_url 2022-05-30-leetcode-2286-booking-concert-tickets-in-groups %})。  
+周賽372。前陣子在整理線段樹模板，剛好練習到相似題[2286. booking concert tickets in groups]({% post_url 2022-05-30-leetcode-2286-booking-concert-tickets-in-groups %})。  
 樹是有成功搞出來，但是誤會題目的要求，有些小問題會算出錯誤答案，好可惜。  
 
 ## 題目
