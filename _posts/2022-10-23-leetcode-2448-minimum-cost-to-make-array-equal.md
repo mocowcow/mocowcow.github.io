@@ -25,7 +25,7 @@ tags        : LeetCode Hard Array TwoPointers Greedy
 例：  
 > total_cost = [2,1,4], lo = 1, hi = 3
 > 縮減lo，此次成本為2  
-> total_cost = [_,3,4], lo = 2, hi = 3  
+> total_cost = [\_,3,4], lo = 2, hi = 3  
 > 縮減lo，此次成本為3  
 > 總成本為2+3 = 5  
 

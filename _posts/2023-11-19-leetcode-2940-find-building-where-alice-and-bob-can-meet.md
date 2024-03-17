@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 2940. Find Building Where Alice and Bob Can Meet
 tags        : LeetCode Hard Array SegmentTree BinarySearch Heap
 ---
-周賽372。前陣子在整理線段樹模板，剛好練習到相似題[2286. booking concert tickets in groups]({% post_url 2022-05-30-leetcode-2286-booking-concert-tickets-in-groups %})。  
+周賽372。前陣子在整理線段樹模板，剛好練習到相似題[2286. booking concert tickets in groups]({% post\_url 2022-05-30-leetcode-2286-booking-concert-tickets-in-groups %})。  
 樹是有成功搞出來，但是誤會題目的要求，有些小問題會算出錯誤答案，好可惜。  
 
 ## 題目
@@ -42,10 +42,10 @@ tags        : LeetCode Hard Array SegmentTree BinarySearch Heap
 舉個例子：  
 > H = [4,1,2,4]，要找介於區間[1,3]且至少為limit=4的最小索引  
 > [4,1,2,4]最大值是4。因為要求索引最小，先找左區間  
-> [4,1,_,_]最大值是4。左邊[4,_,_,_]超出區間限制；右邊[_,1,_,_]不足4，也不行  
+> [4,1,\_,\_]最大值是4。左邊[4,\_,\_,\_]超出區間限制；右邊[\_,1,\_,\_]不足4，也不行  
 > 回到[4,1,2,4]，找右區間  
-> [_,_,2,4]最大值4，先找左區間。左邊[_,_2,_]不足4，不行；右邊[_,_,_4]可以  
-> [_,_,_,4]已經是葉節點，正是答案，合法索引為H[3]=4  
+> [\_,\_,2,4]最大值4，先找左區間。左邊[\_,\_2,\_]不足4，不行；右邊[\_,\_,\_4]可以  
+> [\_,\_,\_,4]已經是葉節點，正是答案，合法索引為H[3]=4  
 
 定義bisect(i,limit)：在區間[i, N-1]間找到至少limit且最靠左的索引。  
 以下幾個步驟轉換成遞迴函數即可實現查找：  
@@ -149,11 +149,11 @@ class SegmentTree:
 
 同樣根據剛才分類討論的結果，先把可以在b點會合的查詢填上答案。其餘剩下的查詢都是要從b出發。  
 例如某次查詢q=[a,b]滿足a<b但是H[a]>H[b]，所以他要找一個索引至少為b+1、高度至少為H[a]+1的建築。  
-因此維護陣列query_todo，其中query_todo[i]保存所有從b出發的查詢qid，將該查詢加入query_todo[b]之中。  
+因此維護陣列query\_todo，其中query\_todo[i]保存所有從b出發的查詢qid，將該查詢加入query\_todo[b]之中。  
 
 查詢所要求的**高度限制**越小，則越有可能被滿足。因此使用min heap，以高度為鍵值來維護等待回答的查詢。  
 從左到右遍歷建築，可以保證當前建築索引i比先前的建築j更大。  
-剩下只要把heap中，高度小於當前建築的查詢都填上答案，再把之前從query_todo[b]中的查詢加入heap中。  
+剩下只要把heap中，高度小於當前建築的查詢都填上答案，再把之前從query\_todo[b]中的查詢加入heap中。  
 
 ```python
 class Solution:
