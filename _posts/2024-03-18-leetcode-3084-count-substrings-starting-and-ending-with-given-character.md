@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3084. Count Substrings Starting and Ending with Given Character
-tags        : LeetCode String 
+tags        : LeetCode String Math
 ---
 周賽 389。這幾題的敘述都很精簡，非常省時間。  
 
@@ -29,4 +29,20 @@ class Solution:
                 ans += cnt
                 
         return ans
+```
+
+仔細看看增加的數量：  
+> 1, 2, 3, 4,..  
+
+啊這不就是等差數列嗎？  
+上公式解決。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。
+
+```python
+class Solution:
+    def countSubstrings(self, s: str, c: str) -> int:
+        a = s.count(c)
+        return a * (a + 1) // 2
 ```
