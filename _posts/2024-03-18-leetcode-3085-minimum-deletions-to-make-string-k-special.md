@@ -48,3 +48,22 @@ class Solution:
                 
         return ans
 ```
+
+逆向思維也很有趣：與其找要刪的，不如找**留著的**有多少。  
+同樣枚舉下界 lo，看看在 [lo, lo + k] 區間能夠留下多少字元。  
+字串長度 N 扣掉最大保留字元 mx_keep 就是要刪掉的數量。
+
+```python
+class Solution:
+    def minimumDeletions(self, word: str, k: int) -> int:
+        d = Counter(word)
+        mx_keep = 0
+        for lo in d.values():
+            keep = 0
+            for v in d.values():
+                if v >= lo: # keep freq in [lo, lo + k]
+                    keep += min(v, lo + k)
+            mx_keep = max(mx_keep, keep)
+                
+        return len(word) - mx_keep
+```
