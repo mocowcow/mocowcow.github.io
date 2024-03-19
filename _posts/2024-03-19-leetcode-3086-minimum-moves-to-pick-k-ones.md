@@ -59,10 +59,11 @@ index - 1, index, index + 1 這三個中心區域索引的收集成本分別是 
 
 ---
 
-如果以上兩種特殊情況都不成立，那就代表 maxChanges 不夠用，還要額外找 size = k - maxChanges 個 1。  
-要選擇一個 index，使得 k 個 1 與 index 的距離和最小化。  
+如果以上兩種特殊情況都不成立，那就代表 maxChanges 不夠用。  
+必須額外找 size = k - maxChanges 個 1。  
+再從 k 個 1 之中找出 index 使得距離和最小化。  
 
-我們可以很直觀的判斷出 k 個 1 是**連續的**，畢竟散得越開距離肯定越大。  
+我們可以很直觀的判斷出 k 個 1 是**連續的**，畢竟散得越開距離肯定越遠。  
 但是 k 個之中誰要當 index？答案是**中位數**。  
 
 假設以最左邊的點做 index。  
@@ -75,7 +76,7 @@ index - 1, index, index + 1 這三個中心區域索引的收集成本分別是 
 
 最後的問題只剩下找到所有大小為 size 的區間的中位數了。  
 雖然我們要的是中位數，但如果枚舉中心點的話還要判斷左右邊的 1 夠不夠，很麻煩。  
-直接**枚舉左端點** left，而右端點 right = left + size - 1，中心點自然就出來了。  
+直接**枚舉左端點** left，而右端點 right = left + size - 1，中位數 index 自然就出來了。  
 找到最小的距離和之後，加上生成的成本 max_changes * 2 就是答案。  
 
 時間複雜度 O(N)。  
@@ -99,8 +100,9 @@ class Solution:
                 cnt += 1
             mid_one = max(mid_one, cnt)
         
+        # only need k
         mid_one = min(mid_one, k)
-        # use only mid part and maxChanges
+        # use mid part and maxChanges
         if mid_one + maxChanges >= k:
             mid_cost = mid_one - 1
             side_cost = (k - mid_one) * 2
@@ -108,17 +110,17 @@ class Solution:
 
         # enumerate median as index
         ans = inf
-        N = len(ones)
+        M = len(ones)
         ps = list(accumulate(ones, initial=0))
         size = k - maxChanges
-        for left in range(N - size + 1):
+        for left in range(M - size + 1):
             right = left + size - 1
             mid = (left + right) // 2
-            x = ones[mid]
+            index = ones[mid]
             l_cnt = mid - left + 1 # [left, mid]
             r_cnt = right - mid + 1 # [mid, right]
-            l_part = x * l_cnt - (ps[mid + 1] - ps[left])
-            r_part = (ps[right + 1] - ps[mid]) - x * r_cnt
+            l_part = index * l_cnt - (ps[mid + 1] - ps[left])
+            r_part = (ps[right + 1] - ps[mid]) - index * r_cnt
             ans = min(ans, l_part + r_part)
         
         return ans + maxChanges * 2
