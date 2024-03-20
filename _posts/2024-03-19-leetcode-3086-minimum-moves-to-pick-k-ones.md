@@ -125,3 +125,35 @@ class Solution:
         
         return ans + maxChanges * 2
 ```
+
+有另外一種思路不必考慮這麼多特殊情況，但是執行時間會稍微多一點。  
+
+首先特判 nums 沒有 1 的情況。  
+否則需要**收集**的數量 need =  max(1, k - maxChanges)，因為中位數肯定有免費的 1。  
+當 need >= 3 時，一定會收集到中心區域的三個 (如果有)；否則應該試著找看看有沒有辦法擴大中心區域，畢竟可以省錢。  
+直接枚舉 need, need + 1, need + 2 三種收集數量，如此一來肯定會收到中心的那幾個。  
+
+當然你也可以用 if 判斷只有在 need < 3 時才要嘗試收集更多，不過這樣就沒這麼簡潔。  
+
+```python
+class Solution:
+    def minimumMoves(self, nums: List[int], k: int, maxChanges: int) -> int:
+        need = max(1, k - maxChanges)
+        ones = [i for i, x in enumerate(nums) if x == 1]
+        M = len(ones)
+        ps = list(accumulate(ones, initial=0))
+        ans = inf if ones else k * 2
+        for size in range(need, min(k, need + 2) + 1):
+            for left in range(M - size + 1):
+                right = left + size - 1
+                mid = (left + right) // 2
+                index = ones[mid]
+                l_cnt = mid - left + 1 # [left, mid]
+                r_cnt = right - mid + 1 # [mid, right]
+                l_part = index * l_cnt - (ps[mid + 1] - ps[left])
+                r_part = (ps[right + 1] - ps[mid]) - index * r_cnt
+                cost = (k - size) * 2
+                ans = min(ans, l_part + r_part + cost)
+                
+        return ans
+```
