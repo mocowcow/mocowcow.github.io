@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3090. Maximum Length Substring With Two Occurrences
-tags        : LeetCode Easy Array HashTable
+tags        : LeetCode Easy Array HashTable TwoPointers SlidingWindow
 ---
 周賽 390。
 
@@ -35,5 +35,27 @@ class Solution:
                 if ok(sub):
                     ans = max(ans, len(sub))
                     
+        return ans
+```
+
+更好的方法是**滑動窗口**。  
+相似題 [3. longest substring without repeating characters]({% post_url 2022-06-10-leetcode-3-longest-substring-without-repeating-characters %})。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(26)。  
+
+```python
+class Solution:
+    def maximumLengthSubstring(self, s: str) -> int:
+        ans = 0
+        d = Counter()
+        left = 0
+        for right, c in enumerate(s):
+            d[c] += 1
+            while d[c] >2:
+                d[s[left]] -= 1
+                left += 1
+            ans = max(ans, right - left + 1)
+            
         return ans
 ```
