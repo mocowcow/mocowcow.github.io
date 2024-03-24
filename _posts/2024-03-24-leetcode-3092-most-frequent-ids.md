@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3092. Most Frequent IDs
-tags        : LeetCode Medium Array HashTable SortedList Simulation
+tags        : LeetCode Medium Array HashTable SortedList Simulation Heap
 ---
 周賽 390。
 
@@ -43,11 +43,45 @@ class Solution:
         for id, delta in zip(nums, freq):
             # del old freq
             sl.remove(d[id])
+
             # add new freq
             d[id] += delta
             sl.add(d[id])
+
             # find max freq
             ans.append(sl[-1])
+            
+        return ans
+```
+
+如果其他語言沒有方便的有序集合，那只能用 max heap 來做了。  
+
+heap 沒辦法隨機刪除，只能另外紀錄哪些元素**應該被刪除**，等晚一點他跑出來的時候才刪掉，這叫做**懶刪除 (lazy deletion)** 。  
+
+```python
+class Solution:
+    def mostFrequentIDs(self, nums: List[int], freq: List[int]) -> List[int]:
+        N = len(nums)
+        d = Counter()
+        h = [0] * N # max heap
+        lazy_del = Counter()
+        
+        ans = []
+        for id, delta in zip(nums, freq):
+            # mark old freq as "to be delete"
+            lazy_del[d[id]] += 1
+            
+            # add new freq
+            d[id] += delta
+            heappush(h, -d[id])
+            
+            # check if top element marked
+            while h and lazy_del[-h[0]] > 0:
+                lazy_del[-h[0]] -= 1
+                heappop(h)
+                
+            # find max freq
+            ans.append(-h[0])
             
         return ans
 ```
