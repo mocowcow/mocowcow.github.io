@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3091. Apply Operations to Make Sum of Array Greater Than or Equal to k
-tags        : LeetCode Medium Array Greedy BinarySearch
+tags        : LeetCode Medium Array Greedy BinarySearch Math
 ---
 周賽 390。寫這題腦子進水了，竟然錯兩次，上分機會又飛走。  
 
@@ -34,9 +34,9 @@ tags        : LeetCode Medium Array Greedy BinarySearch
 答案具有單調性，可以二分。  
 
 要判斷 x 次操作能否滿足，只要枚舉 add 的次數 0\~x，而 dup 的次數就是 x - add。  
-每次判斷需要 O(N)，共需要 O(log N) 次。  
+每次判斷需要 O(k)，共需要 O(log k) 次。  
 
-時間複雜度 O(N log N)。  
+時間複雜度 O(k log k)。  
 空間複雜度 O(1)。  
 
 ```python
@@ -61,4 +61,22 @@ class Solution:
                 hi = mid
                 
         return lo
+```
+
+其實根本不用這麼麻煩，只要枚舉 add 的次數，拿 k 去除最大值就知道要幾次 dup 了。  
+注意：dup 有可能無法整除，要滿足 k 必須向上取整。  
+
+時間複雜度 O(k)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def minOperations(self, k: int) -> int:
+        ans = inf
+        for add in range(k + 1):
+            base = add + 1
+            dup = (k + base - 1) // base - 1
+            ans = min(ans, add + dup)
+        
+        return ans
 ```
