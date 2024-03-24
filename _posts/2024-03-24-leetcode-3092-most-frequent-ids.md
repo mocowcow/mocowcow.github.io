@@ -58,6 +58,9 @@ class Solution:
 
 heap 沒辦法隨機刪除，只能另外紀錄哪些元素**應該被刪除**，等晚一點他跑出來的時候才刪掉，這叫做**懶刪除 (lazy deletion)** 。  
 
+時間複雜度 O(N log N)。  
+空間複雜度 O(N)。  
+
 ```python
 class Solution:
     def mostFrequentIDs(self, nums: List[int], freq: List[int]) -> List[int]:
@@ -82,6 +85,37 @@ class Solution:
                 
             # find max freq
             ans.append(-h[0])
+            
+        return ans
+```
+
+懶刪除的另一種實現方式，是在 heap 裡面同時記錄 ID。  
+如果出現在頂端的 ID 與實際出現次數不符，代表他是過期的，可以刪掉。  
+
+與上面兩種方式稍微不太相同，每次更新後必定會往 heap 加入新的元素，heap 必定不為空，所以不需要加入哨兵或是特判。  
+
+時間複雜度 O(N log N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def mostFrequentIDs(self, nums: List[int], freq: List[int]) -> List[int]:
+        N = len(nums)
+        d = Counter()
+        h = [] # max heap
+        
+        ans = []
+        for id, delta in zip(nums, freq):
+            # add new freq
+            d[id] += delta
+            heappush(h, [-d[id], id])
+            
+            # check if top element marked
+            while -h[0][0] != d[h[0][1]]:
+                heappop(h)
+                
+            # find max freq
+            ans.append(-h[0][0])
             
         return ans
 ```
