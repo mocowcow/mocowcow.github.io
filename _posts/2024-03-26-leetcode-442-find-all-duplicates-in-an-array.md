@@ -42,3 +42,26 @@ class Solution:
                 
         return ans
 ```
+
+也可以將 nums[i] 設成負數，代表 i + 1 這個數字出現過。  
+遍歷所有 nums[i] = x，而 nums[x - 1] 的正負值代表 x 是否出現過。  
+若 nums[x - 1] 為正，代表 x 第一次出現，將其改成負數；否則是第二次出現，將 x 加入答案。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)，答案空間不計入。  
+
+```python
+class Solution:
+    def findDuplicates(self, nums: List[int]) -> List[int]:
+        N = len(nums)
+        ans = []
+        for i in range(N):
+            x = abs(nums[i])
+            j = x - 1
+            if nums[j] < 0: # second seen
+                ans.append(x)
+            else: # first seen
+                nums[j] = -nums[j]
+        
+        return ans
+```
