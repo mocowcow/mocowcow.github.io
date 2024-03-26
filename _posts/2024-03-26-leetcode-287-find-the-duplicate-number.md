@@ -1,15 +1,19 @@
 ---
 layout      : single
 title       : LeetCode 287. Find the Duplicate Number
-tags 		: LeetCode Medium Array BinarySearch TwoPointers
+tags 		: LeetCode Medium Array BinarySearch TwoPointers HashTable
 ---
-每日題。以前還真沒發現可以雙指標解。
+每日題。cycle sort 系列。
 
-# 題目
-輸入長度為N+1的數列nums，裡面只會出現1~N的數字，但是有其中一個數字會出現兩次以上。  
-求不修改nums且只使用O(1)的解法。
+## 題目
 
-# 解法
+輸入長度為 N + 1 的整數陣列 nums，所有整數都在 [1, n] 範圍之內。  
+只有一個整數會出現**兩次**。  
+
+求不修改 nums 且只使用 O(1) 額外空間的解法。  
+
+## 解法
+
 二分搜還是需要一點心眼才能想到，畢竟nums不是有序數列，但是說了1~N大部分數字只會出現一次，若1\~x沒有重複的話，總數一定不超過x個。  
 基於上述判斷，如果1~mid不足mid個，代表重複數一定大於mid，更新下界為mid+1；否則重複數小於等於mid，更新上界為mid。
 
@@ -53,4 +57,29 @@ class Solution:
             slow=nums[slow]
                 
         return slow
+```
+
+2024-03-26 更新：  
+每日題 cycle sort 系列。  
+但是有修改 nums，嚴格來說並不滿足題目要求。  
+
+遍歷 nums[i] = x，試著把 x 放到 nums[x - 1]。  
+如果 nums[x - 1] 已經被占用，就代表出現重複，回傳答案。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def findDuplicate(self, nums: List[int]) -> int:
+        N = len(nums)
+        for i in range(N):
+            while nums[i] != i + 1:
+                j = nums[i] - 1
+                # dup
+                if nums[j] == nums[i]: 
+                    return nums[i]
+                    
+                # swap nums[i] to nums[i - 1]
+                nums[i], nums[j] = nums[j], nums[i]
 ```
