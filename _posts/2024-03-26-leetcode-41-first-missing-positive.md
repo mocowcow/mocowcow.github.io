@@ -19,8 +19,6 @@ tags        : LeetCode Hard Array HashTable Sorting
 
 ## 解法
 
-對於 O(1) 額外空間的限制，很多都是靠**修改輸入參數**來乘載**額外的訊息**。  
-
 陣列長度為 N，最差情況下 [1, N] 各出現一次。
 而陣列索引為 [0, N-1]，如果把數字 x 放到索引 x - 1 的位置，正好一人一格。  
 如果要放的目標位置已經被占用，那就代表**出現重複**。但我們只管缺失，不管重複，就直接把他留著，反正之後會被擠到後面。  
@@ -75,5 +73,41 @@ class Solution:
             if nums[i] != i + 1:
                 return i + 1
         
+        return N + 1
+```
+
+再來說說我最初想到的解法。  
+
+如果可以用額外空間，大概很多人都會選擇用 set 來標記出現過的元素。  
+礙於 O(1) 額外空間的限制，可以靠**修改輸入參數**來乘載**額外的訊息**。  
+nums[i] 除了代表出現的數字以外，還可以用**負數**來表示 i + 1 這個數有出現過。  
+因為負數的影響，abs(nums[i]) 才代表真正存在的數。  
+
+細心的同學馬上就想問：啊如果 nums[i] 本來就是負數或是零怎辦？  
+記得本題中**負數**和**零**都是不要的，在開始標記之前，先把他們改成一個超大正數就好。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def firstMissingPositive(self, nums: List[int]) -> int:
+        N = len(nums)
+        # ignore invalid
+        for i in range(N):
+            if nums[i] <= 0:
+                nums[i] = inf
+                
+        # mark seen
+        for i in range(N):
+            x = abs(nums[i])
+            if 1 <= x <= N:
+                j = x - 1
+                nums[j] = -abs(nums[j])
+                
+        for i in range(N):
+            if nums[i] >= 0:
+                return i + 1
+            
         return N + 1
 ```
