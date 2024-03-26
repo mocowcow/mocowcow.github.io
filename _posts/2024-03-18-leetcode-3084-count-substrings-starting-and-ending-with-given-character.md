@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3084. Count Substrings Starting and Ending with Given Character
-tags        : LeetCode String Math
+tags        : LeetCode Medium String Math
 ---
 周賽 389。這幾題的敘述都很精簡，非常省時間。  
 
