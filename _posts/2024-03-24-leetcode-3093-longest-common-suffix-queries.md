@@ -69,3 +69,49 @@ class TrieNode:
         self.child = defaultdict(TrieNode)
         self.id = -1
 ```
+
+後來才發現不排序也可以，反正遍歷的索引是從小到大，只要檢查節點上 id 對應的字串長度是否更長即可。  
+記得根節點也要一起檢查。  
+
+時間複雜度 O(L1 + L2)。  
+空間複雜度 O(L1)。  
+
+```python
+class Solution:
+    def stringIndices(self, wordsContainer: List[str], wordsQuery: List[str]) -> List[int]:
+        N = len(wordsContainer)
+        root = TrieNode()
+        
+        # add all words
+        for i in range(N):
+            curr = root
+            w = wordsContainer[i]
+            # update id for root
+            if len(w) < curr.mn_size:
+                curr.id = i
+                curr.mn_size = len(w)
+            for c in reversed(w):
+                curr = curr.child[c]
+                # update id
+                if len(w) < curr.mn_size:
+                    curr.id = i
+                    curr.mn_size = len(w)
+        
+        ans = []
+        for w in wordsQuery:
+            curr = root
+            for c in reversed(w):
+                if c not in curr.child:
+                    break
+                curr = curr.child[c]
+            ans.append(curr.id)
+        
+        return ans
+    
+
+class TrieNode:
+    def __init__(self) -> None:
+        self.child = defaultdict(TrieNode)
+        self.mn_size = inf
+        self.id = -1
+```
