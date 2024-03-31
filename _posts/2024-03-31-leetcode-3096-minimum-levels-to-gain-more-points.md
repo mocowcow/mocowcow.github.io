@@ -53,3 +53,24 @@ class Solution:
             
         return -1
 ```
+
+如果把 possible 轉換成由 1, -1 構成的陣列，發現根本就是**前綴和**。  
+如果 Alice 做了前面 i 題，得分為 sum(nums[0..i])，即 ps[i + 1]；  
+Bob 得分為 sum(nums[(i+1)..(N-1)])，即 ps[N] - ps[i + 1]。  
+
+```python
+class Solution:
+    def minimumLevels(self, possible: List[int]) -> int:
+        N = len(possible)
+        a = [1 if x == 1 else -1 for x in possible]
+        ps = list(accumulate(a, initial=0))
+        
+        for i in range(N - 1):
+            if ps[i + 1] > ps[N] - ps[i + 1]:
+                return i + 1
+        
+        return -1
+```
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。
