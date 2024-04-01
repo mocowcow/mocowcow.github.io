@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3102. Minimize Manhattan Distances
-tags        : LeetCode Hard Array Math Geometry SortedList
+tags        : LeetCode Hard Array Math Geometry SortedList Sorting
 ---
 周賽 391。看關鍵字猜題翻車了，我看到**最大值最小化**就想著二分答案，結果根本不是。  
 
@@ -81,11 +81,36 @@ class Solution:
         for x, y in points:
             remove(x, y)
             dis = max(
-                A[-1] - A[0], # max(x1 + y1) - min(x2 + y2) 
+                A[-1] - A[0],  # max(x1 + y1) - min(x2 + y2) 
                 -B[0] + B[-1]  # -min(x1 - y1) + max(x2 - y2)  
             )
             ans = min(ans, dis)
             add(x, y)
+            
+        return ans
+```
+
+也可以不用有序容器，直接將 A, B 值帶上坐標索引排序。  
+枚舉刪除坐標索引 i 時額外檢查，若刪除的剛好是極值，則取次大/次小。  
+
+```python
+class Solution:
+    def minimumDistance(self, points: List[List[int]]) -> int:
+        N = len(points)
+        A = sorted([x + y, i] for i, (x, y) in enumerate(points))
+        B = sorted([x - y, i] for i, (x, y) in enumerate(points))        
+        
+        ans = inf
+        for i in range(N):
+            minA = A[0][0] if i != A[0][1] else A[1][0]
+            maxA = A[-1][0] if i != A[-1][1] else A[-2][0]            
+            minB = B[0][0] if i != B[0][1] else B[1][0]
+            maxB = B[-1][0] if i != B[-1][1] else B[-2][0]            
+            dist = max(
+                maxA - minA, # max(x1 + y1) - min(x2 + y2) 
+                -minB + maxB # -min(x1 - y1) + max(x2 - y2)  
+            )
+            ans = min(ans, dist)
             
         return ans
 ```
