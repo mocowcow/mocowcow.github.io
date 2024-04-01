@@ -16,12 +16,32 @@ tags        : LeetCode Easy String Simulation
 py 做數位分解真的很方便，轉成字串再遍歷轉回整數。  
 
 時間複雜度 O(log x)。  
-空間複雜度 O(1)。  
+空間複雜度 O(log x)。  
 
 ```python
 class Solution:
     def sumOfTheDigitsOfHarshadNumber(self, x: int) -> int:
         sm = sum(int(d) for d in str(x))
+        if x % sm == 0:
+            return sm
+        
+        return -1
+```
+
+最正統的方法還是取餘數，每次對 10 求餘就可以拿到最靠右的位數。  
+
+時間複雜度 O(log x)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def sumOfTheDigitsOfHarshadNumber(self, x: int) -> int:
+        sm = 0
+        t = x
+        while t > 0:
+            t, r = divmod(t, 10)
+            sm += r
+            
         if x % sm == 0:
             return sm
         
