@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3101. Count Alternating Subarrays
-tags        : LeetCode Medium Array Math TwoPointers
+tags        : LeetCode Medium Array Math TwoPointers SlidingWindow
 ---
 周賽 391。又是分組循環的一天。  
 
@@ -40,6 +40,28 @@ class Solution:
             size = j - i + 1
             ans += size * (size + 1) // 2
             i = j + 1
+            
+        return ans
+```
+
+就算不會分組也沒關係。  
+
+維護子陣列的合法左邊界 left，並枚舉右邊界 right。  
+如果 nums[right] 和 nums[right。 - 1] 相同時，則更新左邊界為 right。  
+在 nums[left..right] 是交替的前題下，right 可以在 [left..right] 之間任意選擇左邊界，共有 right - left + 1 個。  
+
+```python
+class Solution:
+    def countAlternatingSubarrays(self, nums: List[int]) -> int:
+        N = len(nums)
+        ans = 0
+        left = 0
+        for right in range(N):
+            if right > 0 and nums[right] == nums[right - 1]:
+                left = right
+
+            # nums[i..j] is alternating
+            ans += right - left + 1
             
         return ans
 ```
