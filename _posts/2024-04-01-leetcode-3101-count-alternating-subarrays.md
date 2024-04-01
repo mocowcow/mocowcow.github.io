@@ -53,15 +53,31 @@ class Solution:
 ```python
 class Solution:
     def countAlternatingSubarrays(self, nums: List[int]) -> int:
-        N = len(nums)
         ans = 0
         left = 0
-        for right in range(N):
-            if right > 0 and nums[right] == nums[right - 1]:
+        for right, x in enumerate(nums):
+            if right > 0 and x == nums[right - 1]:
                 left = right
 
             # nums[i..j] is alternating
             ans += right - left + 1
+            
+        return ans
+```
+
+再進一步，其實連左邊界在哪都不必知道，只要知道可以貢獻多少子陣列就行。  
+
+```python
+class Solution:
+    def countAlternatingSubarrays(self, nums: List[int]) -> int:
+        ans = 0
+        cnt = 0
+        for i, x in enumerate(nums):
+            if i > 0 and x == nums[i - 1]:
+                cnt = 1
+            else:
+                cnt += 1
+            ans += cnt
             
         return ans
 ```
