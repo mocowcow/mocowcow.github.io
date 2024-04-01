@@ -66,3 +66,20 @@ class Solution:
                 
         return ans
 ```
+
+其實根本不用計算有幾瓶水，拿到直接喝就好。  
+
+```python
+class Solution:
+    def maxBottlesDrunk(self, numBottles: int, numExchange: int) -> int:
+        empty = numBottles
+        ans = numBottles
+        
+        while empty >= numExchange:
+            empty -= numExchange
+            empty += 1
+            ans += 1
+            numExchange += 1
+            
+        return ans
+```
