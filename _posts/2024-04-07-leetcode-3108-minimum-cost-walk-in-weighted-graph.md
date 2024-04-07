@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3108. Minimum Cost Walk in Weighted Graph
-tags        : LeetCode Hard Array Graph UnionFind BitManipulation
+tags        : LeetCode Hard Array Graph UnionFind BitManipulation DFS
 ---
 周賽 392。這題也有點問題，沒講清楚起點和終點相同要怎樣，只能猜 -1 或是 0。  
 前一百名內有 8X 人都猜錯了，笑死。至少錯一次後就知道答案，沒有隱藏測資很良心了。  
@@ -61,10 +61,7 @@ class Solution:
         val = [-1] * n
         for a, b, w in edges:
             p = uf.find(a)
-            if val[p] == -1:
-                val[p] = w
-            else:
-                val[p] &= w
+            val[p] &= w
         
         ans = []
         for s, t in query:
@@ -94,4 +91,45 @@ class UnionFind:
         if x != self.parent[x]:
             self.parent[x] = self.find(self.parent[x])
         return self.parent[x]
+```
+
+單純使用 DFS/BFS 也可以。  
+但不同於一般的做法，不管相鄰的點有沒有訪問過，都要和邊權做 AND 運算。  
+
+時間複雜度 O(n + E + Q)。  
+空間複雜度 O(n + E)。  
+
+```python
+class Solution:
+    def minimumCost(self, n: int, edges: List[List[int]], query: List[List[int]]) -> List[int]:
+        g = [[] for _ in range(n)]
+        for a, b, w in edges:
+            g[a].append([b, w])
+            g[b].append([a, w])
+            
+        def dfs(i): # get AND value of connected component
+            res = -1
+            group[i] = len(val)
+            for j, w in g[i]:
+                res &= w
+                if group[j] == -1:
+                    res &= dfs(j)
+            return res
+        
+        group = [-1] * n 
+        val = []
+        for i in range(n):
+            if group[i] == -1:
+                val.append(dfs(i))
+                
+        ans = []
+        for s, t in query:
+            if s == t:
+                ans.append(0)
+            elif group[s] != group[t]:
+                ans.append(-1)
+            else:
+                ans.append(val[group[s]])
+                
+        return ans
 ```
