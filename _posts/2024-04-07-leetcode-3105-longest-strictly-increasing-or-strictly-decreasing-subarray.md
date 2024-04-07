@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3105. Longest Strictly Increasing or Strictly Decreasing Subarray
-tags        : LeetCode Easy Array
+tags        : LeetCode Easy Array Greedy
 ---
 周賽 392。
 
@@ -43,5 +43,30 @@ class Solution:
                 sub = nums[i:i + size]
                 if ok(sub):
                     return size
+```
 
+其實直接遍歷最簡單，只要**不滿足**遞增/遞減就重新計算長度。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def longestMonotonicSubarray(self, nums: List[int]) -> int:
+        ans = 0
+        inc_prev, dec_prev = -inf, inf
+        inc_cnt = dec_cnt = 0
+        for curr in nums:
+            if curr > inc_prev:
+                inc_cnt += 1
+            else:
+                inc_cnt = 1
+            if curr < dec_prev:
+                dec_cnt += 1
+            else:
+                dec_cnt = 1
+            inc_prev = dec_prev = curr
+            ans = max(ans, inc_cnt, dec_cnt)
+            
+        return ans
 ```
