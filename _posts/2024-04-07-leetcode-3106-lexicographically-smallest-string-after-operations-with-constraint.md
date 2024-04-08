@@ -36,9 +36,9 @@ s1 和 s2 是兩個長度為 n 的字串，定義函數 distance(s1, s2)：
 class Solution:
     def getSmallestString(self, s: str, k: int) -> str:
         a = [ord(c) - 97 for c in s]
-        for i, x in enumerate(a):
+        for i, c in enumerate(a):
             # to 'a'
-            dist = min(26 - x, x)
+            dist = min(26 - c, c)
             if dist <= k:
                 k -= dist
                 a[i] = 0
@@ -50,5 +50,28 @@ class Solution:
         
         ans = [chr(x + 97) for x in a]
 
+        return "".join(ans)
+```
+
+另一種思路，對於每個字元 c，直接嘗試改成 'a' 到 'z' 的字元 c2，只要距離不超過 k 就改。  
+由於我們是由小到大枚舉 c2，所以不必擔心 c2 會越改越大。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def getSmallestString(self, s: str, k: int) -> str:
+        a = [ord(c) - 97 for c in s]
+        for i, c in enumerate(a):
+            for c2 in range(26):
+                dist = min(abs(c - c2), 26 - abs(c - c2))
+                if dist <= k:
+                    k -= dist
+                    a[i] = c2
+                    break
+            
+        ans = [chr(x + 97) for x in a]
+        
         return "".join(ans)
 ```
