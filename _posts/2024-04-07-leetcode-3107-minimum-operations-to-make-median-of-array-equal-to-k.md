@@ -31,6 +31,9 @@ tags        : LeetCode Medium Array Greedy
 因此只要找到右半邊小於 k 的所有元素，求出他們與 k 的差值總和，即為操作次數。  
 同理，在 nums[mid] > k 時，找左半邊大於 k 的元素求差值總和。  
 
+時間複雜度 O(N log N)。  
+空間複雜度 O(1)。  
+
 ```python
 class Solution:
     def minOperationsToMakeMedianK(self, nums: List[int], k: int) -> int:
