@@ -1,6 +1,6 @@
 ---
 layout      : single
-title       : LeetCode 100279. Minimum Time to Visit Disappearing Nodes
+title       : LeetCode 3113. Minimum Time to Visit Disappearing Nodes
 tags        : LeetCode Medium Array Graph BFS Heap
 ---
 雙周賽 128。這題也是很良心，竟然沒有讓消失時間設成 0，不然大概會有一堆人吃 WA。  

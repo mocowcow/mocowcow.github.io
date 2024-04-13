@@ -1,6 +1,6 @@
 ---
 layout      : single
-title       : LeetCode 100270. Score of a String
+title       : LeetCode 3111. Score of a String
 tags        : LeetCode Easy String Simulation
 ---
 雙周賽 128。

@@ -1,6 +1,6 @@
 ---
 layout      : single
-title       : LeetCode 100273. Find the Number of Subarrays Where Boundary Elements Are Maximum
+title       : LeetCode 3112. Find the Number of Subarrays Where Boundary Elements Are Maximum
 tags        : LeetCode Medium Array Sorting Greedy
 ---
 雙周賽 128。範例非常有良心，甚至還給出 w = 0 時的情況。  
