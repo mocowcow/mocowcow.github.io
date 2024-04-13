@@ -4,6 +4,7 @@ title       : LeetCode 100280. Minimum Rectangles to Cover Points
 tags        : LeetCode Hard Array HashTable SortedList BinarySearch
 ---
 雙周賽 128。太急吃兩次 WA，可惜了上分的好機會。  
+這次是 LCUS 有不公平的嫌疑，連續三天每日題都是單調堆疊，剛好可以用在這次 Q4。  
 
 ## 題目
 
@@ -59,5 +60,43 @@ class Solution:
                 sl.remove(rmv)
                 d[rmv] = 0
                     
+        return ans
+```
+
+剛才提到過，在 nums 呈現遞減時，所有元素都不會被歸零；反過來說，出現**遞增**的時候就有元素會被歸零！  
+
+當 nums[i] = x 時，會往左找到所有小於 x 的 nums[j]，並歸零其出現次數。  
+觀察以下例子：
+> nums = [1,2,1]  
+> nums[0] = 1，第一次出現，加入集合  
+> 元素集合 = [1]
+> nums[1] = 2，第一次出現，加入集合，並把小於 2 的元素都刪除  
+> 元素集合 = [2]  
+> nums[2] = 1，(重新)第一次出現，加入集合  
+> 元素集合 = [2,1]  
+
+發現**出現次數不為零**的元素集合呈遞減順序，在遇到新元素 x 時刪除小於 x 的所有元素。  
+原來是**單調遞減堆疊** (monotonic decreasing stack)！  
+
+依照這個思路從堆疊中刪除元素，並將刪除的元素出現次數歸零即可。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def numberOfSubarrays(self, nums: List[int]) -> int:
+        d = Counter()
+        st = []
+        ans = 0
+        
+        for x in nums:
+            d[x] += 1
+            ans += d[x]
+            while st and x > st[-1]:
+                rmv = st.pop()
+                d[rmv] = 0
+            st.append(x)
+            
         return ans
 ```
