@@ -1,6 +1,6 @@
 ---
 layout      : single
-title       : LeetCode 3114. Minimum Rectangles to Cover Points
+title       : LeetCode 3111. Minimum Rectangles to Cover Points
 tags        : LeetCode Hard Array HashTable SortedList BinarySearch
 ---
 雙周賽 128。太急吃兩次 WA，可惜了上分的好機會。  
