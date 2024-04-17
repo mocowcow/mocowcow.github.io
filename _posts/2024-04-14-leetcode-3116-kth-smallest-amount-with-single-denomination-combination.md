@@ -47,9 +47,19 @@ tags        : LeetCode Hard Array Math BinarySearch BitManipulation BitManipulat
 
 再套一個二分搜尋，透過 ok(mid) 找最小值。  
 因為最小的整數是 1，下界 lo = 1。  
-最差情況下只有面額 25 的硬幣，且 k = 2 \* 10^9，故上界 hi = 10^11。  
+最差情況下只有面額 25 的硬幣，且 k = 2 \* 10^9，故上界 hi = min(coins) \* k。  
 
-複雜度有點難算，姑且先跳過不管。  
+---
+
+複雜度好難算。  
+
+設 MN = min(coins), MX = max(coins)。  
+外層二分的部分是 O(log MN \* k)。  
+每次要枚舉 2^N 個子集。  
+然後求 lcm 的部分是 O(N log MX)。  
+
+時間複雜度 O(N \* log(M) \* 2^N *\ log(MN \* k) )，
+空間複雜度 O(1)。  
 
 ```python
 class Solution:
@@ -68,7 +78,7 @@ class Solution:
             return cnt >= k
         
         lo = 1
-        hi = 10 ** 11
+        hi = min(coins) * k # 10 ** 11
         while lo < hi:
             mid = (lo + hi) // 2
             if not ok(mid):
