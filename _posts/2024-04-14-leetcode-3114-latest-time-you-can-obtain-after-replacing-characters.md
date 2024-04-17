@@ -55,3 +55,29 @@ class Solution:
         
         return "".join(a)
 ```
+
+看了前幾名的神人，發現他們都選擇更安全的**暴力法**。反正複雜度也不高。  
+枚舉所有可能的時間，逐一檢查是否和 s 匹配即可。
+
+時間複雜度 O(1)。  
+空間複雜度 O(1)，答案空間不計入。  
+
+```python
+class Solution:
+    def findLatestTime(self, s: str) -> str:
+        ans = None
+        
+        def ok(t):
+            for i in range(5):
+                if s[i] != t[i] and s[i] != "?":
+                    return False
+            return True
+        
+        for h in range(12):
+            for m in range(60):
+                t = f"{h:02}:{m:02}"
+                if ok(t):
+                    ans = t
+                    
+        return ans
+```
