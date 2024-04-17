@@ -27,10 +27,33 @@ class Solution:
         return a[-1] - a[0]
         
 def is_prime(n):
-    if n == 1:
-        return False
-    for i in range(2, int(n**0.5)+1):
+    for i in range(2, int(n ** 0.5) + 1):
         if n % i == 0:
             return False
-    return True
+    return n >= 2
+```
+
+實際上只關心最前、最後兩個索引。  
+分別從頭、從尾開始找到第一個質數即可。  
+
+時間複雜度 O(N \* sqrt(MX))，其中 MX = max(nums)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def maximumPrimeDifference(self, nums: List[int]) -> int:
+        N = len(nums)
+        i, j = 0, N - 1
+        while not is_prime(nums[i]):
+            i += 1
+        while not is_prime(nums[j]):
+            j -= 1
+            
+        return j - i 
+        
+def is_prime(n):
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            return False
+    return n >= 2
 ```
