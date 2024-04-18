@@ -6,6 +6,8 @@ tags        : LeetCode Hard Array Graph UnionFind BitManipulation DFS
 周賽 392。這題也有點問題，沒講清楚起點和終點相同要怎樣，只能猜 -1 或是 0。  
 前一百名內有 8X 人都猜錯了，笑死。至少錯一次後就知道答案，沒有隱藏測資很良心了。  
 
+2024/4/18 更新：官方竟然刪掉起終點相同的測資，重新批改一次，算是非常合理的決策。  
+
 ## 題目
 
 有一個**無向**的**權重**圖，共有 n 個節點，編號從 0 到 n - 1。  
@@ -41,10 +43,9 @@ tags        : LeetCode Hard Array Graph UnionFind BitManipulation DFS
 
 ---
 
-查詢 (s, t) 的移動費用，共用三種情形：  
+查詢 (s, t) 的移動費用，共有兩種情形：  
 
 - s, t 不連通，答案 -1  
-- s, t 相同，答案 0  
 - s, t 不同但連通，答案 val[root(s)]  
 
 時間複雜度 O(n + E + Q)，其中 E = len(edges)，Q = len(query)。  
@@ -65,9 +66,7 @@ class Solution:
         
         ans = []
         for s, t in query:
-            if s == t:
-                ans.append(0)
-            elif uf.find(s) != uf.find(t):
+            if uf.find(s) != uf.find(t):
                 ans.append(-1)
             else:
                 ans.append(val[uf.find(s)])
@@ -124,9 +123,7 @@ class Solution:
                 
         ans = []
         for s, t in query:
-            if s == t:
-                ans.append(0)
-            elif group[s] != group[t]:
+            if group[s] != group[t]:
                 ans.append(-1)
             else:
                 ans.append(val[group[s]])
