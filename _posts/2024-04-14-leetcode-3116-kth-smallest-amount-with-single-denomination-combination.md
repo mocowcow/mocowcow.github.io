@@ -58,7 +58,7 @@ tags        : LeetCode Hard Array Math BinarySearch BitManipulation BitManipulat
 每次要枚舉 2^N 個子集。  
 然後求 lcm 的部分是 O(N log MX)。  
 
-時間複雜度 O(N \* log(M) \* 2^N *\ log(MN \* k) )，
+時間複雜度 O(N \* log(M) \* 2^N \* log(MN \* k) )，
 空間複雜度 O(1)。  
 
 ```python
@@ -75,6 +75,40 @@ class Solution:
                     if mask & (1 << i):
                         lcm_val = lcm(lcm_val, coins[i])
                 cnt += sign * (x // lcm_val)
+            return cnt >= k
+        
+        lo = 1
+        hi = min(coins) * k # 10 ** 11
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if not ok(mid):
+                lo = mid + 1
+            else:
+                hi = mid
+                
+        return lo
+```
+
+注意到每次二分都要計算全部子集的 lcm，乾脆一開始就先預處理好，以空間換取時間。  
+
+時間複雜度 O(2^N \* (log (MN \* k) +  N \* log MX) )。  
+空間複雜度 O(2^N)。  
+
+```python
+class Solution:
+    def findKthSmallest(self, coins: List[int], k: int) -> int:
+        N = len(coins)
+        lcm_val = [-1] * (1 << N)
+        for mask in range(1, 1 << N):
+            for i in range(N):
+                if mask & (1 << i):
+                    lcm_val[mask] = lcm(lcm_val[mask], coins[i])
+        
+        def ok(x):
+            cnt = 0
+            for mask in range(1, 1 << N): # enumerate subsets
+                sign = -1 if mask.bit_count() % 2 == 0 else 1
+                cnt += sign * (x // lcm_val[mask])
             return cnt >= k
         
         lo = 1
