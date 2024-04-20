@@ -98,7 +98,7 @@ class Solution:
 class Solution:
     def findKthSmallest(self, coins: List[int], k: int) -> int:
         N = len(coins)
-        lcm_val = [-1] * (1 << N)
+        lcm_val = [1] * (1 << N)
         for mask in range(1, 1 << N):
             for i in range(N):
                 if mask & (1 << i):
