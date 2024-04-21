@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3120. Count the Number of Special Characters I
-tags        : LeetCode Easy Array String Simulation BitManipulation Bitmask
+tags        : LeetCode Easy String Simulation BitManipulation Bitmask
 ---
 周賽 394。
 
