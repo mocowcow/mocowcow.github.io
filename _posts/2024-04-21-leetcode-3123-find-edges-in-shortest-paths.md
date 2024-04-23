@@ -78,3 +78,61 @@ def dijkstra(g, n, src):
                 heappush(heap, (new_cost, adj))
     return dist
 ```
+
+dijkstra 只能求起點到其他任意點的最短距離。  
+假設已知 dist(0, i) = target。  
+
+如果 i 存在滿足 dist(0, i) = dist(0, j) + w 的鄰接點 j，則**代表 j 可以成為最短路的中介點**。  
+連接 i 和 j 的邊就是我們要找的答案。為了知道是哪條邊，建圖的時候要保存邊的索引 ei。  
+
+而對於 dist(0, i) 來說，滿足條件的中介點 j 可能不只一個，這意味著每個 j 點都可以再次找到其他中介點，因此需要靠 dfs 遞迴到出發點 0 為止。  
+注意：即使相鄰的 j 點已經訪問過，也還是要檢查與其連接的邊 ei，因為可能不只一條最短路徑。  
+
+時間複雜度 O(n + m log m)。  
+空間複雜度 O(n + m)。  
+
+```python
+class Solution:
+    def findAnswer(self, n: int, edges: List[List[int]]) -> List[bool]:
+        M = len(edges)
+        g = [[] for _ in range(n)]
+        for ei, (a, b, w) in enumerate(edges):
+            g[a].append([b, w, ei])
+            g[b].append([a, w, ei])
+            
+        dist = dijkstra(g, n, 0) # 0 to any
+        ans = [False] * M
+        
+        if dist[n - 1] == inf: # unreachable
+            return ans
+        
+        vis = [False] * n
+        def dfs(i):
+            if vis[i]:
+                return
+            vis[i] = True
+            for j, w, ei in g[i]:
+                if dist[i] == dist[j] + w:
+                    ans[ei] = True
+                    dfs(j)
+        
+        dfs(n - 1)
+        
+        return ans 
+    
+def dijkstra(g, n, src):
+    dist = [inf] * n
+    dist[src] = 0
+    heap = [(0, src)]
+    while heap:
+        cost, curr = heappop(heap)
+        if cost > dist[curr]:
+            continue
+        dist[curr] = cost
+        for adj, c, _ in g[curr]:
+            new_cost = cost + c
+            if new_cost < dist[adj]:
+                dist[adj] = new_cost  # important pruning
+                heappush(heap, (new_cost, adj))
+    return dist
+```
