@@ -69,10 +69,10 @@ class Solution:
         i = 0
         ans = x
         while need > 0:
-            # find next position of 0 bit
+            # find next 0 bit from x
             while ans & (1 << i):
                 i += 1
-            # fill bit from need
+            # fill bit from bin(need)
             bit = need & 1
             if bit == 1:
                 ans |= (1 << i)
