@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3132. Find the Integer Added to Array II
-tags        : LeetCode Medium Array Sorting HashTable
+tags        : LeetCode Medium Array Sorting HashTable Simulation
 ---
 周賽395。這題還真不太好想。  
 
@@ -64,5 +64,40 @@ class Solution:
             if ok(x):
                 ans = min(ans, x)
                 
+        return ans
+```
+
+其實這題測資很小，可以再來更暴力點的做法。  
+枚舉兩個要被移除的索引，拿移除過後的 nums1 跟 nums2 比對差值即可。  
+
+時間複雜度 O(N^3)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def minimumAddedInteger(self, nums1: List[int], nums2: List[int]) -> int:
+        N = len(nums1)
+        nums1.sort()
+        nums2.sort()
+        
+        def ok(arr):
+            diff = nums2[0] - arr[0]
+            for i, val in enumerate(arr):
+                if diff != nums2[i] - val:
+                    return False
+            return True
+        
+        ans = inf
+        for skip1 in range(N):
+            for skip2 in range(skip1 + 1, N):
+                arr = []
+                for i, val in enumerate(nums1):
+                    if i == skip1 or i == skip2:
+                        continue
+                    arr.append(val)
+                    
+                if ok(arr):
+                    ans = min(ans, nums2[0] - arr[0])
+                    
         return ans
 ```
