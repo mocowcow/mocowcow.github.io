@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 3131. Find the Integer Added to Array I
 tags        : LeetCode Easy Array Sorting
 ---
-周賽395。
+周賽 395。
 
 ## 題目
 

@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 3132. Find the Integer Added to Array II
 tags        : LeetCode Medium Array Sorting HashTable Simulation
 ---
-周賽395。這題還真不太好想。  
+周賽 395。這題還真不太好想。  
 
 ## 題目
 

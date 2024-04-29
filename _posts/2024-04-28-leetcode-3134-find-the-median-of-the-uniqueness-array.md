@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 3134. Find the Median of the Uniqueness Array
 tags        : LeetCode Hard Array TwoPointers SlidingWindow BinarySearch HashTable
 ---
-周賽395。剩兩分鐘才想通，差點吃土，好刺激。  
+周賽 395。剩兩分鐘才想通，差點吃土，好刺激。  
 上次題目沒講清楚要選左還右中位數，被罵得很慘，這次終於記得了。  
 
 ## 題目

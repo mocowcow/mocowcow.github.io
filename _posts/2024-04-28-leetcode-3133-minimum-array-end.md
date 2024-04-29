@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 3133. Minimum Array End
 tags        : LeetCode Medium BitManipulation Greedy
 ---
-周賽395。
+周賽 395。
 
 ## 題目
 
