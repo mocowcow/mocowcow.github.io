@@ -68,6 +68,7 @@ class Solution:
 基於**對稱性**，填各 (1, 3) 或 (3, 1) 個方案數是一樣的。  
 可以使用第一個參數表示**上次選的數**，這樣就可以省略掉 prev。  
 
+注意：記憶化沒清快取會 MLE。  
 雖然複雜度不變，但常數至少減半，勉強能過了。  
 
 ```python
@@ -89,7 +90,7 @@ class Solution:
             return res % MOD
         
         ans = dp(zero - 1, one, 1) + dp(one - 1, zero, 1)
-        dp.cache_clear()
+        dp.cache_clear() # prevent MLE
         
         return ans % MOD
 ```
