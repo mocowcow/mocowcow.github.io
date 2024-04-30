@@ -65,10 +65,39 @@ class Solution:
         return ans % MOD
 ```
 
+基於**對稱性**，填各 (1, 3) 或 (3, 1) 個方案數是一樣的。  
+可以使用第一個參數表示**上次選的數**，這樣就可以省略掉 prev。  
+
+雖然複雜度不變，但常數至少減半，勉強能過了。  
+
+```python
+class Solution:
+    def numberOfStableArrays(self, zero: int, one: int, limit: int) -> int:
+        MOD = 10 ** 9 + 7
+        
+        @cache
+        def dp(i, j, cnt): # prev is i
+            if i < 0 or j < 0:
+                return 0
+            if cnt > limit:
+                return 0
+            if i == 0 and j == 0:
+                return 1
+            
+            res = dp(i - 1, j, cnt + 1) # use i
+            res += dp(j - 1, i, 1) # use j
+            return res % MOD
+        
+        ans = dp(zero - 1, one, 1) + dp(one - 1, zero, 1)
+        dp.cache_clear()
+        
+        return ans % MOD
+```
+
 看到有人不是枚舉選哪個，而是交替枚舉**選多少個**。  
 若當前輪到要選 1，則枚舉選的個數 1 <= x <= min(limit, j)。  
 
-時空複雜度和上一個方法相同。但光是狀態數就少一半，效率高上很多。  
+時空複雜度依然不變。但執行時間比上面兩種都快。  
 
 ```python
 class Solution:
