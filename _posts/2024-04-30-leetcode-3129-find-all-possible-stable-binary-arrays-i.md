@@ -61,7 +61,35 @@ class Solution:
             return res % MOD
         
         ans = dp(zero - 1, one, 0, 1) + dp(zero, one - 1, 1, 1)
-        dp.cache_clear()
+        
+        return ans % MOD
+```
+
+看到有人不是枚舉選哪個，而是交替枚舉**選多少個**。  
+若當前輪到要選 1，則枚舉選的個數 1 <= x <= min(limit, j)。  
+
+時空複雜度和上一個方法相同。但光是狀態數就少一半，效率高上很多。  
+
+```python
+class Solution:
+    def numberOfStableArrays(self, zero: int, one: int, limit: int) -> int:
+        MOD = 10 ** 9 + 7
+        
+        @cache
+        def dp(i, j, use):
+            if i == 0 and j == 0:
+                return 1
+            
+            res = 0
+            if use == 0: # use 0
+                for x in range(1, min(i, limit) + 1):
+                    res += dp(i - x, j, 1)
+            else: # use 1
+                for x in range(1, min(j, limit) + 1):
+                    res += dp(i, j - x, 0)
+            return res % MOD
+        
+        ans = dp(zero, one, 0) + dp(zero, one, 1)
         
         return ans % MOD
 ```
