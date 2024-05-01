@@ -123,3 +123,5 @@ class Solution:
         
         return ans % MOD
 ```
+
+以上幾種做法都只適用 zero, one, limit <= 200，更有效率的方法請看下一篇。  
