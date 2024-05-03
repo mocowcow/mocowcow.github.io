@@ -100,7 +100,7 @@ class Solution:
                 res -= dp(i - (limit + 1), j, 1) # no more than limit 
             else: # use 1
                 res = dp(i, j - 1, 0) + dp(i, j - 1, 1)
-                res -= dp(i, j - (limit + 1), 0)
+                res -= dp(i, j - (limit + 1), 0) # no more than limit 
             return res % MOD
         
         ans = dp(zero, one, 0) + dp(zero, one, 1)
