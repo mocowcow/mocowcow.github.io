@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3130. Find All Possible Stable Binary Arrays II
-tags        : LeetCode Hard Array DP
+tags        : LeetCode Hard Array DP PrefixSum
 ---
 雙周賽 129。
 
@@ -20,7 +20,61 @@ tags        : LeetCode Hard Array DP
 
 ## 解法
 
-以下解釋的很爛，請注意。  
+上一篇提到 dp(i, j, use) 需要枚舉當前數字**選多少個**，每個狀態需要枚舉 1\~ limit。  
+
+例如 limit = 2 時：  
+> dp(i, j, 0) 轉移 = dp(i - 1, j, 1) + dp(i - 2, j, 1)  
+> dp(i - 1, j, 0) 轉移 = dp((i - 1) - 1, j, 1) + dp((i - 1) - 2, j, 1)  
+> dp(i - 2, j, 0) 轉移 = dp((i - 2) - 1, j, 1) + dp((i - 2) - 2, j, 1)  
+
+可以發現，對於相同的 j 來說，轉移來源會有部分重疊。  
+這時可以用**前綴和**，將 O(limit) 的轉移優化成 O(1)。  
+
+時間複雜度 O(zero \* one)。  
+空間複雜度 O(zero \* one)。  
+
+其實這樣複雜度應該是合格，無奈測資很兇，還是會超時。  
+
+```python
+class Solution:
+    def numberOfStableArrays(self, zero: int, one: int, limit: int) -> int:
+        MOD = 10 ** 9 + 7
+        
+        @cache
+        def dp(i, j, use):
+            if i == 0 and j == 0:
+                return 1
+            
+            if use == 0: # use 0
+                # for x in range(1, min(i, limit) + 1):
+                #     res += dp(i - x, j, 1)
+                res = ps(i - 1, j, 1) - ps(i - (limit + 1), j, 1)
+            else: # use 1
+                # for x in range(1, min(j, limit) + 1):
+                #     res += dp(i, j - x, 0)
+                res = ps(i, j - 1, 0) - ps(i, j - (limit + 1), 0)
+            return res % MOD
+        
+        @cache
+        def ps(i, j, use):
+            if i < 0 or j < 0:
+                return 0
+            if use == 0: # sum for dp(i, j - x, 0)
+                res = dp(i, j, 0) + ps(i, j - 1, 0)
+            else: # sum for dp(i - x, j, 1)
+                res = dp(i, j, 1) + ps(i - 1, j, 1)
+            return res % MOD
+        
+        ans = dp(zero, one, 0) + dp(zero, one, 1)
+        dp.cache_clear()
+        ps.cache_clear()
+        
+        return ans % MOD
+```
+
+---
+
+以下提供另一種思路，但解釋的很爛，請注意。  
 
 因為受到 limit 的約束，在 dp 時需要帶一個參數 cnt 來代表連續的次數，才能得知那些選擇不合法。  
 但是當 zeor, one <= 1000，光是這兩個的狀態數就高達 N^2，再加上 cnt 肯定沒戲。得想辦法優化掉。  
