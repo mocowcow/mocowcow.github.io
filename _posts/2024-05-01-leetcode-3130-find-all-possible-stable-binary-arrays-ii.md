@@ -20,8 +20,8 @@ tags        : LeetCode Hard Array DP
 
 ## 解法
 
-<details>
-<summary>解釋很爛的方法，請注意</summary>
+以下解釋的很爛，請注意。  
+
 因為受到 limit 的約束，在 dp 時需要帶一個參數 cnt 來代表連續的次數，才能得知那些選擇不合法。  
 但是當 zeor, one <= 1000，光是這兩個的狀態數就高達 N^2，再加上 cnt 肯定沒戲。得想辦法優化掉。  
 
@@ -110,5 +110,3 @@ class Solution:
         
         return ans % MOD
 ```
-
-</details>
