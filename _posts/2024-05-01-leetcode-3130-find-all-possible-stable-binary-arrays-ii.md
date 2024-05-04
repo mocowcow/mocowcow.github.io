@@ -72,7 +72,41 @@ class Solution:
         return ans % MOD
 ```
 
----
+上一篇也提到，基於**對稱性**，可以省略掉參數 use。前綴和也是如此。  
+雖然還是很慢，但至少能過了。  
+
+遞推版本是真的難寫，等哪天我想通再回來補課。  
+
+```python
+class Solution:
+    def numberOfStableArrays(self, zero: int, one: int, limit: int) -> int:
+        MOD = 10 ** 9 + 7
+        
+        @cache
+        def dp(i, j): # use i
+            if i < 0 or j < 0:
+                return 0
+            if i == 0 and j == 0:
+                return 1
+            # res = 0
+            # for k in range(1, limit + 1):
+            #     res += dp(j, i - k)
+            res = ps(j, i - 1) - ps(j, i - (limit + 1)) # reverse (i - x, j) to (j, i - x)
+            return res % MOD
+          
+        @cache
+        def ps(i, j): # sum of dp(i, j) .. dp(i, 0)
+            if j < 0:
+                return 0
+            res = dp(i, j) + ps(i, j - 1) 
+            return res % MOD
+        
+        ans = dp(zero, one) + dp(one, zero)
+        dp.cache_clear()
+        ps.cache_clear()
+        
+        return ans % MOD
+```
 
 以下提供另一種思路，但解釋的很爛，請注意。  
 
