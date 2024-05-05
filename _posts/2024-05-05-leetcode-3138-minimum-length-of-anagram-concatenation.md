@@ -28,12 +28,18 @@ tags        : LeetCode Medium String Simulation Sorting
 其實跟上一題有點相似，只是要找到某個長度為 size 的字串 t，且每個長度為 t 的子字串都是**易位構詞**。  
 
 判斷易位構詞方法很多。  
-對於 python 來說，最快的方式就是把兩個字串都排序，直接比對。  
-更正統的方式則是統計各字元的出現頻率是否相同。  
+對於 python 來說，最快的方式就是把兩個字串排序、或是丟到字典裡比對。  
+冷知識：排序複雜度高，但執行起來反而快。  
 
 題目要找最小值，因此從 1 開始枚舉 size，若每個大小為 size 的子字串都滿足易位構詞，則回傳 size。  
 
-複雜度有點怪，過幾天再補。  
+---
+
+每次枚舉一個長度 size，需要遍歷字串一次，是 O(N)。  
+只有在 size 能夠整除 s 的情況下才有可能是答案。而 size 最多只會有 sqrt(size) \* 2 個因數。  
+
+時間複雜度 O(sqrt(N) \* N)。  
+空間複雜度 O(1)。  
 
 ```python
 class Solution:
@@ -43,9 +49,9 @@ class Solution:
         for size in range(1, N):
             if N % size != 0:
                 continue
-            target = sorted(s[:size])
+            target = Counter(s[:size])
             for i in range(0, N, size):
-                if target != sorted(s[i:i + size]):
+                if target != Counter(s[i:i + size]):
                     break
             else:
                 return size
