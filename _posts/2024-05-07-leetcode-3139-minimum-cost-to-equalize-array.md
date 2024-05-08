@@ -73,8 +73,45 @@ def f(D, S):
 > 總成本 cost = 2 \* 0 + 1 \* 20 = 20  
 
 那我怎麼知道 T 最大會到多少？  
+
+首先釐清增加 T 是為了**改變 S 和 D**，至於 T 本身並不重要。  
 在一般情況下，保證 N 至少為 3。每當 T 增加 1，會使得 D 增加 1，然後 (S - D) 增加 N - 1。  
 
 情況一的成本只和 S 的值有關，因此 T 繼續增大**必定使總成本上升**，沒有必要繼續增加。  
 但情況二會因為 T 增加逐漸降低成本，最後**變成情況一**。  
-成本曲線應該是類似 V 或是 U 型圖。最粗糙的判斷方式，是在**成本上升**之時停止枚舉 T。  
+成本曲線應該是類似 V 或是 U 型圖。最粗糙的判斷方式，是在**成本上升**之時停止。  
+
+```python
+MOD = 10 ** 9 + 7
+class Solution:
+    def minCostToEqualizeArray(self, nums: List[int], cost1: int, cost2: int) -> int:
+        N = len(nums)
+        mx, mn = max(nums), min(nums)
+        base_d = mx - mn
+        base_s = mx * N - sum(nums)
+        
+        # use cost1 only
+        if N <= 2 or cost1 * 2 <= cost2: 
+            return cost1 * base_s % MOD
+        
+        # make all elements to target
+        def f(D, S): 
+            if S - D >= D:
+                op1 = S % 2
+                op2 = S // 2
+            else: # S - D < D
+                op1 = S - (S - D) * 2
+                op2 = S - D
+            return cost1 * op1 + cost2 * op2
+        
+        ans = inf
+        for d in range(base_d, base_d * 2 + 1):
+            s = base_s + (d - base_d) * N
+            res = f(d, s)
+            if res < ans:
+                ans = res
+            else: # cost increasing
+                break
+        
+        return ans % MOD
+```
