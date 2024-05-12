@@ -45,3 +45,18 @@ class Solution:
             
         return ans  
 ```
+
+改成遞推版本。  
+
+```python
+class Solution:
+    def maximumEnergy(self, energy: List[int], k: int) -> int:
+        N = len(energy)
+        dp = [0] * N
+        for i in reversed(range(N)):
+            dp[i] = energy[i]
+            if i + k < N:
+                dp[i] += dp[i + k]
+                
+        return max(dp)
+```
