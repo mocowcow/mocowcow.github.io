@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3143. Maximum Points Inside the Square
-tags        : LeetCode Medium Array String Geometry HashTable Sorting
+tags        : LeetCode Medium Array String Geometry HashTable Sorting BinarySearch
 ---
 雙周賽 130。好像滿多作法的，最佳做法竟然是 O(N)，非常神奇。  
 
@@ -20,9 +20,9 @@ tags        : LeetCode Medium Array String Geometry HashTable Sorting
 
 ## 解法
 
-仔細觀察發現，對於座標 (x, y) 的點，他會被邊長為 max(x, y) 的正方形包含。  
+仔細觀察發現，對於座標 (x, y) 的點，他會被邊長為 max(abs(x), abs(y)) 的正方形包含。  
 
-先將點按照 max(x, y) 分組。  
+先將點按照 max(abs(x), abs(y)) 分組。  
 從小到大枚舉組別，試著將組中的所有點加入。若出現重複標籤就退出循環，否則將組內的點個數加入答案。  
 注意：一組中可能就包含兩個同樣的標籤，先檢查完才能更新答案。  
 
@@ -47,4 +47,42 @@ class Solution:
             ans += len(v)
         
         return ans
+```
+
+如果考慮邊長 x 的正方形是否合法，則答案具有**單調性**，可以二分。  
+
+維護函數 f(x) 判斷邊長 x 是否合法，並同時計算包含的點。  
+透過二分找到最後一個合法的邊長，其包含個數就是答案。  
+
+時間複雜度 O(N log N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def maxPointsInsideSquare(self, points: List[List[int]], s: str) -> int:
+        p = [max(abs(x), abs(y)) for x, y in points]
+        
+        def f(x):
+            vis = set()
+            cnt = 0
+            for edge, tag in zip(p, s):
+                if edge > x:
+                    continue
+                if tag in vis:
+                    return False, -1
+                vis.add(tag)
+                cnt += 1
+            return True, cnt
+        
+        lo = 0
+        hi = max(p)
+        while lo < hi:
+            mid = (lo + hi + 1) // 2
+            ok, cnt = f(mid)
+            if not ok:
+                hi = mid - 1
+            else:
+                lo = mid
+            
+        return f(lo)[1]
 ```
