@@ -52,3 +52,28 @@ class Solution:
         
         return dp(0)
 ```
+
+改成遞推版本。  
+順便加上小小的剪枝：s[i..j] 大小必為已出現字元的倍數，否則不可能是平衡的。  
+
+```python
+class Solution:
+    def minimumSubstringsInPartition(self, s: str) -> int:
+        N = len(s)
+        dp = [0] * (N + 1)
+        for i in reversed(range(N)):
+            d = Counter()
+            res = inf
+            for j in range(i, N):
+                d[s[j]] += 1
+                if (j - i + 1) % len(d) != 0: # cannot be balanced
+                    continue
+                for v in d.values():
+                    if v != d[s[j]]:
+                        break
+                else:
+                    res = min(res, dp[j + 1] + 1)
+            dp[i] = res
+        
+        return dp[0]
+```
