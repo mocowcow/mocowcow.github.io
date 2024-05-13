@@ -54,7 +54,7 @@ class Solution:
 維護函數 f(x) 判斷邊長 x 是否合法，並同時計算包含的點。  
 透過二分找到最後一個合法的邊長，其包含個數就是答案。  
 
-時間複雜度 O(N log N)。  
+時間複雜度 O(N log MX)，其中 MX = max(abs(x, abs(y)))。  
 空間複雜度 O(1)。  
 
 ```python
