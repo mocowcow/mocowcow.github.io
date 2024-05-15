@@ -131,6 +131,10 @@ def prefix_sum(index):
 ```
 
 全部拼起來就大功告成了。  
+每次 count(x) 需要 O(log x)；每次二分需要 O(log index) 次 count(index)。  
+
+時間複雜度 O(Q \* (log MX) ^ 2)，其中 Q = len(queries)，MX = index 上限。  
+空間複雜度 O(1)，答案空間不計入。  
 
 ```python
 class Solution:
