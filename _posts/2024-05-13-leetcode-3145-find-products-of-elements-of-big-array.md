@@ -62,7 +62,8 @@ def answer(s, e, mod):
 透過這個規律，我們單獨處理不同位元，直接求出區間 [0, x] 所對應的 big_nums **位元個數**及**冪次和**。  
 
 ```python
-def count(x): # bit count and power sum for x
+# bit count and power sum of [0, x]
+def count(x): 
     x += 1
     bit_cnt = 0 # size of big_nums
     pow_sum = 0 # 2 ^ pow_sum = big_nums[1] * ... * big_nums[x]
@@ -76,7 +77,7 @@ def count(x): # bit count and power sum for x
         bit_cnt += cnt1
         pow_sum += base * cnt1
         
-        # add extra
+        # add extra bit
         extra = (x % rep_size) - (rep_size // 2)
         if extra > 0:
             bit_cnt += extra
@@ -94,7 +95,8 @@ def count(x): # bit count and power sum for x
 每個整數至少會提供一個位元，二分上界姑且設為 index。  
 
 ```python
-def find_bound(index): # find lower bound of index
+# find lower bound of [0, x] that cover big_nums[0..index]
+def find_bound(index): 
     lo = 0
     hi = index
     while lo < hi:
@@ -104,4 +106,88 @@ def find_bound(index): # find lower bound of index
         else:
             hi = mid
     return lo
+```
+
+有了這兩個，就能實現一開始想要的**冪次前綴和**的功能了。  
+
+先拿二分函數找到合適的 bound，然後計算 [0, bound] 所擁有的**位元個數**和**冪次和**。  
+[0, bound] 有可能因為最後一個數 bound 所產生的**強陣列**太大，包含太多位元。這時就從 bound 的最高位元往下扣除，直到數量正確為止。  
+
+```python
+# power sum of big_nums[0..index]
+def prefix_sum(index):
+    index += 1
+    bound = find_bound(index)
+    bit_cnt, pow_sum = count(bound)
+    
+    # delete extra bit
+    i = bound.bit_length() - 1
+    while bit_cnt > index:
+        if bound & (1 << i):
+            bit_cnt -= 1
+            pow_sum -= i
+        i -= 1
+    return pow_sum
+```
+
+全部拼起來就大功告成了。  
+
+```python
+class Solution:
+    def findProductsOfElements(self, queries: List[List[int]]) -> List[int]:
+        
+        # bit count and power sum of [0, x]
+        def count(x): 
+            x += 1
+            bit_cnt = 0 # size of big_nums
+            pow_sum = 0 # 2 ^ pow_sum = big_nums[1] * ... * big_nums[x]
+            for i in range(x.bit_length()):
+                base = i 
+                rep_size = 1 << (i + 1)
+                full_rep = x // rep_size
+                
+                # add full rep
+                cnt1 = (rep_size // 2) * full_rep
+                bit_cnt += cnt1
+                pow_sum += base * cnt1
+                
+                # add extra bit
+                extra = (x % rep_size) - (rep_size // 2)
+                if extra > 0:
+                    bit_cnt += extra
+                    pow_sum += base * extra
+            return bit_cnt, pow_sum
+        
+        # find lower bound of [0, x] that cover big_nums[0..index]
+        def find_bound(index): 
+            lo = 0
+            hi = index
+            while lo < hi:
+                mid = (lo + hi) // 2
+                if count(mid)[0] < index:
+                    lo = mid + 1
+                else:
+                    hi = mid
+            return lo
+        
+        # power sum of big_nums[0..index]
+        def prefix_sum(index):
+            index += 1
+            bound = find_bound(index)
+            bit_cnt, pow_sum = count(bound)
+            
+            # delete extra bit
+            i = bound.bit_length() - 1
+            while bit_cnt > index:
+                if bound & (1 << i):
+                    bit_cnt -= 1
+                    pow_sum -= i
+                i -= 1
+            return pow_sum
+        
+        def answer(s, e, mod):
+            exp = prefix_sum(e) - prefix_sum(s - 1)
+            return pow(2, exp, mod)
+        
+        return [answer(*q) for q in queries]
 ```
