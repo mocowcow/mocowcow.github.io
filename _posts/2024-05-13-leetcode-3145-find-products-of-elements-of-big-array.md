@@ -31,6 +31,14 @@ big_nums 的開頭為 [<u>1</u>, <u>2</u>, <u>1, 2</u>, <u>4</u>, <u>1, 4</u>, <
 如此一來，可以改求 [0, x] 的**冪次和**，再透過前綴和得出 [s, e] 的冪次和 p，答案為 2^p。
 但是 p 可能很大，暴力計算會超時，記得使用**快速冪**。  
 
+查詢部分的程式碼大概是這樣。  
+
+```python
+def answer(s, e, mod):
+    exp = prefix_sum(e) - prefix_sum(s - 1)
+    return pow(2, exp, mod)
+```
+
 ---
 
 再來觀察每個整數是如何構造出**強陣列**。  
@@ -52,5 +60,49 @@ big_nums 的開頭為 [<u>1</u>, <u>2</u>, <u>1, 2</u>, <u>4</u>, <u>1, 4</u>, <
 不成完整週期的部分，則只有後半段計入。例如區間 [0, 2] 的第 1 個位元不滿一個週期 (也就是 [0,1,2,3])，但是數字 2 屬於後半週期，所以 2 也會擁有第 1 個位元。  
 
 透過這個規律，我們單獨處理不同位元，直接求出區間 [0, x] 所對應的 big_nums **位元個數**及**冪次和**。  
+此函數記做 count(x)。  
+
+```python
+def count(x): # bit count and power sum for x
+    x += 1
+    bit_cnt = 0 # size of big_nums
+    pow_sum = 0 # 2 ^ pow_sum = big_nums[1] * ... * big_nums[x]
+    for i in range(x.bit_length()):
+        base = i 
+        rep_size = 1 << (i + 1)
+        full_rep = x // rep_size
+        
+        # add full rep
+        cnt1 = (rep_size // 2) * full_rep
+        bit_cnt += cnt1
+        pow_sum += base * cnt1
+        
+        # add extra
+        extra = (x % rep_size) - (rep_size // 2)
+        if extra > 0:
+            bit_cnt += extra
+            pow_sum += base * extra
+    return bit_cnt, pow_sum
+```
 
 ---
+
+這時候就有疑問了：啊我要的是 big_nums[0..index]，你搞出一個算 [0, x] 多少位元的函數要幹嘛？  
+雖然沒辦法一次定位 big_nums[0..index] 對應的區間 [0, bound] 是多少，但我可以隨便選一個 [0, x] 看他長度夠不夠。  
+沒錯，正是**二分搜**。  
+
+透過二分搜搭配 count(x)，找到第一個包含 big_nums[index] 的區間 [0, bound]。  
+每個整數至少會提供一個位元，二分上界姑且設為 index。  
+
+```python
+def find_bound(index): # find lower bound of index
+    lo = 0
+    hi = index
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if count(mid)[0] < index:
+            lo = mid + 1
+        else:
+            hi = mid
+    return lo
+```
