@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3143. Maximum Points Inside the Square
-tags        : LeetCode Medium Array String Geometry HashTable Sorting BinarySearch
+tags        : LeetCode Medium Array String Geometry HashTable Sorting BinarySearch Greedy
 ---
 雙周賽 130。好像滿多作法的，最佳做法竟然是 O(N)，非常神奇。  
 
@@ -21,6 +21,7 @@ tags        : LeetCode Medium Array String Geometry HashTable Sorting BinarySear
 ## 解法
 
 仔細觀察發現，對於座標 (x, y) 的點，他會被邊長為 max(abs(x), abs(y)) 的正方形包含。  
+這定義正是 (x, y) 與原點的**切比雪夫距離**。  
 
 先將點按照 max(abs(x), abs(y)) 分組。  
 從小到大枚舉組別，試著將組中的所有點加入。若出現重複標籤就退出循環，否則將組內的點個數加入答案。  
@@ -85,4 +86,27 @@ class Solution:
                 lo = mid
             
         return f(lo)[1]
+```
+
+要求每種字元最多只能包含一次，直覺上會選擇維護各字元的**最小值**。  
+但考慮到**最小值**和**次小值**距離可能有相同距離，因此正確方式是維護次小值 mn2，最後檢查各字元的距離最小值有幾個小於 mn2。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def maxPointsInsideSquare(self, points: List[List[int]], s: str) -> int:
+        mn_dist = {c: inf for c in ascii_lowercase}
+        mn2 = inf
+        
+        for p, c in zip(points, s):
+            d = max(abs(p[0]), abs(p[1]))
+            if d < mn_dist[c]: # d is new minimum of c
+                mn2 = min(mn2, mn_dist[c])
+                mn_dist[c] = d
+            else: # d may be second minumum of c 
+                mn2 = min(mn2, d)
+        
+        return sum(d < mn2 for d in mn_dist.values())
 ```
