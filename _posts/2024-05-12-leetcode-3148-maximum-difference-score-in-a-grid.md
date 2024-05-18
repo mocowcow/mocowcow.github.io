@@ -62,3 +62,31 @@ class Solution:
                 
         return ans
 ```
+
+試想移動的路徑的值分別為為 [a, b, c, d]，那麼最終分數是 (b - a) + (c - b) + (d - c)。  
+結果中間的部分都消掉了，最後變成 d - a。  
+問題轉換成：對於每個格子，從左上方向選擇任一出發點。  
+
+枚舉所有格子作為終點，並更新答案最大值。  
+注意：出發點不可等於當前格子，必須先計算答案後才更新最小值。  
+
+時間複雜度 O(MN)。  
+空間複雜度 O(MN)。  
+
+```python
+class Solution:
+    def maxScore(self, grid: List[List[int]]) -> int:
+        M, N = len(grid), len(grid[0])
+        dp = [[0] * N for _ in range(M)]
+        ans = -inf
+        for r in range(M):
+            for c in range(N):
+                up = dp[r - 1][c] if r > 0 else inf
+                left = dp[r][c - 1] if c > 0 else inf
+                # update answer
+                ans = max(ans, grid[r][c] - min(up, left))
+                # then update min
+                dp[r][c] = min(up, left, grid[r][c])
+                
+        return ans
+```
