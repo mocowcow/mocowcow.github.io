@@ -39,3 +39,23 @@ class Solution:
                 
         return ans
 ```
+
+也可以反向著做，先求出總共有多少數對，再找出同樣字元組成的數對扣掉。  
+
+```python
+class Solution:
+    def sumDigitDifferences(self, nums: List[int]) -> int:
+        a = [str(x) for x in nums]
+        N = len(nums)
+        M = len(a[0])
+        tot = N * (N - 1) // 2 * M
+        ans = 0
+        for pos in range(M):
+            d = Counter()
+            for s in a:
+                c = s[pos]
+                ans += d[c]
+                d[c] += 1
+                
+        return tot - ans
+```
