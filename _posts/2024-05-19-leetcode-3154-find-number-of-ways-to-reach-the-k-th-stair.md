@@ -76,3 +76,32 @@ class Solution:
         
         return dp(1, 0, 1)
 ```
+
+如果跳躍 j 次，每次往上移動的距離是 2^0, 2^1, 2^2...2^(j - 1)，總共往上 2^j - 1 層。  
+從第 1 層出發，上 j 次正好停留在第 2^j 層。  
+
+除了往上走 j 次到 i = 2^j 層後，如果 i 低於 k 層則不可能抵達；如果 i >= k 層，則需要往後 back 次。  
+求 back = i - k。  
+
+上樓 j 次，最多下樓 j + 1 次，而且不能連續下樓。  
+以組合數學的角度來看，就是在 j + 1 個位置選 back 個位置下樓，也就是 C(j + 1, back)。  
+
+枚舉跳躍次數 j，求下樓次數 back。若合法則以組合數更新答案。  
+
+時間複雜度 O((log k) ^ 2)，瓶頸在於組合數的計算。  
+空間複雜度 O((log k) ^ 2)。  
+
+```python
+class Solution:
+    def waysToReachStair(self, k: int) -> int:
+        ans = 0
+        for j in range(30):
+            i = 1 << j # 1 + 2^0 + 2^1 + .. + 2^(j-1) = 2^j
+            if i < k: # invalid
+                continue
+            back = i - k
+            if back <= j + 1:
+                ans += comb(j + 1, back)
+        
+        return ans
+```
