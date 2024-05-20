@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3152. Special Array II
-tags        : LeetCode Medium Array Simulation
+tags        : LeetCode Medium Array Simulation PrefixSum
 ---
 周賽 398。這題擊殺率還挺高的，我也貢獻了一次 WA。  
 
@@ -45,4 +45,21 @@ class Solution:
             i = j + 1
             
         return [group[s] == group[e] for s, e in queries]
+```
+
+若 nums[i] 和 nums[i - 1] 的奇偶性相同，則視作 nums[i] 是一個新的**分割點**。  
+
+以前綴和 ps[i] 表示 nums[0..i] 之間有幾次分割。  
+若 ps[s] 和 ps[e] 的分割次數相同，則保證兩點屬於同一個特殊陣列。  
+另一種角度來看，則是 ps[e] - ps[s] = 0 代表這個區間內沒有分割，所以他是特殊的。  
+
+```python
+class Solution:
+    def isArraySpecial(self, nums: List[int], queries: List[List[int]]) -> List[bool]:
+        N = len(nums)
+        ps = [0] * N
+        for i in range(1, N):
+            ps[i] = ps[i - 1] + (nums[i] % 2 == nums[i - 1] % 2)
+        
+        return [ps[s] == ps[e] for s, e in queries] # ps[e] - ps[s] == 0
 ```
