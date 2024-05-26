@@ -27,7 +27,7 @@ tags        : LeetCode Medium Array Math HashTable
 然後遍歷 x = nums1[i] 做**因數分解**，枚舉所有因數，並將因數的出現次數加入答案。  
 
 時間複雜度 O(N \* sqrt(MX))，其中 MX = max(nums1[i], nums2[j])。  
-空間複雜度 O()。  
+空間複雜度 O(M)。  
 
 MX 最大值高達 10^6，代入複雜度公式後將近 10^8 計算量，能不能過真的都是賭運氣。  
 反正比賽剛結束時，我交幾次都沒過，寫題解的時候又交了幾次都全過，非常神秘。  
@@ -38,6 +38,35 @@ class Solution:
         d = Counter(x * k for x in nums2)
         ans = 0
         for x in nums1:
+            for a in range(1, int(x ** 0.5) + 1):
+                if x % a == 0:
+                    b = x // a
+                    ans += d[a]
+                    if a != b:
+                        ans += d[b]
+                
+        return ans
+```
+
+nums1[i] 若可被 nums2[j] \* k 整除，此兩者必定都是其因數。  
+換句話說，如果 nums1[i] 只要不被 k 整除，那就可以直接跳過不管！  
+
+時間複雜度 O(N \* sqrt(MX / k))，其中 MX = max(nums1[i], nums2[j])。  
+空間複雜度 O(M)。  
+
+雖然在 k = 1 的情況下根本沒差，效果有限。  
+但在 LC 這種算總時間機制下能有效減少 TLE 的機率。  
+
+```python
+class Solution:
+    def numberOfPairs(self, nums1: List[int], nums2: List[int], k: int) -> int:
+        d = Counter(nums2)
+        ans = 0
+        for x in nums1:
+            if x % k != 0:
+                continue
+                
+            x //= k
             for a in range(1, int(x ** 0.5) + 1):
                 if x % a == 0:
                     b = x // a
