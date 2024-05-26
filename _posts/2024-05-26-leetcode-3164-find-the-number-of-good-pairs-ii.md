@@ -30,7 +30,7 @@ tags        : LeetCode Medium Array Math HashTable
 空間複雜度 O(M)。  
 
 MX 最大值高達 10^6，代入複雜度公式後將近 10^8 計算量，能不能過真的都是賭運氣。  
-反正比賽剛結束時，我交幾次都沒過，寫題解的時候又交了幾次都全過，非常神秘。  
+反正比賽剛結束時，我交幾次都沒過，寫題解的時候又交了幾次都全過，大概跑 9000ms，非常神秘。  
 
 ```python
 class Solution:
@@ -55,7 +55,7 @@ nums1[i] 若可被 nums2[j] \* k 整除，此兩者必定都是其因數。
 空間複雜度 O(M)。  
 
 雖然在 k = 1 的情況下根本沒差，效果有限。  
-但在 LC 這種算總時間機制下能有效減少 TLE 的機率。  
+但在 LC 這種算總時間機制下能有效減少 TLE 的機率，大概要跑 6000ms。  
 
 ```python
 class Solution:
@@ -73,6 +73,35 @@ class Solution:
                     ans += d[a]
                     if a != b:
                         ans += d[b]
+                
+        return ans
+```
+
+另外一種優化方向是**預處理**或是**記憶化**每個數的因子，不需要每次都重新分解。  
+以上兩種優化方法一起用，執行時間竟然降到 2600ms。  
+
+```python
+@cache
+def get_factors(x):
+    res = []
+    for a in range(1, int(x ** 0.5) + 1):
+        if x % a == 0:
+            b = x // a
+            res.append(a)
+            if a != b:
+                res.append(b)
+    return res
+
+class Solution:
+    def numberOfPairs(self, nums1: List[int], nums2: List[int], k: int) -> int:
+        d = Counter(nums2)
+        ans = 0
+        for x in nums1:
+            if x % k != 0:
+                continue
+                
+            for a in get_factors(x // k):
+                ans += d[a]
                 
         return ans
 ```
