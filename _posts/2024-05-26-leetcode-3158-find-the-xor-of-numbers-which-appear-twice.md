@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3158. Find the XOR of Numbers Which Appear Twice
-tags        : LeetCode Easy Array Simulation HashTable
+tags        : LeetCode Easy Array Simulation HashTable BitManipulation Bitmask
 ---
 雙周賽 131。
 
@@ -27,5 +27,23 @@ class Solution:
             if v == 2:
                 ans ^= k
 
+        return ans
+```
+
+測資範圍不大，可以用 bitmask 記錄各數的出現狀態。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def duplicateNumbersXOR(self, nums: List[int]) -> int:
+        mask = 0
+        ans = 0
+        for x in nums:
+            if mask & (1 << x):
+                ans ^= x
+            mask |= (1 << x)
+            
         return ans
 ```
