@@ -36,9 +36,10 @@ class Solution:
 
         for x, y in queries:
             # clean old color 
-            if color[x] != 0:
-                color_freq[color[x]] -= 1
-                if color_freq[color[x]] == 0:
+            old_y = color[x]
+            if old_y != 0:
+                color_freq[old_y] -= 1
+                if color_freq[old_y] == 0:
                     cnt -= 1
 
             # paint new color
@@ -48,6 +49,32 @@ class Solution:
                 cnt += 1
 
             ans.append(cnt)
+
+        return ans
+```
+
+直接拿雜湊表大小計算不同顏色更加簡潔。  
+
+```python
+class Solution:
+    def queryResults(self, limit: int, queries: List[List[int]]) -> List[int]:
+        color = Counter()
+        color_freq = Counter()
+        ans = []
+
+        for x, y in queries:
+            # clean old color 
+            old_y = color[x]
+            if old_y != 0:
+                color_freq[old_y] -= 1
+                if color_freq[old_y] == 0:
+                    del color_freq[old_y]
+
+            # paint new color
+            color[x] = y
+            color_freq[y] += 1
+
+            ans.append(len(color_freq))
 
         return ans
 ```
