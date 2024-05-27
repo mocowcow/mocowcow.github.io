@@ -21,7 +21,7 @@ tags        : LeetCode Medium Array String Simulation
 枚舉左端點 i，維護當前長度 cnt 並嘗試向右擴展右端點。停止擴展後將壓縮後的結果加入答案。  
 
 時間複雜度 O(N)。  
-空間複雜度 O(1)，輸出空間不計入。  
+空間複雜度 O(1)，答案空間不計入。  
 
 ```python
 class Solution:
