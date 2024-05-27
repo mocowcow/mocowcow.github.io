@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 3161. Block Placement Queries
 tags        : LeetCode Hard Array SortedList BinarySearch SegmentTree BIT
 ---
-雙周賽 131。好久不見的線段樹，調了半天沒調出來。賽後看到不同思路，照做就馬上秒了，原方法真的事倍功半。  
+雙周賽 131。好久不見的線段樹，調了半天沒調出來。賽後看別人題解才發現想錯了。  
 
 ## 題目
 
@@ -143,4 +143,87 @@ class SegmentTree:
         else:
             self.update(id*2+1, M+1, R, i, val)
         self.push_up(id)
+```
+
+另一種思路是逆向操作，倒序處理查詢。  
+先把所有障礙物加上去，然後慢慢刪除障礙。  
+區間長度變成**只增不減**，而且本題剛好**只查詢前綴**，資料結構可以改用更有效率的 BIT。  
+
+操作一改成刪除後，會將 x 前後的兩個區間合併成更大的區間。  
+以 [0,1,7,10] 為例：
+> x = 7  
+> 刪除 7 之後剩下 [0,1,10]  
+> [1,7],[7,10] 兩個區間合併成新的區間 [1,10]  
+> 以 10 為鍵值更新區間大小為 9  
+
+```python
+from sortedcontainers import SortedList as SL
+class Solution:
+    def getResults(self, queries: List[List[int]]) -> List[bool]:
+        Q = len(queries)
+        MX = min(5 * (10**4), Q * 3) + 5
+        
+        # init obstacle and interval
+        sl = SL([0, MX]) # obstacle pos with sential
+        bit = BIT(MX) # maintain interval size
+        for q in queries:
+            if q[0] == 1:
+                sl.add(q[1])
+                
+        for x, y in pairwise(sl):
+            sz = y - x 
+            bit.update(y, sz)
+        
+        ans = []
+        for q in reversed(queries):
+            typ, x = q[0], q[1]
+            if typ == 1: 
+                # update interval size
+                # [prev, x, next] becomes [prev, next]
+                idx = sl.bisect_left(x)
+                prev, next = sl[idx - 1], sl[idx + 1]
+                sl.remove(x)
+                bit.update(next, next - prev)
+            else: # typ 2
+                sz = q[2]
+                idx = sl.bisect_right(x)
+                prev = sl[idx - 1] 
+                res = bit.query(prev) 
+                # max interval between [0, prev]
+                # or [prev, x]
+                ans.append(res >= sz or (x - prev) >= sz)
+            
+        return reversed(ans)
+
+    
+class BIT:
+    """
+    tree[0]代表空區間，不可存值，基本情況下只有[1, n-1]可以存值。
+    offset為索引偏移量，若設置為1時正好可以對應普通陣列的索引操作。
+    注意：只能查前綴極值。若求max則tree[i]值只能增、不能減。
+    """
+
+    def __init__(self, n, offset=1):
+        self.offset = offset
+        self.tree = [-inf]*(n+offset)
+
+    def update(self, pos, val):
+        """
+        將tree[pos]設成val
+        """
+        i = pos+self.offset
+        while i < len(self.tree):
+            self.tree[i] = max(self.tree[i], val)
+            i += i & (-i)
+
+    def query(self, pos):
+        """
+        查詢[1, pos]的max
+        """
+        i = pos+self.offset
+        res = -inf
+        while i > 0:
+            res = max(res, self.tree[i])
+            i -= i & (-i)
+        return res
 ```
