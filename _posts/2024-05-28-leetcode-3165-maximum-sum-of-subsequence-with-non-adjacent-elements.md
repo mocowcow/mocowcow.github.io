@@ -4,6 +4,7 @@ title       : LeetCode 3165. Maximum Sum of Subsequence With Non-adjacent Elemen
 tags        : LeetCode Hard Array DP SegmentTree
 ---
 周賽 399。連續兩場都出線段樹，太狠了。  
+本題知識重點：如果一個題目可以用分治解決，那他的帶修改版本可以用線段樹解決。  
 
 ## 題目
 
