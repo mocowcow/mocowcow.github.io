@@ -46,3 +46,30 @@ class Solution:
         
         return ans
 ```
+
+會議日期可能重疊，不如先找出哪幾天有開會。  
+問題轉換成**區間合併**。  
+
+合併完之後，從 days 扣掉有會議的天數即可。  
+
+時間複雜度 O(N log N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def countDays(self, days: int, meetings: List[List[int]]) -> int:
+        meetings.sort()
+        
+        a = []
+        for s, e in meetings:
+            if a and a[-1][1] >= s:
+                a[-1][1] = max(a[-1][1], e)
+            else:
+                a.append([s, e])
+               
+        ans = days
+        for s, e in a:
+            ans -= e - s + 1
+            
+        return ans
+```
