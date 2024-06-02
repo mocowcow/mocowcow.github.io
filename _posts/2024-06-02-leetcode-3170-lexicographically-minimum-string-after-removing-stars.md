@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3170. Lexicographically Minimum String After Removing Stars
-tags        : LeetCode Medium String Heap Simulation
+tags        : LeetCode Medium String Heap Simulation Stack
 ---
 周賽 400。
 
@@ -58,6 +58,32 @@ class Solution:
                 a[i] = ""
             else:
                 heappush(h, [c, -i])
+                
+        return "".join(a)
+```
+
+其實只有 26 種字元，每次要刪除時，直接從最小的 "a" 遍歷到 "z"，先找到誰就刪誰。  
+刪除要找最大的索引，是一種**後進先出**的規則，正好就是 stack。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def clearStars(self, s: str) -> str:
+        a = list(s)
+        st = [[] for _ in range(26)]
+        
+        for i, c in enumerate(s):
+            if c == "*":
+                a[i] = ""
+                for x in range(26):
+                    if st[x]:
+                        j = st[x].pop()
+                        a[j] = ""
+                        break
+            else:
+                st[ord(c) - 97].append(i)
                 
         return "".join(a)
 ```
