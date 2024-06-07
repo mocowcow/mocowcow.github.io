@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3171. Find Subarray With Bitwise AND Closest to K
-tags        : LeetCode Hard Array TwoPointers SlidingWindow BitManipulation
+tags        : LeetCode Hard Array TwoPointers SlidingWindow BitManipulation HashTable
 ---
 周賽 400。更新答案少寫一行，虧一個 WA，好慘。  
 LC 官方最近宣布使用**先進的作弊檢查計數**，嚴格禁止任何作弊行為，不知道效果如何。  
@@ -63,6 +63,33 @@ class Solution:
                 add(nums[left], -1)
                 left += 1
                 ans = min(ans, abs(calc(right-left+1) - k))
+        
+        return ans
+```
+
+我們在枚舉右端點的時候，會將原有的所有子陣列結果都 AND 上新的右端點 x。  
+例如：  
+> nums = [a,b,c,x]  
+> 原本以 c 結尾的子陣列結果有 a&b&c, b&c, c  三種  
+> 加上 x 之後，會變成 a&b&c&x, b&c&x, c&x, x  四種  
+
+如果 c 和 x 是相同的元素，那麼這些子陣列的結果根本不會改變，所以結果的數量也不會變多；否則必定使原有的結果都**變小**。  
+每次變小，都會失去一個 1 位元，最多只能失去 log(MX) = 30 次。  
+也就是說，每個右端點所擁有的子陣列 AND 結果，**去除重複**後最多只會有 30 個。  
+
+時間複雜度 O(N log MX)。  
+空間複雜度 O(log MX)。  
+
+```python
+class Solution:
+    def minimumDifference(self, nums: List[int], k: int) -> int:
+        ans = inf
+        s = set()
+        for x in nums:
+            s = set(x & y for y in s) # AND x for all results
+            s.add(x)
+            for y in s:
+                ans = min(ans, abs(k - y))
         
         return ans
 ```
