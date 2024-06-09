@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3175. Find The First Player to win K Games in a Row
-tags        : LeetCode Medium Array Simulation
+tags        : LeetCode Medium Array Simulation TwoPointers
 ---
 雙周賽 132。
 
@@ -48,4 +48,28 @@ class Solution:
                 return i
             
         return q[0]
+```
+
+優化上述邏輯，其實只要每個人都比一次，並維護當前勝者及連勝次數即可。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def findWinningPlayer(self, skills: List[int], k: int) -> int:
+        N = len(skills)
+        win = 0
+        i = 0
+        for j in range(1, N):
+            if skills[i] > skills[j]:
+                win += 1
+            else:
+                win = 1
+                i = j
+            
+            if win == k:
+                return i
+                        
+        return i
 ```
