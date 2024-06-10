@@ -56,3 +56,35 @@ class Solution:
         
         return ans
 ```
+
+對於更大的測資範圍，則需要更佳的時間複雜度。  
+先改寫成遞推，看看什麼地方可以優化。  
+
+nums[i] 的上限高達 10^9，但受限於 nums 的大小，實際上最多也只會有 M = N 種數字。  
+先把 nums 離散化，dp 陣列狀態數為 N \* k \* M。  
+
+```python
+class Solution:
+    def maximumLength(self, nums: List[int], k: int) -> int:
+        N = len(nums)
+        mp = {x:i for i, x in enumerate(set(nums))}
+        a = [mp[x] for x in nums]
+        M = len(mp)
+        
+        ans = 0
+        dp = [[[0] * M  for _ in range(k + 1)] for _ in range(N + 1)]
+        for i in reversed(range(N)):
+            for j in range(k + 1):
+                for prev in range(M):
+                    # no take
+                    res = dp[i + 1][j][prev]
+                    # take
+                    if a[i] == prev:
+                        res = max(res, dp[i + 1][j][prev] + 1)
+                    elif j < k:
+                        res = max(res, dp[i + 1][j + 1][a[i]] + 1)
+                    dp[i][j][prev] = res
+                    ans = max(ans, res)
+                    
+        return ans
+```
