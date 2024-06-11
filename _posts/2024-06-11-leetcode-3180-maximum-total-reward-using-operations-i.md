@@ -44,6 +44,16 @@ rewardValues 好長，以下簡稱 r。
 
 base：當 i = N 時，沒有元素可選，回傳 0。  
 
+---
+
+至於 j 究竟會變得多大？假設 r 之中最大的數字是 R，那麼能選擇 R 所能持有的最大獎勵數為 R - 1。  
+所以 j 最大只會變成 R 的兩倍。  
+
+時間複雜度 O(N \* MX)，其中 MX = max(r) \* 2。  
+空間複雜度 O(N \* MX)。  
+
+很可惜 python 記憶化又沒辦法通過 2000 \* 4000 的計算量，有夠扯。  
+
 ```python
 class Solution:
     def maxTotalReward(self, rewardValues: List[int]) -> int:
