@@ -88,3 +88,99 @@ class Solution:
                     
         return ans
 ```
+
+仔細觀察 dp[i][j][prev] 的轉移來源，除了共通的 dp[i + 1][j][prev] 以外，還有：  
+
+- prev = nums[i] 時，dp[i + 1][j][prev] + 1  
+- prev != nums[i] 且 j < k 時，dp[i + 1][j + 1][prev] + 1  
+
+設 x = nums[i]，在不選 x 的情況下，dp[i][j] 會直接繼承 dp[i][j + 1] 既有的結果。  
+若選 x 的情況下，也只有 dp[i][j][x] 會改變，並從 dp[i + 1][j][x] 和所有 dp[i + 1][j + 1][x != prev] 之中**取最大值**後加 1。  
+
+基於**繼承上次結果**的特性，且 dp[i][j] 只依賴於 dp[i][j + 1]，確保從小到大枚舉 j，就可以**複用**上次的結果，空間優化掉一個維度。  
+並且又只需要對 dp[i][j][x] 進行**單點更新**，枚舉 prev 的第三個迴圈也被優化掉了。  
+
+---
+
+為了支持最大值的**單點更新**還有**區間查詢**，又是**線段樹**出場了。  
+建立 k + 1 個線段樹，分別維護第**相鄰不同次數為 j**時的區間最大值，依序枚舉 nums[i] 及次數 j，最後從所有 dp[j] 中取最大值即可。  
+
+時間複雜度 O(N \* k \* log M)，其中 M = nums 中不同元素個數。  
+空間複雜度 O(k \* M)。  
+
+---
+
+線段樹很有用，但是：  
+> 551 / 551 test cases passed, but took too long.  
+
+O(N \* k \* log M) 代入 N = M = 5000, k = 50，大概才 3e6，反正 python 不給過，golang 倒是過了。  
+
+```python
+class Solution:
+    def maximumLength(self, nums: List[int], k: int) -> int:
+        mp = {x:i for i, x in enumerate(set(nums))}
+        M = len(mp)
+        
+        ans = 0
+        dp = [SegmentTree(M) for _ in range(k + 1)]
+        for x in nums:
+            x = mp[x]
+            for j in range(k + 1):
+                # prev = x
+                res = dp[j].query(1, 0, M - 1, x, x) + 1
+                # prev != x
+                if j < k:
+                    res = max(res, dp[j + 1].tree[1] + 1)
+                dp[j].update(1, 0, M - 1, x, res)
+                ans = max(ans, res)
+                    
+        return ans
+    
+    
+class SegmentTree:
+
+    def __init__(self, n):
+        self.tree = [0]*4
+
+    def op(self, a, b):
+        """
+        任意符合結合律的運算
+        """
+        return max(a, b)
+
+    def push_up(self, id):
+        """
+        以左右節點更新當前節點值
+        """
+        self.tree[id] = self.op(self.tree[id*2], self.tree[id*2+1])
+
+    def query(self, id, L, R, i, j):
+        """
+        區間查詢
+        回傳[i, j]的最大值
+        """
+        if i <= L and R <= j:  # 當前區間目標範圍包含
+            return self.tree[id]
+        res = 0
+        M = (L+R)//2
+        if i <= M:
+            res = self.op(res, self.query(id*2, L, M, i, j))
+        if M+1 <= j:
+            res = self.op(res, self.query(id*2+1, M+1, R, i, j))
+        return res
+
+    def update(self, id, L, R, i, val):
+        """
+        單點更新
+        對索引i設為val
+        """
+        if L == R:  # 當前區間目標範圍包含
+            self.tree[id] = val
+            return
+        M = (L+R)//2
+        if i <= M:
+            self.update(id*2, L, M, i, val)
+        else:
+            self.update(id*2+1, M+1, R, i, val)
+        self.push_up(id)
+```
