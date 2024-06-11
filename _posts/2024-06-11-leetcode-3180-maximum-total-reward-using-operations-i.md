@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3180. Maximum Total Reward Using Operations I
-tags        : LeetCode Medium Array DP Greedy Sorting HashTable
+tags        : LeetCode Medium Array DP Greedy Sorting HashTable BitManipulation Bitmask
 ---
 周賽 401。又在卡常數，連續兩場都這樣搞，真的會被氣死。  
 
@@ -49,7 +49,7 @@ base：當 i = N 時，沒有元素可選，回傳 0。
 至於 j 究竟會變得多大？假設 r 之中最大的數字是 R，那麼能選擇 R 所能持有的最大獎勵數為 R - 1。  
 所以 j 最大只會變成 R 的兩倍。  
 
-時間複雜度 O(N \* MX)，其中 MX = max(r) \* 2。  
+時間複雜度 O(N \* MX)，其中 MX = max(r)。  
 空間複雜度 O(N \* MX)。  
 
 很可惜 python 記憶化又沒辦法通過 2000 \* 4000 的計算量，有夠扯。  
@@ -144,4 +144,40 @@ class Solution:
                     dp.add(x + j)
         
         return max(dp)
+```
+
+對於 Q4 更大的測資範圍，N \* MX 肯定是不能過的，需要有更神奇的優化方式。  
+雖然很確定需要優化枚舉 j 的過程，但是我在比賽中想了好久，除了 bitmask 以外，好像沒什麼資料結構可以單次修改**不連續區間**。  
+
+後來看別人題解才認識新朋友 **bitset**。  
+基本用法就和 bitmask 一樣，但可以有更多位元。  
+
+如果沒有內建 bitset 的語言可以找 bigint 之類的東西，至於 python 本身就支援超大數，非常方便。  
+
+---
+
+知道能當作 bitmask 用就很簡單了。第 i 個位元若代表背包總和 i 是否可湊成。  
+初始化 bitset = 1，代表只有 0 這個總和是合法的。  
+
+遍歷每個 x，我們只能取用小於 x 的值。先拿只有最右連續 x - 1 個 1 位元的 mask 篩選出目標 todo。  
+之後再把 todo 全部加上 x，也就是左移 x 次，方可和原 bitset 合併。  
+
+bitset 的最高位就是答案。  
+
+時間複雜度 O(N \* MX / W)，其中 MX = max(r)，W = 64 或 32。  
+空間複雜度 O(MX / W)。  
+
+```python
+class Solution:
+    def maxTotalReward(self, rewardValues: List[int]) -> int:
+        r = rewardValues
+        r.sort()
+        
+        bitset = 1
+        for x in r:
+            mask = (1 << x) - 1
+            todo = mask & bitset
+            bitset |= todo << x
+        
+        return bitset.bit_length() - 1
 ```
