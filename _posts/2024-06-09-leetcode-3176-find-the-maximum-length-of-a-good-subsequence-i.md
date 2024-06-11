@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3176. Find the Maximum Length of a Good Subsequence I
-tags        : LeetCode Medium Array DP
+tags        : LeetCode Medium Array DP HashTable SegmentTree
 ---
 雙周賽 132。
 
@@ -183,4 +183,36 @@ class SegmentTree:
         else:
             self.update(id*2+1, M+1, R, i, val)
         self.push_up(id)
+```
+
+再認真想一想，其實還有可以優化的地方。  
+
+對於每個 dp[j]，真正需要查詢的只有**單點最大值**和**整體最大值**，並沒有部分區間，也就是說根本不需要**線段樹**。  
+只需要單獨維護 dp[j][prev] 的值，還有整個 dp[j] 的最大值。  
+
+時間複雜度 O(N \* k)。  
+空間複雜度 O()。  
+
+```python
+class Solution:
+    def maximumLength(self, nums: List[int], k: int) -> int:
+        mp = {x:i for i, x in enumerate(set(nums))}
+        M = len(mp)
+        
+        ans = 0
+        dp = [[0] * M for _ in range(k + 1)] # dp[j][prev]
+        dpj = [0] * (k + 1) # max(dp[j])
+        for x in nums:
+            x = mp[x]
+            for j in range(k + 1):
+                # prev = x
+                res = dp[j][x] + 1
+                # prev != x
+                if j < k:
+                    res = max(res, dpj[j + 1] + 1)
+                dpj[j] = max(dpj[j], res)
+                dp[j][x] = res
+                ans = max(ans, res)
+                    
+        return ans
 ```
