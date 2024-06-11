@@ -113,7 +113,7 @@ class Solution:
 線段樹很有用，但是：  
 > 551 / 551 test cases passed, but took too long.  
 
-O(N \* k \* log M) 代入 N = M = 5000, k = 50，大概才 3e6，反正 python 不給過，golang 倒是過了。  
+複雜度代入 N = M = 5000, k = 50，大概才 3e6，反正 python 不給過，但是 golang 還有尊貴的 C++ 倒是過了。  
 
 ```python
 class Solution:
