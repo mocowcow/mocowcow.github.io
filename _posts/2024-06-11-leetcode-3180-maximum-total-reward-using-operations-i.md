@@ -107,17 +107,20 @@ class Solution:
 並且每個 x，只有可能與原有的總和 j 變成新的總和 x + j。  
 其實只需要維護**能夠湊出的總和**就好。  
 
+雖然複雜度一樣沒變，但執行時間從上面的 5000ms 降低到 600ms，效率提高非常多。  
+
 ```python
 class Solution:
     def maxTotalReward(self, rewardValues: List[int]) -> int:
         r = rewardValues
         r.sort()
+        MX = max(r) * 2
         
         dp = set()
         dp.add(0)
         for x in r:
             for j in list(dp):
-                if x > j:
+                if x > j and x + j < MX:
                     dp.add(x + j)
         
         return max(dp)
