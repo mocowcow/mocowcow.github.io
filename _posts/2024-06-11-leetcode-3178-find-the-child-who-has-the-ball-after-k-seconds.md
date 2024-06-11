@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3178. Find the Child Who Has the Ball After K Seconds
-tags        : LeetCode Easy Array Simulation
+tags        : LeetCode Easy Array Simulation Math
 ---
 周賽 401。
 
@@ -33,4 +33,20 @@ class Solution:
                 x = -x
                 
         return curr
+```
+
+從第 0 傳到 n - 1 算一輪傳球，共需要 n - 1 秒。  
+
+拿 k 除 n - 1 就知道共傳了幾輪，偶數輪代表接下來正要向右傳；奇數輪代表正要向左傳。  
+朝對應方向加上剩餘秒數即可。  
+
+```python
+class Solution:
+    def numberOfChild(self, n: int, k: int) -> int:
+        one_pass = n - 1
+        q, r = divmod(k, one_pass)
+        if q % 2 == 0: # go right
+            return r
+        else: # go left
+            return n - 1 - r
 ```
