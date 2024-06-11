@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3180. Maximum Total Reward Using Operations I
-tags        : LeetCode Medium Array DP Greedy Sorting
+tags        : LeetCode Medium Array DP Greedy Sorting HashTable
 ---
 周賽 401。又在卡常數，連續兩場都這樣搞，真的會被氣死。  
 
@@ -88,6 +88,7 @@ class Solution:
         r.sort()
         N = len(r)
         MX = max(r) * 2
+
         dp = [[0] * (MX) for _ in range(N + 1)]
         for i in reversed(range(N)):
             x = r[i]
@@ -100,4 +101,24 @@ class Solution:
                 dp[i][j] = res
                 
         return dp[0][0]
+```
+
+觀察發現，dp[i][j] 會重複使用到 dp[i + 1][j] 的值，第一個空間維度可以優化掉。  
+並且每個 x，只有可能與原有的總和 j 變成新的總和 x + j。  
+其實只需要維護**能夠湊出的總和**就好。  
+
+```python
+class Solution:
+    def maxTotalReward(self, rewardValues: List[int]) -> int:
+        r = rewardValues
+        r.sort()
+        
+        dp = set()
+        dp.add(0)
+        for x in r:
+            for j in list(dp):
+                if x > j:
+                    dp.add(x + j)
+        
+        return max(dp)
 ```
