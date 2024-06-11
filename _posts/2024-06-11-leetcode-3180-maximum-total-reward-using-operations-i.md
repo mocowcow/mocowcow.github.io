@@ -78,3 +78,26 @@ class Solution:
         
         return ans
 ```
+
+改成遞推版本才能過。  
+
+```python
+class Solution:
+    def maxTotalReward(self, rewardValues: List[int]) -> int:
+        r = rewardValues
+        r.sort()
+        N = len(r)
+        MX = max(r) * 2
+        dp = [[0] * (MX) for _ in range(N + 1)]
+        for i in reversed(range(N)):
+            x = r[i]
+            for j in range(MX):
+                # no take
+                res = dp[i + 1][j]
+                # take
+                if x > j and j + x < MX:
+                    res = max(res, dp[i + 1][j + x] + x)
+                dp[i][j] = res
+                
+        return dp[0][0]
+```
