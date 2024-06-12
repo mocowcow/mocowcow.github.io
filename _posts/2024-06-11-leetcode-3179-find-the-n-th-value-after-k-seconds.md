@@ -28,16 +28,16 @@ tags        : LeetCode Medium Array PrefixSum DP Math
 MOD = 10 ** 9 + 7
 class Solution:
     def valueAfterKSeconds(self, n: int, k: int) -> int:
-        dp = [1] * n
+        a = [1] * n
         for _ in range(k):
-            dp2 = []
+            a2 = []
             ps = 0
-            for x in dp:
+            for x in a:
                 ps += x
                 ps %= MOD
-                dp2.append(ps)
+                a2.append(ps)
                 
-            dp = dp2
+            a = a2
             
-        return dp[-1]
+        return a[-1]
 ```
