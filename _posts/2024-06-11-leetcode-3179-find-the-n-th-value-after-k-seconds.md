@@ -50,9 +50,46 @@ class Solution:
 
 ![示意圖](/assets/img/3179.jpg)
 
+時間複雜度 O(1)，預處理時間不計。  
+空間複雜度 O(1)。  
+
 ```python
 MOD = 10 ** 9 + 7
 class Solution:
     def valueAfterKSeconds(self, n: int, k: int) -> int:
         return comb(k+n-1, n-1) % MOD
+```
+
+其他語言比較麻煩，需要自己預處理**階乘**和**乘法逆元**。  
+以下是 golang 範例。  
+
+```golang
+const MX = 2000
+const MOD int = 1e9 + 7
+var f, finv [MX + 1]int
+
+func init() {
+    f[0], finv[0] = 1, 1
+    f[1], finv[1] = 1, 1
+    for i := 2; i <= MX; i++ {
+        f[i] = f[i-1] * i % MOD
+        finv[i] = fast_pow(f[i], MOD-2, MOD)
+    }
+}
+
+func fast_pow(base, exp, MOD int) int {
+    res := 1
+    for exp > 0 {
+        if exp%2 == 1 {
+            res = res * base % MOD
+        }
+        base = base * base % MOD
+        exp >>= 1
+    }
+    return res
+}
+
+func valueAfterKSeconds(n int, k int) int {
+    return f[k+n-1] * finv[n-1] % MOD * finv[k] % MOD
+}
 ```
