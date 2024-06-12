@@ -41,3 +41,16 @@ class Solution:
             
         return a[-1]
 ```
+
+定睛一看，發現這個規律好像有點眼熟。  
+如果把頭往左側轉 45 度一看，原來是**巴斯卡三角形**。
+
+巴斯卡三角形等價於**組合數**。  
+觀察下圖規律，推算出答案目標位於第 k + n - 1 列、第 n - 1 個行，答案就是 comb(k+n-1, n-1)。  
+
+```python
+MOD = 10 ** 9 + 7
+class Solution:
+    def valueAfterKSeconds(self, n: int, k: int) -> int:
+        return comb(k+n-1, n-1) % MOD
+```
