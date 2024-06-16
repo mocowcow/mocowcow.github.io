@@ -73,10 +73,7 @@ class Solution:
             else:
                 _, i, val = q
                 nums[i] = val
-                for j in [i - 1, i, i + 1]:
-                    if not (0 < j and j < N - 1):
-                        continue
-
+                for j in range(max(1, i - 1), min(N - 2, i + 1) + 1):
                     to_peak = nums[j - 1] < nums[j] and nums[j] > nums[j + 1]
                     if is_peak[j] and not to_peak:  # remove peak
                         is_peak[j] = False
@@ -84,6 +81,49 @@ class Solution:
                     elif not is_peak[j] and to_peak:  # add peak
                         is_peak[j] = True
                         sl.add(j)
+
+        return ans
+```
+
+處理峰值變化那塊長的有夠醜，又長又難寫，不小心就寫錯了。  
+有種技巧可以搞得更簡潔：**恢復現場**。  
+若受到影響的索引 j 原本是峰值，則先把狀態標記取消，待 nums[i] 更新值後再重算一次。  
+
+```python
+from sortedcontainers import SortedList as SL
+class Solution:
+    def countOfPeaks(self, nums: List[int], queries: List[List[int]]) -> List[int]:
+        N = len(nums)
+        sl = SL()  # peaks
+
+        def update(i):
+            if nums[i - 1] < nums[i] and nums[i] > nums[i + 1]:
+                sl.add(i)
+            
+        def reset(i):
+            if nums[i - 1] < nums[i] and nums[i] > nums[i + 1]:
+                sl.remove(i)
+                
+        for i in range(1, N - 1):
+            if nums[i - 1] < nums[i] and nums[i] > nums[i + 1]:
+                update(i)
+
+        ans = []
+        for q in queries:
+            if q[0] == 1:
+                _, l, r = q
+                i = sl.bisect_left(l + 1)
+                j = sl.bisect_right(r - 1) - 1
+                ans.append(max(0, j - i + 1))
+            else:
+                _, i, val = q
+                # reset peak state
+                for j in range(max(1, i - 1), min(N - 2, i + 1) + 1):
+                    reset(j)
+                # update peak state
+                nums[i] = val
+                for j in range(max(1, i - 1), min(N - 2, i + 1) + 1):
+                    update(j)
 
         return ans
 ```
