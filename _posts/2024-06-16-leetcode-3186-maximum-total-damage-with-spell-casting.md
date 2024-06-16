@@ -102,3 +102,26 @@ class Solution:
         
         return dp(len(d) - 1)
 ```
+
+轉成遞推寫法。  
+
+```python
+class Solution:
+    def maximumTotalDamage(self, power: List[int]) -> int:
+        N = len(power)
+        d = Counter(power)
+        keys = sorted(d)
+        M = len(keys)
+
+        dp = [0] * (M + 1)
+        for i, x in enumerate(keys):
+            j = i 
+            while j >= 0 and x - keys[j] <= 2:
+                j -= 1
+            dp[i + 1] = max(
+                dp[i],
+                dp[j + 1] + d[x] * x
+            )
+            
+        return dp[M]
+```
