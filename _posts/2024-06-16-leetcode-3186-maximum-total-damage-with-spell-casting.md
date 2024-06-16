@@ -152,3 +152,63 @@ class Solution:
             
         return dp[M]
 ```
+
+最後說說的的奇怪寫法，雖然浪費不少時間才搞出來，但是空間複雜度比上述幾個方法都更低。  
+
+先回到最上面枚舉傷害值 i 的最原始版本。  
+轉移方程式：dp(i) = max(dp(i - 1), dp(i - 3) + cnt[i] * i)  
+會發現實際上只需要保留前三個狀態 dp(i - 1), dp(i - 2), dp(i - 3)。  
+
+分別設 dp0, dp1, dp2 代表 dp(i - 1), dp(i - 2), dp(i - 3)。  
+每次轉移時：  
+
+- dp2' = max(dp2, dp0 + cnt[i] * i)  
+- dp1' = dp2  
+- dp0' = dp1  
+
+---
+
+改成枚舉有出現的傷害 x 之後，要如何從上一個傷害 prev 轉移過來？  
+照著原本做法應該要轉移 prev - x 次。而且因為法術沒有出現，只會改變 dp0, dp1 的值，dp2 維持不變。  
+只需要轉移：  
+
+- dp1' = dp2  
+- dp0' = dp1  
+
+觀察上面規律發現，**轉移 3 次後**就會使得 dp2 = dp1 = dp0，第四次開始就不會改變值，沒有必要繼續轉移。  
+因此除了套用 x 的**最後一次**轉移以外，先前至多只需要轉移 2 次。  
+
+舉個例子：  
+> keys = [1, 99]  
+> 當前 x = 1  
+> dp0, dp1, dp2 = 0, 0, 1  
+> 當前 x = 2  
+> dp0, dp1, dp2 = 0, 1, 1  
+> 當前 x = 3  
+> dp0, dp1, dp2 = 1, 1, 1  
+> ...
+> 當前 x = 99  
+> dp0, dp1, dp2 = 1, 1, 100  
+> 當前 x = 100  
+> dp0, dp1, dp2 = 1, 100, 100  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def maximumTotalDamage(self, power: List[int]) -> int:
+        N = len(power)
+        d = Counter(power)
+        keys = sorted(d)
+
+        dp0 = dp1 = dp2 = 0
+        prev = -inf
+        for x in keys:
+            for _ in range(min(2, x - prev - 1)):
+                dp0, dp1 = dp1, dp2
+            dp0, dp1, dp2 = dp1, dp2, max(dp2, dp0 + d[x] * x)
+            prev = x
+            
+        return dp2
+```
