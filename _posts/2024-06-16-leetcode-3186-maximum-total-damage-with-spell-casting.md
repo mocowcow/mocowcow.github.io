@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3186. Maximum Total Damage With Spell Casting
-tags        : LeetCode Medium Array DP HashTable Sorting
+tags        : LeetCode Medium Array DP HashTable Sorting TwoPointers BinarySearch
 ---
 周賽 402。相似題 [740. delete and earn]({% post_url 2022-02-07-leetcode-740-delete-and-earn %})。  
 根據原題搞了奇怪的寫法，浪費不少時間。  
@@ -65,7 +65,7 @@ class Solution:
             if i < 0:
                 return 0
             x = keys[i]
-            j = bisect_right(keys, x - 3) - 1
+            j = bisect_left(keys, x - 2) - 1
             return max(
                 dp(i - 1),
                 dp(j) + d[x] * x
@@ -93,7 +93,7 @@ class Solution:
                 return 0
             x = keys[i]
             j = i - 1
-            while j >= 0 and keys[i] - keys[j] <= 2:
+            while j >= 0 and x - keys[j] <= 2:
                 j -= 1
             return max(
                 dp(i - 1),
@@ -104,6 +104,7 @@ class Solution:
 ```
 
 轉成遞推寫法。  
+為了處理 dp(-1) 的狀態，對於每個狀態都加上偏移量 1。  
 
 ```python
 class Solution:
@@ -121,6 +122,32 @@ class Solution:
             dp[i + 1] = max(
                 dp[i],
                 dp[j + 1] + d[x] * x
+            )
+            
+        return dp[M]
+```
+
+如果今天法術之間的間隔不只是 2 而是 k，那暴力迴圈就不行，只能用二分的方式。  
+但注意到這個 j 只會隨著 i 一起增加，其實可以用雙指針維護 j 的位置，不斷遞增到 keys[i] 和 key[j] 差距為 k 為止。  
+
+```python
+class Solution:
+    def maximumTotalDamage(self, power: List[int]) -> int:
+        N = len(power)
+        d = Counter(power)
+        keys = sorted(d)
+        M = len(keys)
+
+        dp = [0] * (M + 1)
+        best_j = 0
+        j = 0
+        for i, x in enumerate(keys):
+            while x - keys[j] > 2:
+                best_j = max(best_j, dp[j + 1])
+                j += 1
+            dp[i + 1] = max(
+                dp[i],
+                best_j + d[x] * x
             )
             
         return dp[M]
