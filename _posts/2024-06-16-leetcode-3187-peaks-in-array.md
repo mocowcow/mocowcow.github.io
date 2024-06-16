@@ -127,3 +127,91 @@ class Solution:
 
         return ans
 ```
+
+最後是我當初寫一半的線段樹解法。  
+當時改完 nums[i] 的值發現旁邊的峰值不見，一時沒想通就放棄了，真可惜。
+
+與上面方法最大的差別在於：查詢一的 [l..r] 的範圍必須手動檢查。  
+還有查詢二不必**恢復現場**，因為線段樹每次更新都會用新值一路向上合併，一定會更新成正確的區間值。  
+
+時間複雜度 O((N + Q) log N)。  
+空間複雜度 O(N)，答案空間不計入。  
+
+```python
+class Solution:
+    def countOfPeaks(self, nums: List[int], queries: List[List[int]]) -> List[int]:
+        N = len(nums)
+        seg = SegmentTree(N, nums)
+        for i in range(1, N - 1):
+            seg.update(1, 0, N - 1, i)
+
+        ans = []
+        for q in queries:
+            if q[0] == 1:
+                _, l, r = q
+                if l + 1 <= r - 1:
+                    res = seg.query(1, 0, N - 1, l + 1, r - 1)
+                else:
+                    res = 0
+                ans.append(res)
+            else:
+                _, i, val = q
+                nums[i] = val
+                for j in range(max(1, i - 1), min(N - 2, i + 1) + 1):
+                    seg.update(1, 0, N - 1, j)
+
+        return ans
+
+
+class SegmentTree:
+
+    def __init__(self, n, nums):
+        self.tree = [0]*(n*4)
+        self.nums = nums
+        self.n = n
+
+    def op(self, a, b):
+        """
+        任意符合結合律的運算
+        """
+        return a+b
+
+    def push_up(self, id):
+        """
+        以左右節點更新當前節點值
+        """
+        self.tree[id] = self.op(self.tree[id*2], self.tree[id*2+1])
+
+    def query(self, id, L, R, i, j):
+        """
+        區間查詢
+        回傳[i, j]的總和
+        """
+        if i <= L and R <= j:  # 當前區間目標範圍包含
+            return self.tree[id]
+        res = 0
+        M = (L+R)//2
+        if i <= M:
+            res = self.op(res, self.query(id*2, L, M, i, j))
+        if M+1 <= j:
+            res = self.op(res, self.query(id*2+1, M+1, R, i, j))
+        return res
+
+    def update(self, id, L, R, i):
+        """
+        單點更新
+        判斷 nums[i] 是否為峰值
+        """
+        if L == R:  # 當前區間目標範圍包含
+            if self.nums[L - 1] < self.nums[L] and self.nums[L] > self.nums[L + 1]:
+                self.tree[id] = 1
+            else:
+                self.tree[id] = 0
+            return
+        M = (L+R)//2
+        if i <= M:
+            self.update(id*2, L, M, i)
+        else:
+            self.update(id*2+1, M+1, R, i)
+        self.push_up(id)
+```
