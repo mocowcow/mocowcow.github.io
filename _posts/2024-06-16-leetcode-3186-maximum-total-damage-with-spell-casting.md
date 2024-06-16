@@ -73,3 +73,32 @@ class Solution:
         
         return dp(len(d) - 1)
 ```
+
+若使用傷害值 x 的法術，必須從 x - 3 轉移而來。  
+就算暴力從 keys[i] 往回找，最多也只會找三次。可以把二分換成暴力迴圈。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def maximumTotalDamage(self, power: List[int]) -> int:
+        N = len(power)
+        d = Counter(power)
+        keys = sorted(d)
+        
+        @cache
+        def dp(i):
+            if i < 0:
+                return 0
+            x = keys[i]
+            j = i - 1
+            while j >= 0 and keys[i] - keys[j] <= 2:
+                j -= 1
+            return max(
+                dp(i - 1),
+                dp(j) + d[x] * x
+            )
+        
+        return dp(len(d) - 1)
+```
