@@ -128,11 +128,89 @@ class Solution:
         return ans
 ```
 
-最後是我當初寫一半的線段樹解法。  
-當時改完 nums[i] 的值發現旁邊的峰值不見，一時沒想通就放棄了，真可惜。
+沒有 sorted list 的語言就只能乖乖用 BIT 或是線段樹了。  
+先看看 BIT 版本。  
 
-與上面方法最大的差別在於：查詢一的 [l..r] 的範圍必須手動檢查。  
-還有查詢二不必**恢復現場**，因為線段樹每次更新都會用新值一路向上合併，一定會更新成正確的區間值。  
+一樣是把山峰的位置標作 1，透過前綴和查詢區間山峰總數。  
+
+```python
+class Solution:
+    def countOfPeaks(self, nums: List[int], queries: List[List[int]]) -> List[int]:
+        N = len(nums)
+        bit = BIT(N)
+        for i in range(1, N - 1):
+            is_peak = int(nums[i - 1] < nums[i] and nums[i] > nums[i + 1])
+            bit.set(i, is_peak)
+
+        ans = []
+        for q in queries:
+            if q[0] == 1:
+                _, l, r = q
+                if l + 1 <= r - 1:
+                    res = bit.query_range(l + 1, r - 1)
+                else:
+                    res = 0
+                ans.append(res)
+            else:
+                _, i, val = q
+                nums[i] = val
+                for j in range(max(1, i - 1), min(N - 2, i + 1) + 1):
+                    is_peak = int(nums[j - 1] < nums[j]
+                                  and nums[j] > nums[j + 1])
+                    bit.set(j, is_peak)
+
+        return ans
+
+
+class BIT:
+    """
+    tree[0]代表空區間，不可存值，基本情況下只有[1, n-1]可以存值。
+    offset為索引偏移量，若設置為1時正好可以對應普通陣列的索引操作。
+    """
+
+    def __init__(self, n, offset=1):
+        self.offset = offset
+        self.tree = [0]*(n+offset)
+
+    def update(self, pos, val):
+        """
+        將tree[pos]增加val
+        """
+        i = pos+self.offset
+        while i < len(self.tree):
+            self.tree[i] += val
+            i += i & (-i)
+
+    def query(self, pos):
+        """
+        查詢[1, pos]的前綴和
+        """
+        i = pos+self.offset
+        res = 0
+        while i > 0:
+            res += self.tree[i]
+            i -= i & (-i)
+        return res
+
+    def query_range(self, i, j):
+        """
+        查詢[i, j]的前綴和
+        """
+        return self.query(j)-self.query(i-1)
+
+    def set(self, pos, val):
+        """
+        將tree[pos]設成val
+        """
+        old = self.query_range(pos, pos)
+        diff = val-old
+        self.update(pos, diff)
+```
+
+再來是我當初寫一半放棄的線段樹解法。真可惜。  
+
+這兩種方法和 sorted list 的最大差別在於：查詢一的 [l..r] 的範圍必須手動判斷邊界。  
+還有查詢二不必**恢復現場**，因為每次更新都會用新值自下而上合併，一定會更新成正確的區間值。  
 
 時間複雜度 O((N + Q) log N)。  
 空間複雜度 O(N)，答案空間不計入。  
