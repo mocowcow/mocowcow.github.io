@@ -37,8 +37,8 @@ tags        : LeetCode Hard Array DP
 base：當 cnt 為負數，不合法，回傳 0；或限制存在時、且不滿足限制，也回傳 0；  
 在 i = 0 時，若 cnt 也為 0，回傳 1，否則 0。  
 
-時間複雜度 O(n \* m \* min(n, M))。  
-空間複雜度 O(n \* m)。  
+時間複雜度 O(n \* M \* min(n, M))，其中 M = max(cnti)。  
+空間複雜度 O(n \* M)。  
 
 ```python
 MOD = 10 ** 9 + 7
