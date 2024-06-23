@@ -31,3 +31,20 @@ class Solution:
     def minimumOperations(self, nums: List[int]) -> int:
         return sum(x % 3 != 0 for x in nums)
 ```
+
+如果不是固定被 3 整除，而是被 k 整除怎辦？  
+
+更通用的作法是先求 x / k 的商 r。  
+r\*k 即為 x 向下找到的第一個 k 的倍數，而 (r + 1)\*k 是往上找的第一個 k 的倍數。  
+
+```python
+class Solution:
+    def minimumOperations(self, nums: List[int]) -> int:
+        k = 3
+        ans = 0
+        for x in nums:
+            r = x // k
+            ans += min(x - r * k, (r + 1) * k - x)
+        
+        return ans
+```
