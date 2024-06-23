@@ -19,7 +19,7 @@ tags        : LeetCode Hard Array DP
 ## 解法
 
 題目是求**前綴**的逆序對數量，因此考慮在已有的數列 prem 末端加入新的數會有什麼影響。  
-假設 prem = [2,0]，在末端加上 1 之後，產生了一個逆序對 (nums[0] = 2, nums[2] = 1)。  
+假設 perm = [2,0]，在末端加上 1 之後，產生了一個逆序對 (nums[0] = 2, nums[2] = 1)。  
 每加入一個數 x 後，產生的逆序對數量等於左方大於 x 的數個數。  
 
 為了計算增加的逆序對，需要維護左方有哪些數出現過 (同時也知道那些還沒出現過)。  
@@ -49,14 +49,14 @@ class Solution:
             limit[i] = cnt
             
         @cache
-        def dp(i, inv):
+        def dp(i, cnt):
             if i == 0:
-                return int(inv == 0)
-            if i in limit and limit[i] != inv:
+                return int(cnt == 0)
+            if i in limit and limit[i] != cnt:
                 return 0
             res = 0
-            for j in range(min(i, inv) + 1):
-                res += dp(i - 1, inv - j)
+            for j in range(min(i, cnt) + 1):
+                res += dp(i - 1, cnt - j)
             return res % MOD
         
         return dp(n - 1, limit[n - 1])
