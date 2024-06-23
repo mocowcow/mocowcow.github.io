@@ -44,3 +44,33 @@ class Solution:
         
         return ans
 ```
+
+那如果不是 3 個元素，而是 k 個的話，則要考慮支持區間修改的資料結構，例如線段樹或是差分。  
+以下使用差分。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def minOperations(self, nums: List[int]) -> int:
+        N = len(nums)
+        k = 3
+        diff = [0] * (N + k)
+        ps = 0
+        ans = 0
+        for i in range(N - k + 1):
+            ps ^= diff[i]
+            if nums[i] ^ ps == 0:
+                ans += 1
+                ps ^= 1
+                diff[i + k] ^= 1
+        
+        # cant flip
+        for i in range(N - k + 1, N):
+            ps ^= diff[i]
+            if nums[i] ^ ps == 0:
+                return -1
+        
+        return ans
+```
