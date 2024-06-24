@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3193. Count the Number of Inversions
-tags        : LeetCode Hard Array DP
+tags        : LeetCode Hard Array DP PrefixSum
 ---
 雙周賽 133。根據經驗來講，這題應該頂多 500 人過。結果有 1800 人過了，不愧是雙周賽，非常魔幻。  
 
@@ -86,6 +86,51 @@ class Solution:
             res = 0
             for j in range(min(i, cnt) + 1):
                 res += dp(i - 1, cnt - j)
+            return res % MOD
+        
+        return dp(n - 1, limit[n - 1])
+```
+
+仔細觀察 dp(i, cnt) 的轉移來源有那些？  
+> dp(i - 1, cnt), dp(i - 1, cnt - 1) .., dp(i - 1, cnt - (i - 1)), dp(i - 1, cnt - i)  
+
+那 dp(i, cnt - 1) 的轉移來源又有誰？  
+> dp(i - 1, cnt - 1), dp(i - 1, cnt - 1 - 1) .., dp(i - 1, cnt - 1 - i)  
+
+發現 dp(i, cnt) 比起 dp(i, cnt - 1) 來說，多出一個轉移來源 dp(i - 1, cnt)。  
+並且在 cnt 比 i 還大時，會失去 dp(i - 1, cnt - 1 - i) 這個來源。  
+
+總而言之，dp(i, cnt) 的轉移來源是所有 dp(i - 1, j) 的總和，其中 cnt - min(cnt, i) <= j <= cnt。  
+這些重複的部分可以使用**滑動窗口**或是**前綴和**進行優化，每個狀態只需要 O(1) 時間轉移。  
+
+時間複雜度 O(n \* M)，其中 M = max(cnti)。  
+空間複雜度 O(n \* M)。  
+
+```python
+MOD = 10 ** 9 + 7
+class Solution:
+    def numberOfPermutations(self, n: int, requirements: List[List[int]]) -> int:
+        limit = {}
+        for i, cnt in requirements:
+            limit[i] = cnt
+            
+        @cache
+        def dp(i, cnt):
+            if i < 0:
+                return int(cnt == 0)
+            if i in limit and limit[i] != cnt:
+                return 0
+            res = ps(i - 1, cnt)
+            j = cnt - min(i, cnt)
+            if j > 0:
+                res -= ps(i - 1, j - 1)
+            return res % MOD
+        
+        @cache
+        def ps(i, cnt):
+            if cnt < 0:
+                return 0
+            res = dp(i, cnt) + ps(i, cnt - 1)
             return res % MOD
         
         return dp(n - 1, limit[n - 1])
