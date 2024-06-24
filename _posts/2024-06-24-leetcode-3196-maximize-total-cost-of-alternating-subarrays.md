@@ -61,3 +61,33 @@ class Solution:
         
         return dp(0, 1)
 ```
+
+狀態裡面 sign 出現 -1，不太好寫成遞推。  
+稍微改變一下定義，以 0/1 代表偶數、奇數位 (或是負數、正數)。  
+
+```python
+class Solution:
+    def maximumTotalCost(self, nums: List[int]) -> int:
+        N = len(nums)
+        dp = [[0, 0] for _ in range(N + 1)]
+        for i in reversed(range(N)):
+            dp[i][0] = dp[i + 1][1] - nums[i]
+            dp[i][1] = max(dp[i + 1][0], dp[i + 1][1]) + nums[i]
+        
+        return dp[0][1]
+```
+
+發現 dp[i] 只依賴於 dp[i + 1]，可以優化掉一個空間維度。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def maximumTotalCost(self, nums: List[int]) -> int:
+        neg = pos = 0
+        for x in reversed(nums):
+            neg, pos = pos - x, max(pos, neg) + x
+            
+        return pos
+```
