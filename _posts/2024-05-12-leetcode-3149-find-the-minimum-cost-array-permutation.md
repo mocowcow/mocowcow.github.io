@@ -24,7 +24,7 @@ tags        : LeetCode Hard Array DP Bitmask BitManipulation
 
 ---
 
-以下簡稱 prem 為 p。  
+以下簡稱 perm 為 p。  
 仔細觀察 score，發現他是一個**循環**的關係。試著將 nums 也循環移動看看。  
 例如：  
 > nums = [0, 1]  
@@ -67,7 +67,7 @@ class Solution:
                 return abs(prev - nums[0])
             res = inf
             for j in range(N):
-                if mask & (1 << j) == 0: # prem[i] = j
+                if mask & (1 << j) == 0: # perm[i] = j
                     new_mask = mask | (1 << j)
                     t = dp(new_mask, j) + abs(prev - nums[j])
                     if t < res: # update max score
