@@ -60,3 +60,32 @@ class Solution:
                 
         return ans
 ```
+
+仔細觀察發現，dp(i) 只依賴於 dp(i + 1)，因此第一個空間維度可以優化掉。  
+
+並且，在考慮 nums[i] % k = r 是否選擇時，只會改變 dp(i, x = r, y) 的狀態。  
+x 只有固定一種，那麼實際上每個 i 需要更新的狀態也只有 k 個 y，而不是原本的 k^2 個！  
+
+但是靠遞迴實現的記憶化搜索沒有辦法略過這些狀態，還得先改成遞推版本才行。  
+
+時間複雜度 O(k^2 + nk)。  
+空間複雜度 O(k^2)。  
+
+```python
+class Solution:
+    def maximumLength(self, nums: List[int], k: int) -> int:
+        N = len(nums)
+        nums = [x % k for x in nums]
+        
+        dp = [[0] * k for _ in range(k)]
+        for x in nums:
+            for y in range(k):
+                dp[x][y] = dp[y][x] + 1
+            
+        ans = 0
+        for x in range(k):
+            for y in range(k):
+                ans = max(ans, dp[x][y])
+                
+        return ans
+```
