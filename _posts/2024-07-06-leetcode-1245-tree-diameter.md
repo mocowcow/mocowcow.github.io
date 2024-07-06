@@ -164,3 +164,59 @@ def diameter_bfs(edges):
     v, dist = bfs(u)
     return dist
 ```
+
+把樹狀圖當作洋蔥，最外層的點指向內層的點，分成好幾層。  
+可以像剝洋蔥一樣，每次拔掉最外面那層，直到剩下核心為止。  
+剝皮次數只和直徑相關，每次剝皮會使直徑減少 2。  
+
+![示意圖](/assets/img/1245-4.jpg)
+
+注意核心有兩種可能：  
+
+- 剩 1 個節點，不影響直徑  
+- 剩 2 個節點，直徑多 1  
+
+答案即為剝皮次數 \* 2 + 核心產生的距離。  
+
+```python
+class Solution:
+    def treeDiameter(self, edges: List[List[int]]) -> int:
+        return diameter_topology_sort(edges)
+
+def diameter_topology_sort(edges):
+    N = len(edges) + 1
+
+    if N <= 2:
+        return N - 1
+
+    g = [[] for _ in range(N)]
+    indegree = [0] * N
+    for a, b in edges:
+        g[a].append(b)
+        g[b].append(a)
+        indegree[a] += 1
+        indegree[b] += 1
+
+    q = []
+    for i in range(N):
+        if indegree[i] == 1:
+            q.append(i)
+
+    remain = N
+    dist = 0
+    while remain > 2:
+        dist += 1
+        q2 = []
+        for i in q:
+            remain -= 1
+            for j in g[i]:
+                indegree[j] -= 1
+                if indegree[j] == 1:
+                    q2.append(j)
+        q = q2
+
+    diameter = dist * 2
+    if remain == 2:
+        diameter += 1
+    return diameter
+```
