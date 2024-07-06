@@ -68,3 +68,99 @@ class Solution:
         
         return res
 ```
+
+直徑 (u, v) 是由兩個距離最遠的節點構成。  
+從任意節點出發，找到的**最遠節點**必定是直徑的一端 u。  
+然後從 u 出發，再次找到的**最遠節點** v 便是另一端。  
+
+(u, v) 兩點的距離即為直徑。  
+
+---
+
+在此之前，需要證明**任意點的最遠端點必為直徑端點**。  
+
+記得，樹狀圖是可以隨意調整樹根的，為方便思考討論，則將出發點 start 設為樹根。  
+而 u, v 與出發點的距離 d1 = (start, u), d2 = (start, v)，且滿足 d1 >= d2。  
+u, v 的共通祖先記做 lca，與出發點的距離記做 d0 = (start, lca)。  
+則直徑公式為：  
+> diameter = (u, v) = d1 + d2 - (d0) \* 2  
+
+如下圖所示：  
+![示意圖](/assets/img/1245-1.jpg)
+
+假設存在某節點 x，其距離 dx > d1。  
+則將 u 或 v 替換成 x 都可以得到更長的距離，與 (u, v) 為直徑的前提矛盾。  
+
+![示意圖](/assets/img/1245-2.jpg)
+![示意圖](/assets/img/1245-3.jpg)
+
+---
+
+綜上所述，只要透過 dfs/bfs 尋找最遠點的算法，就可以間接求出直徑。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def treeDiameter(self, edges: List[List[int]]) -> int:
+        return diameter_dfs(edges) # diameter_bfs(edges)
+
+def diameter_dfs(edges):
+    N = len(edges) + 1
+    g = [[] for _ in range(N)]
+    for a, b in edges:
+        g[a].append(b)
+        g[b].append(a)
+
+    farthest = None
+    mx_dist = -1
+
+    def dfs(i, fa, dist):
+        nonlocal farthest, mx_dist
+        if dist > mx_dist:
+            mx_dist = dist
+            farthest = i
+        for j in g[i]:
+            if j == fa:
+                continue
+            dfs(j, i, dist + 1)
+
+    dfs(0, -1, 0)
+
+    mx_dist = -1
+    dfs(farthest, -1, 0)
+    return mx_dist
+
+def diameter_bfs(edges):
+    N = len(edges) + 1
+    g = [[] for _ in range(N)]
+    for a, b in edges:
+        g[a].append(b)
+        g[b].append(a)
+
+    def bfs(start):
+        dist = [-1] * N
+        dist[start] = 0
+        q = [start]
+        while q:
+            q2 = []
+            for i in q:
+                for j in g[i]:
+                    if dist[j] == -1:
+                        dist[j] = dist[i] + 1
+                        q2.append(j)
+            q = q2
+
+        farthest = None
+        mx_dist = -1
+        for i, d in enumerate(dist):
+            if d > mx_dist:
+                mx_dist = d
+                farthest = i
+        return farthest, mx_dist
+
+    u, dist = bfs(0)
+    v, dist = bfs(u)
+    return dist
+```
