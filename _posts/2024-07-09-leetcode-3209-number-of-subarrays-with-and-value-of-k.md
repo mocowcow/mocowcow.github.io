@@ -17,10 +17,36 @@ tags        : LeetCode Hard Array BitManipulation HashTable
 
 原題 [3171. find subarray with bitwise and closest to k]({% post_url 2024-06-02-leetcode-3171-find-subarray-with-bitwise-and-closest-to-k %})。  
 
-前陣子自己搞了個[模板](https://github.com/mocowcow/python-cp-library/blob/master/pattern/bit_manipulation/bit_trick.py)，複製貼上就完事了。  
+差別在於原題只要知道子陣列運算後的結果**值**，本題還需要知道**數量**。  
+
+---
+
+總而言之，因為位運算特性的關係，每次運算後至少會改變 1 個位元，所以同一個索引 i 結尾的子陣列結果至多只會有 log MX 種。  
+我們遍歷 nums 中的每個元素 x，逐一與先前所有子陣列做 AND 運算，途中順便統計有多少個子陣列值等於 k 即可。  
 
 時間複雜度 O(N log MX)，其中 MX = max(nums)。  
 空間複雜度 O(log MX)。  
+
+```python
+class Solution:
+    def countSubarrays(self, nums: List[int], k: int) -> int:
+        ans = 0
+        d = Counter()
+        for x in nums:
+            # all subarrays AND x
+            d2 = Counter()
+            for y, val in d.items():
+                d2[y & x] += val
+            d = d2
+            d[x] += 1
+            
+            # update answer
+            ans += d[k]
+                
+        return ans
+```
+
+前陣子自己搞了個[模板](https://github.com/mocowcow/python-cp-library/blob/master/pattern/bit_manipulation/bit_trick.py)，複製貼上就完事了。  
 
 ```python
 class Solution:
