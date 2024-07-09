@@ -59,3 +59,20 @@ class Solution:
                 
         return ans
 ```
+
+仔細想想，除了最弱的敵人以外，其餘的早晚都要被賣掉，那乾脆一開始就全部賣掉。  
+排除特殊情況後，答案就是總體力值 / 最弱敵人。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def maximumPoints(self, enemyEnergies: List[int], currentEnergy: int) -> int:
+        mn = min(enemyEnergies)
+        if mn > currentEnergy:
+            return 0
+        
+        tot = sum(enemyEnergies) + currentEnergy - mn
+        return tot // mn
+```
