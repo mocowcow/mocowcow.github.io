@@ -70,3 +70,28 @@ class Solution:
 
         return sum(x >= k for x in dp)
 ```
+
+發現 dp(i) 只會參考到 dp(i - 1)，因此可以空間優化，但必須改在轉移的過程中統計答案。  
+為確保得到的 dp 值正確、且**不重複計入答案**，因此只有在第二次循環的時候統計答案。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def numberOfAlternatingGroups(self, colors: List[int], k: int) -> int:
+        N = len(colors)
+        ans = 0
+        cnt = 0
+        for rep in range(2):
+            for i in range(N):
+                if colors[i] != colors[i - 1]:
+                    cnt += 1
+                else:
+                    cnt = 1
+
+                if rep == 1 and cnt >= k:
+                    ans += 1
+
+        return ans
+```
