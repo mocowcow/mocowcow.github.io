@@ -47,7 +47,9 @@ class Solution:
 與其說長度為 2 的子字串要有 "1"，不如說不允許兩個 "0" 相連。  
 直接在生成子字串的時候剪枝，就不用在最後重新檢查浪費時間。  
 
-時間複雜度 O(2^n)。  
+注意：雖然最後不需要檢查，但是構造字串還是需要 O(n) 時間，因此複雜度不變，執行時間卻快很多。  
+
+時間複雜度 O(2^n \* n)。  
 空間複雜度 O(n)。  
 
 ```python
@@ -60,10 +62,12 @@ class Solution:
             if len(curr) == n:
                 ans.append("".join(curr))
                 return 
+
             if not curr or curr[-1] == "1":
                 curr.append("0")
                 bt()
                 curr.pop()
+                
             curr.append("1")
             bt()
             curr.pop()
