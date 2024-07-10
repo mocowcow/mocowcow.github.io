@@ -53,3 +53,34 @@ class PrefixSum2D:
         ps = self.ps
         return ps[r2+1][c2+1] - ps[r2+1][c1] - ps[r1][c2+1] + ps[r1][c1]
 ```
+
+仔細想想，所有子矩陣都是以 (0, 0) 為左上角。  
+因此可以在計算前綴和的過程中，順帶更新答案。  
+
+並且因為第 r 列的前綴合只依賴於第 r - 1 列，因此可以進行空間優化。  
+
+時間複雜度 O(MN)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def numberOfSubmatrices(self, grid: List[List[str]]) -> int:
+        N = len(grid[0])
+        ps_x = [0] * N        
+        ps_y = [0] * N
+        ans = 0
+        for row in grid:
+            x = y = 0
+            for c in range(N):
+                if row[c] == "X":
+                    x += 1
+                elif row[c] == "Y":
+                    y += 1
+                    
+                ps_x[c] += x
+                ps_y[c] += y
+                if ps_x[c] > 0 and ps_x[c] == ps_y[c]:
+                    ans += 1
+        
+        return ans
+```
