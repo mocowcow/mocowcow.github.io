@@ -43,3 +43,32 @@ class Solution:
 
         return ans
 ```
+
+與其說長度為 2 的子字串要有 "1"，不如說不允許兩個 "0" 相連。  
+直接在生成子字串的時候剪枝，就不用在最後重新檢查浪費時間。  
+
+時間複雜度 O(2^n)。  
+空間複雜度 O(n)。  
+
+```python
+class Solution:
+    def validStrings(self, n: int) -> List[str]:
+        ans = []
+        curr = []
+
+        def bt():
+            if len(curr) == n:
+                ans.append("".join(curr))
+                return 
+            if not curr or curr[-1] == "1":
+                curr.append("0")
+                bt()
+                curr.pop()
+            curr.append("1")
+            bt()
+            curr.pop()
+
+        bt()
+
+        return ans
+```
