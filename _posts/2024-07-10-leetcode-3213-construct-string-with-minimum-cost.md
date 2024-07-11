@@ -155,3 +155,56 @@ class Solution:
         
         return ans
 ```
+
+然而很可惜，因為 python 嚴格的時間限制，光是這樣會超時。  
+還得把 min 改成手寫 if 判斷，再把 dp 改成遞推才能勉強通過。  
+
+```python
+MOD = 1000015279
+BASE = 87
+class Solution:
+    def minimumCost(self, target: str, words: List[str], costs: List[int]) -> int:
+        N = len(target)
+        
+        # hash target for substrings
+        h_target = [0] 
+        base_pow = [1]
+        for c in target:
+            h_target.append((h_target[-1] * BASE + ord(c)) % MOD)
+            base_pow.append((base_pow[-1] * BASE) % MOD)
+            
+        # hash all words
+        # and collect valid sizes
+        h_words = defaultdict(lambda: inf)
+        sizes = set()
+        for word, cost in zip(words, costs):
+            sizes.add(len(word))
+            h = 0
+            for c in word:
+                h = (h * BASE + ord(c)) % MOD
+            # h_words[h] = min(h_words[h], cost)
+            if cost < h_words[h]:
+                h_words[h] = cost
+        sizes = sorted(sizes)
+        
+        dp = [0] * (N + 1)
+        for i in reversed(range(N)):
+            res = inf
+            for sz in sizes:
+                j = i + sz - 1
+                if j >= N:
+                    break
+                h_sub = (h_target[j + 1] - h_target[i] * base_pow[sz]) % MOD
+                if h_sub in h_words:
+                    # res = min(res, h_words[h_sub] + dp(j + 1))
+                    t = h_words[h_sub] + dp[j + 1]
+                    if t < res:
+                        res = t
+            dp[i] = res
+        
+        ans = dp[0]
+        if ans == inf:
+            return -1
+        
+        return ans
+```
