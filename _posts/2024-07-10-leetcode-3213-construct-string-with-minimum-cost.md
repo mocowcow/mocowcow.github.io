@@ -89,3 +89,69 @@ class Trie:
             curr = curr.child[c]
         curr.val = min(curr.val, val)
 ```
+
+注意到測資範圍寫著：  
+> The total sum of words[i].length is less than or equal to 5 * 10^4.  
+
+總長度 L 限制了 words[i] 所可能出現的長度。  
+最差情況下 words[i] 長度有 1,2,3,...n，求等差數列和公式 = n *(n + 1) / 2。  
+滿足 n \* (n + 1) / 2 <= L，可得最後一項長度 n 大約為 sqrt(L)。  
+
+之前我們枚舉 target[i..j] 時，大概是 O(N) 時間。其實只需要枚舉有出現過的 words[i] 長度，只需要 O(sqrt(L))。  
+因此 dp 部份的正確時間複雜度是 O(N \* sqrt(L))。  
+
+---
+
+但字典樹會一直走到樹的葉節點為止，在 target = "aaa...aaa", words = ["a","aaa......aaa"] 的極端情況下，複雜度同樣會上升到 O(N^2)，需要想想其他字串匹配的替代方案。  
+
+正確方式是使用 rolling hash 做字串雜湊，預處理所有 words[i] 及 target，即可用 O(1) 的時間查詢子字串是否存在。  
+
+時間複雜度 O(N \* sqrt(L))，其中 L = sum(words[i].length)。  
+空間複雜度 O(N)。  
+
+```python
+MOD = 1000015279
+BASE = 87
+class Solution:
+    def minimumCost(self, target: str, words: List[str], costs: List[int]) -> int:
+        N = len(target)
+        
+        # hash target for substrings
+        h_target = [0] 
+        base_pow = [1]
+        for c in target:
+            h_target.append((h_target[-1] * BASE + ord(c)) % MOD)
+            base_pow.append((base_pow[-1] * BASE) % MOD)
+            
+        # hash all words
+        # and collect valid sizes
+        h_words = defaultdict(lambda: inf)
+        sizes = set()
+        for word, cost in zip(words, costs):
+            sizes.add(len(word))
+            h = 0
+            for c in word:
+                h = (h * BASE + ord(c)) % MOD
+            h_words[h] = min(h_words[h], cost)
+        sizes = sorted(sizes)
+        
+        @cache
+        def dp(i):
+            if i == N:
+                return 0
+            res = inf
+            for sz in sizes:
+                j = i + sz - 1
+                if j >= N:
+                    break
+                h_sub = (h_target[j + 1] - h_target[i] * base_pow[sz]) % MOD
+                if h_sub in h_words:
+                    res = min(res, h_words[h_sub] + dp(j + 1))
+            return res
+        
+        ans = dp(0)
+        if ans == inf:
+            return -1
+        
+        return ans
+```
