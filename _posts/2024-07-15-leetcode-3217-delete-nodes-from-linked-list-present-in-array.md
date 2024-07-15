@@ -37,3 +37,25 @@ class Solution:
 
         return a[0]
 ```
+
+也可以原地刪除，不使用額外空間。  
+為應對刪除首節點的情形，需要加上哨兵節點。  
+
+時間複雜度 O(N + M)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def modifiedList(self, nums: List[int], head: Optional[ListNode]) -> Optional[ListNode]:
+        s = set(nums)
+        prev = dummy = ListNode(next=head)
+        curr = head
+        while curr:
+            if curr.val in s:
+                prev.next = curr.next
+            else:
+                prev = curr
+            curr = curr.next
+        
+        return dummy.next
+```
