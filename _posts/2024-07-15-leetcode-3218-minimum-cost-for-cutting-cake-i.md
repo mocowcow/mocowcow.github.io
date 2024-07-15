@@ -88,7 +88,7 @@ class Solution:
 將所有切割點依照成本遞減排序，並維護兩方向的所需次數 cnt，每次切割後就給不同方向的次數加 1。  
 
 時間複雜度 O(m log m + n log n)。  
-空間複雜度 O(1)。  
+空間複雜度 O(m + n)。  
 
 ```python
 class Solution:
