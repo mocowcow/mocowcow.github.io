@@ -33,3 +33,28 @@ class Solution:
 
         return ans
 ```
+
+仔細想想，字串比對是由左至右，就算多個相鄰數對奇偶性相同，第一個能使得字典序變小的肯定是最佳答案。  
+
+舉個簡單例子：  
+> s = "531"  
+> 交換 "53"，得到 "351"  
+> 交換 "31"，得到 "513"  
+
+很明顯交換 "53" 更好。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def getSmallestString(self, s: str) -> str:
+        N = len(s)
+        a = list(s)
+        for i in range(N - 1):
+            if ord(a[i]) % 2 == ord(a[i + 1]) % 2 and a[i] > a[i + 1]:
+                a[i], a[i + 1] = a[i + 1], a[i]
+                return "".join(a)
+
+        return s
+```
