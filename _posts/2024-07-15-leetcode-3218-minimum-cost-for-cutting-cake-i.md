@@ -58,3 +58,53 @@ class Solution:
         
         return dp(0, m - 1, 0, n - 1)
 ```
+
+然而 Q4 要求更大的測資，m, n 高達 10^5，肯定得找更好的辦法。  
+
+找個極端情況看看：  
+> m = 1, n = 100  
+> 不管怎樣切，都要切 99 次  
+
+再來看看範例：  
+> m = 2, n = 2  
+> 若先切直的，原本只要 1 橫刀的地方變成要 2 次了  
+> 若先切橫的，原本只要 1 直刀的地方變成要 2 次了  
+
+同樣再舉更大的例子，會發現每切一刀，會影響之後不同方向的切割點所需次數：  
+> m = 3, n = 3  
+> 有 h0, h1, 兩個水平切割點，還有 v0, v1 兩個垂直切割點  
+>
+> - 若第一刀切 h0，會使得 v0, v1 所需的切割次數從 1 變成 2  
+>   若第二刀切 h1，會使得 v0, v1 所需的切割次數從 2 變成 3  
+> - 若第一刀切 v0，會使得 h0, h1 所需的切割次數從 1 變成 2  
+>   若第二刀切 h0 (需要兩次)，會使得 v1 所需切割次數從 1 變成 2 (不影響切過的 v0)  
+
+發現不管怎樣切，總刀數都是 m \* n - 1。  
+而且**越晚切**的切割點 vi 來說，如果先前切過的**不同方向**的刀數 hi 越多，則 vi 的所需次數會變得更多。  
+
+---
+
+根據**越晚切越貴**這點，先從成本最貴的切割點開始切就對了。  
+將所有切割點依照成本遞減排序，並維護兩方向的所需次數 cnt，每次切割後就給不同方向的次數加 1。  
+
+時間複雜度 O(m log m + n log n)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def minimumCost(self, m: int, n: int, horizontalCut: List[int], verticalCut: List[int]) -> int:
+        a = []
+        for x in horizontalCut:
+            a.append([x, 0])
+        for x in verticalCut:
+            a.append([x, 1])
+        a.sort(key=itemgetter(0), reverse=True)
+
+        cnt = [1, 1]
+        ans = 0
+        for cost, dir in a:
+            ans += cost * cnt[dir]
+            cnt[dir ^ 1] += 1
+
+        return ans
+```
