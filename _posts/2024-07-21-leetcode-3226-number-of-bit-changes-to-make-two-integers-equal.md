@@ -19,7 +19,7 @@ weekly contest 407。
 否則不同的位元個數就是答案。  
 
 時間複雜度 O(log n)。  
-空間複雜度 O(log n)。  
+空間複雜度 O(1)。  
 
 ```python
 class Solution:
@@ -34,4 +34,23 @@ class Solution:
                 ans += 1
 
         return ans
+```
+
+注意到 1 變 0 這個操作其實就是**位元 AND** 運算。  
+直接拿 n 和 k 做 AND，就是 n 消掉不該有的位元之後的結果，若不等同於 k 則代表不合法。  
+
+若合法，則需要找出有幾個位元不同。  
+利用 XOR 找出不同的位元，最後統計有幾個 1 即可。  
+
+時間複雜度 O(1)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def minChanges(self, n: int, k: int) -> int:
+        if n & k != k:
+            return -1
+            
+        diff = n ^ k
+        return diff.bit_count()
 ```
