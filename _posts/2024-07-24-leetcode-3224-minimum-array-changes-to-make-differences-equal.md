@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3224. Minimum Array Changes to Make Differences Equal
-tags        : LeetCode Medium
+tags        : LeetCode Medium PrefixSum
 ---
 biweekly contest 135。還挺難的。  
 原題 1674. Minimum Moves to Make Array Complementary。  
@@ -65,8 +65,55 @@ biweekly contest 135。還挺難的。
 若 x 大於此值，則需要第二次操作才可滿足 x。  
 重新整理數對 (a, b) 差值改成 x 所需修改次數：  
 
-- 若 b - a = x，修改 0 次  
-- x < b - a <= mx_diff，修改 1 次  
-- mx_diff > x，修改 2 次  
+- 若 x = b - a，修改 0 次  
+- 若 x <= mx_diff，修改 1 次  
+- 若 x > mx_diff，修改 2 次  
 
 ---
+
+設 cnt_diff[x] 為絕對差為 x 的組數，cnt_max[x] 為一次修改後至多可以變成 x 的組數。  
+
+總共有 n / 2 組數對，其中有 cnt_diff[x] 組不需修改。其餘組別至少需要 1 次，記做 first_op。  
+
+另有 cnt_max[0] + cnt_max[1] + .. + cnt_max[x - 1] 組需要額外修改**第 2 次**。  
+隨著 x 增大，組要第二次修改的組數越來越多，但每次都只需要多出一組 cnt_max[x - 1]。  
+因此可以前綴和 O(1) 求出，並記做 second_op。  
+
+以 first_op + second_op 即為目標差為 x 的操作次數。
+更新答案後，再將 cnt_max[x] 累加至 second_op 中。  
+
+時間複雜度 O(n + k)。  
+空間複雜度 O(k)。  
+
+```python
+class Solution:
+    def minChanges(self, nums: List[int], k: int) -> int:
+        N = len(nums)
+        cnt_diff = [0] * (k + 1) # cnt diff between pair
+        cnt_max  = [0] * (k + 1) # cnt max increment by 1 op
+        for i in range(N // 2):
+            a, b = nums[i], nums[N - 1 - i]
+            # keep a <= b
+            if a > b: 
+                a, b = b, a
+
+            # [0..a..b..k]
+            cnt_diff[b - a] += 1
+            # option 1: move a to 0
+            # diff becomes [0..b]
+            # option 2: move b to k
+            # diff becomes [a..k]
+            cnt_max[max(b, k - a)] += 1
+
+        ans = inf
+        second_op = 0
+        for x in range(0, k + 1): # enumerate diff x
+            no_op = cnt_diff[x]
+            first_op = N // 2 - no_op
+            # update answer
+            ans = min(ans, first_op + second_op)
+            # prefix sum(cnt_max[0..x]) for next x
+            second_op += cnt_max[x] 
+
+        return ans
+```
