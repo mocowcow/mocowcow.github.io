@@ -100,6 +100,7 @@ class Solution:
             # keep a <= b
             if a > b: 
                 a, b = b, a
+                
             # [0..a..b..k]
             cnt_diff[b - a] += 1
             # option 1: move a to 0
@@ -112,9 +113,11 @@ class Solution:
         for x in range(0, k + 1): # enumerate diff x
             no_op = cnt_diff[x]
             first_op = N // 2 - no_op
+
             # bisect for max_diff < x
             idx = sl.bisect_left(x) - 1 # sl[0..idx] are all < x
             second_op = idx + 1
+
             # update answer
             ans = min(ans, first_op + second_op)
         
@@ -142,6 +145,7 @@ class Solution:
             # keep a <= b
             if a > b: 
                 a, b = b, a
+
             # [0..a..b..k]
             cnt_diff[b - a] += 1
             # option 1: move a to 0
@@ -155,10 +159,59 @@ class Solution:
         for x in range(0, k + 1): # enumerate diff x
             no_op = cnt_diff[x]
             first_op = N // 2 - no_op
-                # update answer
+
+            # update answer
             ans = min(ans, first_op + second_op)
+
             # prefix sum(cnt_max[0..x]) for next x
             second_op += cnt_max[x] 
 
         return ans
+```
+
+方案三：差分陣列。  
+
+換個角度思考，改成考慮數對 (a, b) 會對於不同的目標值 x 產生什麼影響？  
+同樣設 diff = b - a、max_diff = max(b, k - a)：  
+
+- 界於 [0..diff - 1] 的 x，操作次數加 1  
+- 界於 [diff + 1..max_diff] 的 x，操作次數加 1  
+- 界於 [max_diff + 1..k] 的 x，操作次數加 2  
+
+算出所有數對對於 x 不同值域的影響後，再對差分進行前綴和，得到正確的操作次數即可。  
+
+```python
+class Solution:
+    def minChanges(self, nums: List[int], k: int) -> int:
+        N = len(nums)
+        d = [0] * (k + 2) # difference array
+        for i in range(N // 2):
+            a, b = nums[i], nums[N - 1 - i]
+            # keep a <= b
+            if a > b: 
+                a, b = b, a
+
+            diff = b - a 
+            max_diff = max_diff = max(b, k - a)
+            # [0..diff - 1] add by 1
+            d[0] += 1
+            d[diff] -= 1
+
+            # [diff + 1..max_diff] add by 1
+            d[diff + 1] += 1
+            d[max_diff + 1] -= 1
+
+            # [max_diff + 1..k] add by 2
+            d[max_diff + 1] += 2
+            # unnecessary
+            # d[k + 1] -= 2 
+
+        ans = inf
+        ps = 0
+        for x in range(0, k + 1):
+            ps += d[x]
+            ans = min(ans, ps)
+
+        return ans
+        # return min(accumulate(d[:k + 1]))
 ```
