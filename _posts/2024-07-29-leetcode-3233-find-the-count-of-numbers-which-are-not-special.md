@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3233. Find the Count of Numbers Which Are Not Special
-tags        : LeetCode Medium Math BinarySearch
+tags        : LeetCode Medium Math BinarySearch PrefixSum
 ---
 weekly contest 408。  
 
@@ -80,5 +80,30 @@ class Solution:
         first = bisect_left(special, l)
         last = bisect_right(special, r)
         cnt = last - first
+        return r - l + 1 - cnt
+```
+
+又或者可以統計**因子最大為 i** 時對應的**特別數個數**。  
+
+對於區間 [l, r]，等價於 [0, r] 扣掉 [0, l - 1]。  
+以前綴和的概念相同，扣除不需要的部分即可。  
+
+時間複雜度 O(1)，預處理時間不計入。  
+空間複雜度 O(1)，預處理空間不計入。  
+
+```python
+MX = isqrt(10 ** 9)
+ps = [0] * (MX + 1)
+sieve = [True] * (MX + 1)
+for i in range(2, MX + 1):
+    ps[i] = ps[i - 1]
+    if sieve[i]:
+        ps[i] += 1
+        for j in range(i * i, MX + 1, i):
+            sieve[j] = False
+
+class Solution:
+    def nonSpecialCount(self, l: int, r: int) -> int:
+        cnt = ps[isqrt(r)] - ps[isqrt(l - 1)]
         return r - l + 1 - cnt
 ```
