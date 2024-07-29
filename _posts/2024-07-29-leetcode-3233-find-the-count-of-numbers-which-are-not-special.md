@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3233. Find the Count of Numbers Which Are Not Special
-tags        : LeetCode Medium Math
+tags        : LeetCode Medium Math BinarySearch
 ---
 weekly contest 408。  
 
@@ -55,4 +55,30 @@ def is_prime(n):
         if n % i == 0:
             return False
     return n >= 2
+```
+
+對於不同組測資來說，都要用到同樣的質數。  
+不妨先預處理所有小於 sqrt(10^9) 的質數，並生成對應的**特別數**。  
+
+之後每次查詢只需要二分找到 l, r 的範圍即可。  
+
+時間複雜度 O(log r)，預處理時間不計入。  
+空間複雜度 O(1)，預處理空間不計入。  
+
+```python
+MX = isqrt(10 ** 9)
+special = []
+sieve = [True] * (MX + 1)
+for i in range(2, MX + 1):
+    if sieve[i]:
+        special.append(i * i)
+        for j in range(i * i, MX + 1, i):
+            sieve[j] = False
+
+class Solution:
+    def nonSpecialCount(self, l: int, r: int) -> int:
+        first = bisect_left(special, l)
+        last = bisect_right(special, r)
+        cnt = last - first
+        return r - l + 1 - cnt
 ```
