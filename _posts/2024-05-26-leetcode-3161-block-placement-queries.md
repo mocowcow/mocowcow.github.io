@@ -59,7 +59,7 @@ class Solution:
         Q = len(queries)
         MX = min(5 * (10**4), Q * 3) + 5
         
-        sl = SL([0, MX]) # obstacle pos with sentials
+        sl = SL([0, MX]) # obstacle pos with sentinel
         seg = SegmentTree(MX) # maintain interval size
         ans = []
         for q in queries:
@@ -164,7 +164,7 @@ class Solution:
         MX = min(5 * (10**4), Q * 3) + 5
         
         # init obstacle and interval
-        sl = SL([0, MX]) # obstacle pos with sential
+        sl = SL([0, MX]) # obstacle pos with sentinel
         bit = BIT(MX) # maintain interval size
         for q in queries:
             if q[0] == 1:
