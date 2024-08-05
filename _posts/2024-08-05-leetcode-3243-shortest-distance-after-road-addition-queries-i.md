@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3243. Shortest Distance After Road Addition Queries I
-tags        : LeetCode Medium Graph DP
+tags        : LeetCode Medium Graph DP BFS
 ---
 weekly contest 409。  
 
@@ -76,6 +76,43 @@ class Solution:
                 for j in g[i]:
                     dp[i] = min(dp[i], dp[j] + 1)
             ans.append(dp[0])
+
+        return ans
+```
+
+每條道路的長度都一樣，其實使用最樸素的 bfs 就可以找到最短路徑。  
+若道路長度不同，則需改用 dijkstra。  
+
+時間複雜度 O(Q \* (n + Q))，其中 Q = 查詢次數。  
+空間複雜度 O(n + Q)。
+
+```python
+class Solution:
+    def shortestDistanceAfterQueries(self, n: int, queries: List[List[int]]) -> List[int]:
+        g = [[] for _ in range(n)]
+        for i in range(n - 1):
+            g[i].append(i + 1)
+
+        def bfs():
+            q = deque([0])
+            vis = [False] * n
+            step = 0
+            while q:
+                for _ in range(len(q)):
+                    i = q.popleft()
+                    if i == n-1:
+                        return step
+                    if vis[i]:
+                        continue
+                    vis[i] = True
+                    for j in g[i]:
+                        q.append(j)
+                step += 1
+
+        ans = []
+        for x, y in queries:
+            g[x].append(y)
+            ans.append(bfs())
 
         return ans
 ```
