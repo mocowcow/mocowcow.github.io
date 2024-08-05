@@ -62,6 +62,9 @@ biweekly contest 136。
   - cnt1 為 4 的倍數，合法  
   - cnt1 不為 4 的倍數，無法透過對稱組增加 1，只能把多餘的 1 單獨改成 0  
 
+時間複雜度 O(MN)。  
+空間複雜度 O(1)。  
+
 ```python
 class Solution:
     def minFlips(self, grid: List[List[int]]) -> int:
