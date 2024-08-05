@@ -52,3 +52,30 @@ class Solution:
 
         return ans
 ```
+
+每次增加一條 x 到 y 的路徑後，只有包含 y 點的路徑才會產生改變。  
+因此只需要更新 0 <= i < y 的 dp 值即可。  
+
+```python
+class Solution:
+    def shortestDistanceAfterQueries(self, n: int, queries: List[List[int]]) -> List[int]:
+        g = [[] for _ in range(n)]
+        for i in range(n - 1):
+            g[i].append(i + 1)
+
+        dp = [inf] * n
+        dp[-1] = 0
+        for i in reversed(range(n)):
+            for j in g[i]:
+                dp[i] = min(dp[i], dp[j] + 1)
+
+        ans = []
+        for x, y in queries:
+            g[x].append(y)
+            for i in reversed(range(y)):
+                for j in g[i]:
+                    dp[i] = min(dp[i], dp[j] + 1)
+            ans.append(dp[0])
+
+        return ans
+```
