@@ -98,3 +98,25 @@ class SegmentTree:
             self.update(id*2+1, M+1, R, i, j, val)
         self.push_up(id)
 ```
+
+其實線段樹有點大材小用，拿有序集合維護未被刪除的點即可。  
+每次加入新路徑後，二分找到第一個和最後一個要被刪除的位置，從集合中刪除即可。  
+
+時間複雜度 O(Q log n)。  
+空間複雜度 O(n)。  
+
+```python
+from sortedcontainers import SortedList as SL
+class Solution:
+    def shortestDistanceAfterQueries(self, n: int, queries: List[List[int]]) -> List[int]:
+        sl = SL(range(n))
+        ans = []
+        for x, y in queries:
+            i = sl.bisect_left(x + 1)
+            j = sl.bisect_left(y)
+            for _ in range(j - i):
+                sl.pop(i)
+            ans.append(len(sl) - 1)
+
+        return ans
+```
