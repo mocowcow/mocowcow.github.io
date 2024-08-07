@@ -120,3 +120,53 @@ class Solution:
 
         return ans
 ```
+
+另一個思路是把城市之間的路徑當作是**區間節點**，每次新增新路徑的時候相當於把區間**合併**。  
+這時候可以使用**並查集**。  
+
+最初相當於有 n-1 個區間，每次新增 (x, y) 路徑時，把編號為 [x, y-1] 的節點都指向 y-1。  
+每次成功合併記得減少區間計數，並在合併結束後將剩餘區間數加入答案。  
+
+![示意圖](/assets/img/3244.jpg)
+
+雖然只使用路徑壓縮並查集，每次合併理應是 O(log n)。  
+但是合併區間的過程當中，都會先調用 find 而把高度攤平，其實只有 O(1)。  
+
+時間複雜度 O(Q + n)。  
+空間複雜度 O(n)。  
+
+```python
+class Solution:
+    def shortestDistanceAfterQueries(self, n: int, queries: List[List[int]]) -> List[int]:
+        uf = UnionFind(n - 1)
+        part = n - 1
+        ans = []
+        for x, y in queries:
+            l = uf.find(x)
+            r = uf.find(y - 1)
+            while l != r:
+                part -= 1
+                uf.union(l, r)
+                l = uf.find(l + 1)
+            ans.append(part)
+
+        return ans
+
+
+class UnionFind:
+    def __init__(self, n):
+        self.parent = [0] * n
+        for i in range(n):
+            self.parent[i] = i
+
+    def union(self, x, y):
+        px = self.find(x)
+        py = self.find(y)
+        if px != py:
+            self.parent[px] = py
+
+    def find(self, x):
+        if x != self.parent[x]:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+```
