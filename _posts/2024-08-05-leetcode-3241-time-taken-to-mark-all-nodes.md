@@ -44,7 +44,7 @@ times[0] 即為 dp(0)。
 發現父節點 i 和子節點 j 之間，共享了 dp(j)。  
 有做過類似題型的話，很簡單能想到**換根 dp**。  
 
-![示意圖](/assets/img/3240-1.jpg)
+![示意圖](/assets/img/3241-1.jpg)
 
 上圖以範例 3 為例，紅字為 dp(i) 的值，箭頭表示標記相鄰節點的 cost。  
 求 times[2] dp(2) 是標記的一部份過程，但卻不是答案。  
@@ -114,9 +114,9 @@ class Solution:
                 if j == fa:
                     continue
                 j_cost = 1 if j & 1 else 2
-                if dp1[j] + j_cost == dp1[i]:
+                if dp1[j] + j_cost == dp1[i]: # dp[j] is largest
                     new_other = max(other, dp2[i])
-                else:
+                else: # dp[j] is second largest
                     new_other = max(other, dp1[i])
                 dfs2(j, i, new_other + i_cost)
 
