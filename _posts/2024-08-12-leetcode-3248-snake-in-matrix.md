@@ -23,7 +23,7 @@ weekly contest 410。
 
 python 3.10 終於加入了類似 switch 的語法，總算不需寫一堆 elif。  
 
-時間複雜度 O(M)，其中 M = len(commands)。  
+時間複雜度 O(Q)，其中 Q = len(commands)。  
 空間複雜度 O(1)。  
 
 ```python
