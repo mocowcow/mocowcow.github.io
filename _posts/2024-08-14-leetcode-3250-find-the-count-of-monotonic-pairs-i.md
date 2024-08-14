@@ -72,3 +72,34 @@ class Solution:
 
         return ans % MOD
 ```
+
+對於 Q4 更大的測資則會超時，得想辦法優化。  
+首先改寫成遞推。  
+
+```python
+MOD = 10 ** 9 + 7
+class Solution:
+    def countOfPairs(self, nums: List[int]) -> int:
+        N = len(nums)
+        MX = max(nums) + 1
+        f = [[0] * MX for _ in range(N + 1)]
+        for prev2 in range(MX):
+            f[N][prev2] = 1
+
+        for i in reversed(range(1, N)):
+            x = nums[i]
+            for prev2 in range(nums[i-1] + 1):
+                prev1 = nums[i-1] - prev2
+                res = 0
+                for curr2 in range(min(prev2, x) + 1):
+                    curr1 = x - curr2
+                    if curr1 >= prev1:
+                        res += f[i+1][curr2]
+                f[i][prev2] = res % MOD
+
+        ans = 0
+        for curr2 in range(nums[0] + 1):
+            ans += f[1][curr2]
+
+        return ans % MOD
+```
