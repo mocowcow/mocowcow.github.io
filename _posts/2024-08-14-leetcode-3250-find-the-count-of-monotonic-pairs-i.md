@@ -119,6 +119,9 @@ class Solution:
 
 他們的轉移來源幾乎是相同的，而且只增不減，故可用**前綴和**進行優化，每次轉移只需要 O(1)。  
 
+時間複雜度 O(N \* M)，其中 M = max(nums)。  
+空間複雜度 O(N \* M)。  
+
 ```python
 MOD = 10 ** 9 + 7
 class Solution:
