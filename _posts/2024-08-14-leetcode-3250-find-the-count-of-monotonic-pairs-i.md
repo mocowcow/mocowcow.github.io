@@ -42,7 +42,7 @@ weekly contest 410。
 base：i = N 時，已經全部填完，回傳 1。  
 
 i = 0 的位置並沒有受到任何限制，隨便填什麼都可以。  
-因此答案為 sum(dp(1, curr2)) FOR ALL 0 <= curr2 <= nums[0]
+因此答案為 sum(dp(1, curr2)) FOR ALL 0 <= curr2 <= nums[0]。  
 
 時間複雜度 O(N \* M^2)，其中 M = max(nums)。  
 空間複雜度 O(N \* M)。  
@@ -142,14 +142,54 @@ class Solution:
                 # update prefix sum
                 if curr2 <= prev2 and curr1 >= prev1:
                     ps += f[i+1][curr2]
-                    ps %= MOD
                     curr2 += 1
                     curr1 -= 1
-                f[i][prev2] = ps
+                f[i][prev2] = ps % MOD
 
         ans = 0
         for curr2 in range(nums[0] + 1):
             ans += f[1][curr2]
+
+        return ans % MOD
+```
+
+上面方法的狀態是紀錄**前一個填什麼**，來枚舉當前可以填什麼。  
+也可以換個角度，用狀態表示**當前填什麼**，可以從前一個位置哪些值轉移而來。  
+
+定義 dp(i, curr2)：在 arr2[i] 的值為 curr2 時，使得子陣列 [i..N-1] 滿足**單調**的填法數量。  
+轉移：dp(i, curr2) = sum(dp(i+1, prev2)) FOR ALL (prev1 <= curr1 且 prev2 >= curr2)  
+base：i = N-1 時，已經確定填 curr2，故回傳 1。  
+
+因此答案為 sum(dp(0, curr2)) FOR ALL 0 <= curr2 <= nums[0]。  
+
+時間複雜度 O(N \* M)，其中 M = max(nums)。  
+空間複雜度 O(N \* M)。  
+
+```python
+MOD = 10 ** 9 + 7
+class Solution:
+    def countOfPairs(self, nums: List[int]) -> int:
+        N = len(nums)
+        MX = max(nums)
+        f = [[0] * (MX+1) for _ in range(N)]
+        for curr2 in range(MX+1):
+            f[-1][curr2] = 1
+
+        for i in reversed(range(N-1)):
+            prev2 = 0
+            prev1 = nums[i+1]
+            ps = 0
+            for curr2 in range(nums[i]+1):
+                curr1 = nums[i] - curr2
+                if curr1 <= prev1 and curr2 >= prev2:
+                    ps += f[i+1][prev2]
+                    prev2 += 1
+                    prev1 -= 1
+                f[i][curr2] = ps % MOD
+
+        ans = 0
+        for curr2 in range(nums[0]+1):
+            ans += f[0][curr2]
 
         return ans % MOD
 ```
