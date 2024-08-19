@@ -38,3 +38,28 @@ class Solution:
 
         return ans
 ```
+
+當我們枚舉固定長度的子字串時，每次只會加入一個新的、刪去一個舊的。  
+因此枚舉窗口大小 sz，並搭配**滑動窗口**維護 0,1 的個數。  
+
+時間複雜度 O(N^2)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def countKConstraintSubstrings(self, s: str, k: int) -> int:
+        N = len(s)
+        ans = 0
+        for sz in range(1, N+1):
+            left = 0
+            cnt = [0, 0]
+            for right, x in enumerate(s):
+                cnt[ord(x) - ord('0')] += 1
+                if right - left + 1 == sz:
+                    if min(cnt) <= k:
+                        ans += 1
+                    cnt[ord(s[left]) - ord('0')] -= 1
+                    left += 1
+
+        return ans
+```
