@@ -74,3 +74,25 @@ class Solution:
 
         return max(f[0][0], f[0][1])
 ```
+
+注意到 dp[i] 只會參考到 dp[i+1] 和 dp[i+2]。  
+因此只需要保留前兩次的狀態，可以使用滾動陣列優化。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def maxEnergyBoost(self, energyDrinkA: List[int], energyDrinkB: List[int]) -> int:
+        N = len(energyDrinkA)
+        a = [energyDrinkA, energyDrinkB]
+
+        f1, f2 = [0]*2, [0]*2
+        for i in reversed(range(N)):
+            f0 = [0]*2
+            for typ in range(2):
+                f0[typ] = max(f1[typ], f2[typ^1]) + a[typ][i]
+            f1, f2 = f0, f1
+
+        return max(f1)
+```
