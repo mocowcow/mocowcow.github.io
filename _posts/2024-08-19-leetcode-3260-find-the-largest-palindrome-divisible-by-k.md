@@ -44,12 +44,14 @@ weekly contest 411。
 
 ---
 
-定義 dp(i, mod)：當前餘數為 mod 時，試填 ans[i] 和 ans[n-1-i] 是否合法。  
+定義 dp(i, mod)：當前餘數為 mod 時，試填 ans[i..n-i-1] 的數位，是否存在合法答案。  
 轉移：dp(i, mod) = any(dp(i+1, (mod+x) % k)) WHERE 0 <= x <= 9。  
 base：當 i = ceil(n/2) 時，數字已填完。若餘數為 0 則回傳 true；否則回傳 false。  
 
 時間複雜度 O(nkD)，其中 D = 10 種數字。  
 空間複雜度 O(nk)。  
+
+注意：在計算 ans[i] 和 ans[n-1-i] 對餘數的貢獻時，若 i 正好是奇數的中心位置，需要特判避免重複計算。  
 
 ```python
 class Solution:
