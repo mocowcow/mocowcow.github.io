@@ -55,3 +55,22 @@ class Solution:
             dp(0, 1)
         )
 ```
+
+改寫成遞推。  
+
+```python
+class Solution:
+    def maxEnergyBoost(self, energyDrinkA: List[int], energyDrinkB: List[int]) -> int:
+        N = len(energyDrinkA)
+        a = [energyDrinkA, energyDrinkB]
+
+        f = [[0]*2 for _ in range(N+2)]
+        for i in reversed(range(N)):
+            for typ in range(2):
+                f[i][typ] = max(
+                    f[i+1][typ],
+                    f[i+2][typ^1]
+                ) + a[typ][i]
+
+        return max(f[0][0], f[0][1])
+```
