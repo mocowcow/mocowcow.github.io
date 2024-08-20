@@ -51,14 +51,22 @@ class Solution:
         N = len(s)
         ans = 0
         for sz in range(1, N+1):
-            left = 0
-            cnt = [0, 0]
+            left = cnt1 = cnt0 = 0
             for right, x in enumerate(s):
-                cnt[ord(x) - ord("0")] += 1
+                # expand right bound
+                if x == "1":
+                    cnt1 += 1
+                else:
+                    cnt0 += 1
+
                 if right - left + 1 == sz:
-                    if min(cnt) <= k:
+                    if min(cnt0, cnt1) <= k:
                         ans += 1
-                    cnt[ord(s[left]) - ord("0")] -= 1
+                    # shrink left bound
+                    if s[left] == "1":
+                        cnt1 -= 1 
+                    else:
+                        cnt0 -= 1
                     left += 1
 
         return ans
@@ -75,13 +83,21 @@ class Solution:
 class Solution:
     def countKConstraintSubstrings(self, s: str, k: int) -> int:
         ans = 0
-        left = 0
-        cnt = [0, 0]
+        left = cnt1 = cnt0 = 0
         for right, x in enumerate(s):
-            cnt[ord(x) - ord("0")] += 1
-            while min(cnt) > k:
-                    cnt[ord(s[left]) - ord("0")] -= 1
-                    left += 1
+            # expand right bound
+            if x == "1":
+                cnt1 += 1
+            else:
+                cnt0 += 1
+
+            # shrink left bound
+            while min(cnt0, cnt1) > k:
+                if s[left] == "1":
+                    cnt1 -= 1 
+                else:
+                    cnt0 -= 1
+                left += 1
             ans += right - left + 1
 
         return ans
