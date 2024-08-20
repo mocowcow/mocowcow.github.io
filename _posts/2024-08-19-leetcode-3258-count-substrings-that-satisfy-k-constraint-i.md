@@ -54,12 +54,33 @@ class Solution:
             left = 0
             cnt = [0, 0]
             for right, x in enumerate(s):
-                cnt[ord(x) - ord('0')] += 1
+                cnt[ord(x) - ord("0")] += 1
                 if right - left + 1 == sz:
                     if min(cnt) <= k:
                         ans += 1
-                    cnt[ord(s[left]) - ord('0')] -= 1
+                    cnt[ord(s[left]) - ord("0")] -= 1
                     left += 1
+
+        return ans
+```
+
+若某字串是 **k 約束**的，其子字串肯定也是。  
+其實只需要枚舉索引作為右端點 right，並找出其最遠的左端點 left。  
+對於 right 來說，區間 [left, right] 都可以作為合法的左端點，因此對答案貢獻 right - left + 1 個。  
+
+```python
+class Solution:
+    def countKConstraintSubstrings(self, s: str, k: int) -> int:
+        N = len(s)
+        ans = 0
+        left = 0
+        cnt = [0, 0]
+        for right, x in enumerate(s):
+            cnt[ord(x) - ord("0")] += 1
+            while min(cnt) > k:
+                    cnt[ord(s[left]) - ord("0")] -= 1
+                    left += 1
+            ans += right - left + 1
 
         return ans
 ```
