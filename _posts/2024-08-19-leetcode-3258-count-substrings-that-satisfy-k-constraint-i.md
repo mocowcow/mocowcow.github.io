@@ -68,10 +68,12 @@ class Solution:
 其實只需要枚舉索引作為右端點 right，並找出其最遠的左端點 left。  
 對於 right 來說，區間 [left, right] 都可以作為合法的左端點，因此對答案貢獻 right - left + 1 個。  
 
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
 ```python
 class Solution:
     def countKConstraintSubstrings(self, s: str, k: int) -> int:
-        N = len(s)
         ans = 0
         left = 0
         cnt = [0, 0]
