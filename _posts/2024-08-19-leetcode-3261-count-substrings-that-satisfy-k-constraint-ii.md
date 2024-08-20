@@ -39,7 +39,7 @@ Q1 最優解，對於一個固定的範圍 s[0..N-1] 可以達到 O(N) 的時間
 找到距離 right 最遠的左端點 left 後，[left..right] 區間的每個位置都貢獻一個答案，因此將 [left..right] 區間都加 1。  
 之後查詢再填入 [ql..right] 的加總即可。  
 
-時間複雜度 O(N + Q log N)。  
+時間複雜度 O((N + Q) log N)。  
 空間複雜度 O(N + Q)。  
 
 ```python
