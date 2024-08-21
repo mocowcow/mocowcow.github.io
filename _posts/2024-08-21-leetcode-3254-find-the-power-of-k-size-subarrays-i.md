@@ -29,13 +29,13 @@ biweekly contest 137。
 class Solution:
     def resultsArray(self, nums: List[int], k: int) -> List[int]:
         N = len(nums)
-        ans = [-1] * (N-k+1)
-        for i in range(N-k+1):
-            for j in range(i+1, i+k):
-                if nums[j] != nums[j-1]+1:
+        ans = [-1] * (N - k + 1)
+        for i in range(N - k + 1):
+            for j in range(i + 1, i + k):
+                if nums[j] != nums[j - 1] + 1:
                     break
             else:
-                ans[i] = nums[i+k-1]
+                ans[i] = nums[i + k - 1]
 
         return ans
 ```
