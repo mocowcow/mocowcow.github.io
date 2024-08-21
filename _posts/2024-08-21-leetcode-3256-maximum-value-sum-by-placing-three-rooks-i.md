@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3256. Maximum Value Sum by Placing Three Rooks I
-tags        : LeetCode Hard
+tags        : LeetCode Hard Matrix Greedy
 ---
 biweekly contest 137。  
 
