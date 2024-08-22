@@ -45,23 +45,20 @@ class Solution:
     def maximumValueSum(self, board: List[List[int]]) -> int:
         M, N = len(board), len(board[0])
 
-        def get_large3(row):
+        def get_top3(row):
             pairs = [[row[j], j] for j in range(N)]
             return nlargest(3, pairs)
 
         ans = -inf
-        rows = [get_large3(row) for row in board]
+        rows = [get_top3(row) for row in board]
         for r1 in range(M):
             for r2 in range(r1 + 1, M):
                 for r3 in range(r2 + 1, M):
                     for v1, c1 in rows[r1]:
                         for v2, c2 in rows[r2]:
-                            if c1 == c2:
-                                continue
                             for v3, c3 in rows[r3]:
-                                if c1 == c3 or c2 == c3:
-                                    continue
-                                ans = max(ans, v1 + v2 + v3)
+                                if c1 != c2 and c1 != c3 and c2 != c3:
+                                    ans = max(ans, v1 + v2 + v3)
 
         return ans
 ```
