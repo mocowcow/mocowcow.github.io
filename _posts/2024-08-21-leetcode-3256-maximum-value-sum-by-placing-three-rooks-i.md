@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3256. Maximum Value Sum by Placing Three Rooks I
-tags        : LeetCode Hard Matrix
+tags        : LeetCode Hard Matrix PrefixSum
 ---
 biweekly contest 137。  
 
@@ -59,6 +59,63 @@ class Solution:
                             for v3, c3 in rows[r3]:
                                 if c1 != c2 and c1 != c3 and c2 != c3:
                                     ans = max(ans, v1 + v2 + v3)
+
+        return ans
+```
+
+Q4 加大測資範圍到 M = N = 500。
+比較尷尬的是 C++ 可以用上述方法通過，大部分語言不行。  
+
+基於上述做法繼續優化。  
+當中心列是 r2 時，在 r2 上方的所有格子中，哪些可能會被選中？  
+同樣還是**前三大的元素**。  
+但有些微差異，如果三個都在同一行，根本沒意義。所以是**行數不重複**的前三大的元素。  
+r2 下方同理。  
+
+---
+
+為了知道某列上下方的最大值，可以做**前後綴分解**，分別預處理前綴、後綴和最大值。  
+之後枚舉中間列 r2 的所有元素，然後枚舉前後綴中前三大元素，若合法則更新答案。  
+
+時間複雜度 O(MN)。  
+空間複雜度 O(MN)。  
+
+```python
+INIT = [(-inf, -1) for _ in range(3)]  # (val, col)
+class Solution:
+    def maximumValueSum(self, board: List[List[int]]) -> int:
+        M, N = len(board), len(board[0])
+
+        def update(top3, row):
+            for col, val in enumerate(row):
+                for k in range(3):
+                    if val > top3[k][0]:
+                        # must not have same col to previous val
+                        for p in range(k):
+                            if top3[p][1] == col:
+                                break
+                        else:  # all col different
+                            top3[k], (val, col) = (val, col), top3[k]
+
+        top3 = INIT[:]
+        pref = [None] * M
+        for i, row in enumerate(board):
+            update(top3, row)
+            pref[i] = top3[:]
+
+        top3 = INIT[:]
+        suff = [None] * M
+        for i in reversed(range(M)):
+            update(top3, board[i])
+            suff[i] = top3[:]
+
+        ans = -inf
+        for r2 in range(1, M-1):
+            for c2, v2 in enumerate(board[r2]):
+                for v1, c1 in pref[r2-1]:
+                    for v3, c3 in suff[r2+1]:
+                        if c1 != c2 and c1 != c3 and c2 != c3:
+                            ans = max(ans, v1+v2+v3)
 
         return ans
 ```
