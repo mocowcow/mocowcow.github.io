@@ -40,3 +40,46 @@ class Solution:
 
         return ans
 ```
+
+上面方法會對同一個 nums[i] 重複處理好幾次，不太有效率。  
+每個元素是否能只處理一次？  
+試著從左到右枚舉 nums[j]，暴力生成所有交換方式，並檢查是否存在於先前處理過的 nums[i] 之中。  
+
+注意先前提過的**前導零**問題，因此必需先排序，以利較小的元素優先處理。  
+
+時間複雜度 O(N log N + N (log MX)^3)，其中 MX = max(nums)。  
+空間複雜度 O(N + (log MX)^2)。  
+
+```python
+class Solution:
+    def countPairs(self, nums: List[int]) -> int:
+        nums.sort()
+        ans = 0
+        d = Counter()
+        for x in nums:
+            for pat in all_pattern(x):
+                ans += d[pat]
+            d[x] += 1
+
+        return ans
+
+
+def all_pattern(x):
+    a = list(str(x))
+    sz = len(a)
+    res = {x}  # no swap
+
+    def swap(i, j):
+        a[i], a[j] = a[j], a[i]
+
+    def build():
+        res.add(int("".join(a)))
+
+    # 1 swap
+    for i in range(sz):
+        for j in range(i + 1, sz):
+            swap(i, j)
+            build()
+            swap(i, j)
+    return res
+```
