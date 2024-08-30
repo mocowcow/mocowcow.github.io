@@ -27,7 +27,7 @@ tags        : LeetCode Hard Array Graph
 - 將特殊邊最大化成2e9，最短路不足target，不可能再將最短路增加  
 ![示意圖](/assets/img/2699-2.jpg)  
 
-先跑一次dijkstra，把所有特殊邊都設成1，不足直接回傳空陣列。  
+先跑一次dijkstra，把所有特殊邊都設成1，若超過target則直接回傳空陣列。  
 然後跑第二次dijkstra，根據第一次所算出的各點最短路徑dis1，來計算出可以把特殊邊改多大的值。  
 如果改完還是不足target，一樣回傳空陣列；否則將沒用到的特殊邊改成任意值，回傳edges。  
 
