@@ -24,8 +24,8 @@ tags        : LeetCode Hard Array Graph
 
 - 將特殊邊最小化成1，最短路超過target，不可能再將最短路縮短  
 ![示意圖](/assets/img/2699-1.jpg)  
-- 將特殊邊最大化成2e9，最短路不足target，可能能再將最短路增加  
-![示意圖](/assets/img/2699-1.jpg)  
+- 將特殊邊最大化成2e9，最短路不足target，不可能再將最短路增加  
+![示意圖](/assets/img/2699-2.jpg)  
 
 先跑一次dijkstra，把所有特殊邊都設成1，不足直接回傳空陣列。  
 然後跑第二次dijkstra，根據第一次所算出的各點最短路徑dis1，來計算出可以把特殊邊改多大的值。  
