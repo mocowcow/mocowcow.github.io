@@ -85,3 +85,30 @@ class Solution:
 
         return ans
 ```
+
+有些大膽的朋友會發現，比較公式可以移項：  
+> t1d2 < t2d1  
+> t1/d1 < d2/d2  
+
+這樣不就可以使用 d/t 作為 key function？沒錯！  
+正好本題測資範圍不夠大，不會有浮點數精度誤差。  
+
+d/t 越大，代表著**傷害高、血又少**，應當優先處理。  
+
+```python
+class Solution:
+    def minDamage(self, power: int, damage: List[int], health: List[int]) -> int:
+        a = []
+        for d, h in zip(damage, health):
+            t = (h + power - 1) // power
+            a.append([t, d])
+
+        a.sort(key=lambda x:-x[1]/x[0])
+        tot = sum(damage)
+        ans = 0
+        for t, d in a:
+            ans += tot * t
+            tot -= d
+
+        return ans
+```
