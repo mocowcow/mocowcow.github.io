@@ -36,3 +36,22 @@ class Solution:
 
         return int("".join(ans))
 ```
+
+也可以不轉成字串，直接操作整數，達到真正意義上的 O(1) 空間。  
+
+時間複雜度 O(1)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def generateKey(self, num1: int, num2: int, num3: int) -> int:
+        a = [num1, num2, num3]
+        mult = 1
+        ans = 0
+        for _ in range(4):
+            t = min(x // mult % 10 for x in a)
+            ans += t * mult
+            mult *= 10
+
+        return ans
+```
