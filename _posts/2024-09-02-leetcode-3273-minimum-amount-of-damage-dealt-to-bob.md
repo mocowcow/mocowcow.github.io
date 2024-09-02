@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3273. Minimum Amount of Damage Dealt to Bob
-tags        : LeetCode Hard
+tags        : LeetCode Hard Greedy Sorting
 ---
 biweekly contest 138。非常妙的題，答案很好猜，但卻不好證明。  
 
@@ -52,3 +52,36 @@ Bob 有 n 個敵人，其中敵人 i 若存活 (health[i] > 0)，則每秒對 Bo
 > t2d3 < t3d2  
 
 發現只需要套相同公式比較敵人 2, 3，本質上就是**對所有敵人一起排序**。  
+
+---
+
+對於 python3 來說，sort 常用的 key function 只能接收單一元素，無法自定義比較兩個元素。  
+因此需要額外維護排序函數，並透過 functools.cmp_to_key(func) 轉換成 key function。  
+
+排序後，模擬受到的傷害值即可。  
+
+時間複雜度 O(N log N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def minDamage(self, power: int, damage: List[int], health: List[int]) -> int:
+        a = []
+        for d, h in zip(damage, health):
+            t = (h + power - 1) // power
+            a.append([t, d])
+
+        def cmp(a, b):
+            t1, d1 = a
+            t2, d2 = b
+            return t1 * d2 - t2 * d1
+
+        a.sort(key=cmp_to_key(cmp))
+        tot = sum(damage)
+        ans = 0
+        for t, d in a:
+            ans += tot * t
+            tot -= d
+
+        return ans
+```
