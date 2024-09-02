@@ -74,7 +74,7 @@ class Solution:
         def cmp(a, b):
             t1, d1 = a
             t2, d2 = b
-            return t1 * d2 - t2 * d1
+            return t1 * d2 - t2 * d1  # t1 * d2 <  t2 * d1
 
         a.sort(key=cmp_to_key(cmp))
         tot = sum(damage)
