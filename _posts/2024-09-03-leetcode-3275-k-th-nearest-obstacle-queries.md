@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3275. K-th Nearest Obstacle Queries
-tags        : LeetCode Medium SortedList
+tags        : LeetCode Medium SortedList Heap
 ---
 weekly contest 413。  
 
@@ -41,6 +41,30 @@ class Solution:
                 ans.append(-1)
             else:
                 ans.append(sl[k - 1])
+
+        return ans
+```
+
+其實出題者想考的應該是 heap 的經典應用。  
+維護大小為 k 的 max heap，則頂端就是第 k 小的元素。  
+
+時間複雜度 O(N log k)。  
+空間複雜度 O(k)。  
+
+```python
+class Solution:
+    def resultsArray(self, queries: List[List[int]], k: int) -> List[int]:
+        ans = []
+        h = []
+        for x, y in queries:
+            dist = abs(x) + abs(y)
+            heappush(h, -dist)
+            if len(h) > k:
+                heappop(h)
+            if len(h) < k:
+                ans.append(-1)
+            else:
+                ans.append(-h[0])
 
         return ans
 ```
