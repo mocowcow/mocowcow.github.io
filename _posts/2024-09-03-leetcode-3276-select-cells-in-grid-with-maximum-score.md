@@ -40,7 +40,7 @@ base：當 i>MX 時，超過有效值域，回傳 0。
 答案入口為 dp(1, 0)。  
 
 時間複雜度 O(MN \* 2^M)。  
-空間複雜度 O(MX \* 2^M)，其中 MX = max(grid[i][j])。  
+空間複雜度 O(MN + MX \* 2^M)，其中 MX = max(grid[i][j])。  
 
 ```python
 MX = 100
@@ -96,4 +96,38 @@ class Solution:
                 f[i][mask] = res
 
         return f[1][0]
+```
+
+如果 grid[i][j] 的值域更加離散，要不就是做**離散化**，或是改用雜湊表來維護值域對應的列號。  
+
+再加上 dp(i) 只需要從固定其中一個不等於 i 的值域 j 轉移而來，其中 i, j 大小關係不重要。  
+因此可以滾動陣列，壓縮掉一個空間維度。  
+時間複雜度 O(MN \* 2^M)。  
+空間複雜度 O(MN + 2^M)。  
+
+```python
+class Solution:
+    def maxScore(self, grid: List[List[int]]) -> int:
+        M, N = len(grid), len(grid[0])
+        d = defaultdict(list)
+        for r in range(M):
+            for c in range(N):
+                x = grid[r][c]
+                d[x].append(r)
+
+        mask_sz = 1 << M
+        f0 = [0] * mask_sz
+        for i in d:
+            f1 = [0] * mask_sz
+            for mask in range(mask_sz):
+                res = f0[mask]
+                for r in d[i]:
+                    if mask & (1 << r) != 0:
+                        continue
+                    new_mask = mask | (1 << r)
+                    res = max(res, f0[new_mask] + i)
+                f1[mask] = res
+            f0 = f1
+
+        return f0[0]
 ```
