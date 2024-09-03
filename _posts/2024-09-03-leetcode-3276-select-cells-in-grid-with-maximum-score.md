@@ -67,3 +67,33 @@ class Solution:
 
         return dp(1, 0)
 ```
+
+改成遞推寫法。  
+注意：最大值 MX = 100，還要考慮到 base case = 101。  
+因此陣列要開 102 = MX + 2，枚舉也是從 MX 開始。  
+
+```python
+MX = 100
+class Solution:
+    def maxScore(self, grid: List[List[int]]) -> int:
+        M, N = len(grid), len(grid[0])
+        d = defaultdict(list)
+        for r in range(M):
+            for c in range(N):
+                x = grid[r][c]
+                d[x].append(r)
+
+        mask_sz = 1 << M
+        f = [[0] * mask_sz for _ in range(MX + 2)]
+        for i in reversed(range(1, MX + 1)):
+            for mask in range(mask_sz):
+                res = f[i + 1][mask]
+                for r in d[i]:
+                    if mask & (1 << r) != 0:
+                        continue
+                    new_mask = mask | (1 << r)
+                    res = max(res, f[i + 1][new_mask] + i)
+                f[i][mask] = res
+
+        return f[1][0]
+```
