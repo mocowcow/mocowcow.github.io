@@ -34,7 +34,7 @@ weekly contest 413。
 轉移：dp(i, mask) = max(選, 不選)。  
     - 不選：dp(i+1, mask)。  
     - 選：max(dp(i+1, new_mask) + i)，其中 new_mask = mask | (1<<r)，且第 r 列未選過。  
-base：當 i>100 時，超過有效值域，回傳 0。  
+base：當 i>MX 時，超過有效值域，回傳 0。  
 
 先遍歷一次 grid，將所有格子的列號依照值域來分組。  
 答案入口為 dp(1, 0)。  
@@ -43,11 +43,11 @@ base：當 i>100 時，超過有效值域，回傳 0。
 空間複雜度 O(MX \* 2^M)，其中 MX = max(grid[i][j])。  
 
 ```python
-MX = 101
+MX = 100
 class Solution:
     def maxScore(self, grid: List[List[int]]) -> int:
         M, N = len(grid), len(grid[0])
-        d = [[] for _ in range(MX)]
+        d = [[] for _ in range(MX + 1)]
         for r in range(M):
             for c in range(N):
                 x = grid[r][c]
@@ -55,7 +55,7 @@ class Solution:
 
         @cache
         def dp(i, mask):
-            if i > 100:
+            if i > MX:
                 return 0
             res = dp(i + 1, mask)
             for r in d[i]:
