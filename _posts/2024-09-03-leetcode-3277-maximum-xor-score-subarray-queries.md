@@ -58,3 +58,52 @@ weekly contest 413。看到位運算我就往**拆位**的方向去思考。方�
 BASE：當 i = j 時，答案為 nums[i]。  
 
 這部分複雜度是 O(N^2)。  
+
+---
+
+但別忘記一開始說的小陷阱。
+查詢是要問 nums[l..r] 的任意**子陣列**的最大分數。  
+
+nums[i..j] 的子陣列可以由 nums[i+1..j], nums[i..j-1] 的子陣列**聯集**而成，再加上新產生的 score[i..j]。  
+還是**重疊的子問題**，再次 dp。  
+
+定義 mx(i, j)： nums[i..j] 的**子陣列的最大分數**。  
+轉移：mx(i, j) = max(
+    mx(i+1, j),
+    mx(i, j-1),
+    score(i, j)
+)  
+BASE：當 i = j 時，答案為 nums[i]。
+
+轉移時多一個來源，但複雜度還是 O(N^2)。  
+
+---
+
+處理完兩次 dp 後，只需要按照查詢範圍回答 mx[l][r] 即可。  
+
+時間複雜度 O(N^2)。  
+空間複雜度 O(N^2)，答案空間不計入。  
+
+```python
+class Solution:
+    def maximumSubarrayXor(self, nums: List[int], queries: List[List[int]]) -> List[int]:
+        N = len(nums)
+
+        score = [[0] * N for _ in range(N)]
+        mx = [[0] * N for _ in range(N)]
+        for i in range(N):
+            score[i][i] = nums[i]
+            mx[i][i] = nums[i]
+
+        # score of nums[i..j]
+        for i in reversed(range(N)):
+            for j in range(i + 1, N):
+                score[i][j] = score[i + 1][j] ^ score[i][j - 1]
+
+        # max score of subarrays of nums[i..j]
+        for i in reversed(range(N)):
+            for j in range(i + 1, N):
+                mx[i][j] = max(score[i][j], mx[i + 1][j], mx[i][j - 1])
+
+        return [mx[l][r] for l, r in queries]
+```
