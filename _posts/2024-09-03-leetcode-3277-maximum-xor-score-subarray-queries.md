@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3277. Maximum XOR Score Subarray Queries
-tags        : LeetCode Hard
+tags        : LeetCode Hard DP BitManipulation
 ---
 weekly contest 413。看到位運算我就往**拆位**的方向去思考。方向錯誤當然是沒想出答案。  
 
@@ -83,6 +83,33 @@ BASE：當 i = j 時，答案為 nums[i]。
 
 時間複雜度 O(N^2)。  
 空間複雜度 O(N^2)，答案空間不計入。  
+
+注意：本題測資有點大，記憶化寫法會 TLE / MLE，似乎只有遞推可以過。  
+
+```python
+class Solution:
+    def maximumSubarrayXor(self, nums: List[int], queries: List[List[int]]) -> List[int]:
+
+        @cache
+        def score(i, j): # score of nums[i..j]
+            if i == j:
+                return nums[i]
+            return score(i, j - 1) ^ score(i + 1, j)
+
+        @cache
+        def mx(i, j): # max score of subarrays of nums[i..j]
+            if i == j:
+                return nums[i]
+            return max(
+                mx(i, j - 1),
+                mx(i + 1, j),
+                score(i, j)
+            )
+
+        return [mx(l, r) for l, r in queries]
+```
+
+改寫成遞推版本。  
 
 ```python
 class Solution:
