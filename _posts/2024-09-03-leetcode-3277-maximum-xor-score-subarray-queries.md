@@ -49,3 +49,12 @@ weekly contest 413。看到位運算我就往**拆位**的方向去思考。方�
 發現 score[a,b,c,d,e] 確實是由 score[a,b,c,d] 和 score[b,c,d,e] 拼起來的。  
 大膽假設 score[i..j] 的是由 score[i+1..j] 和 score[i..j-1] 所組成。  
 直到子陣列長度為 1 時，分數就是元素自己本身。  
+
+---
+
+上面規出的規律有許多**重疊的子問題**，因此考慮 dp。  
+定義 score(i, j)： nums[i..j] 的分數。  
+轉移：score(i, j) = score(i+1, j) ^ score(i, j-1)。  
+BASE：當 i = j 時，答案為 nums[i]。  
+
+這部分複雜度是 O(N^2)。  
