@@ -23,28 +23,29 @@ weekly contest 413。看到位運算我就往**拆位**的方向去思考。方�
 老實說這題還真有點小陷阱，查詢是找 nums 的**子陣列的子陣列**的最大分數，而不是固定範圍的 nums[l..r]。  
 
 先手玩幾個例子看有沒有規律。  
-以下 (a3) 符號代表有三個元素 a 做 XOR 的總和。  
+以下 (x3) 符號代表有三個元素 x 做 XOR 的總和。  
 先看三個元素：  
-> [a,b,c]  
+> score[a,b,c]  
 > 操作 1 次 = [ab, bc]  
 > 操作 2 次 = [a(2b)c]  
 
 再試試看四個元素：  
-> [a,b,c,d]  
+> score[a,b,c,d]  
 > 操作 1 次 = [ab, bc, cd]  
 > 操作 2 次 = [a(2b)c, b(2c)d]  
 > 操作 3 次 = [a(3b)(3c)d]  
 
-發現 a(2b)c 這東西好像很眼熟，不就是 [a,b,c] 的分數嗎？  
-那 b(2c)d 應該是 [b,c,d] 的分數。  
-感覺 [a,b,c,d] 好像是由 [a,b,c] 和 [b,c,d] 拼起來的。  
+發現 a(2b)c 這東西好像很眼熟，不就是 score[a,b,c] 嗎？  
+那 b(2c)d 應該是 score[b,c,d] 。  
+感覺 score[a,b,c,d] 好像是由 score[a,b,c] 和 score[b,c,d] 拼起來的。  
 
 再看看五個元素：  
-> [a,b,c,d,e]  
+> score[a,b,c,d,e]  
 > 操作 1 次 = [ab, bc, cd, de]  
 > 操作 2 次 = [a(2b)c, b(2c)d, c(2d)e]  
 > 操作 3 次 = [a(3b)(3c)d, b(3c)(3d)e]  
 > 操作 4 次 = [a(4b)(6c)(4d)e]  
 
-發現 [a,b,c,d,e] 確實是由 [a,b,c,d] 和 [b,c,d,e] 拼起來的。  
-大膽假設 nums[i..j] 的分數是由 nums[i+1..j] 和 nums[i..j-1] 所組成。  
+發現 score[a,b,c,d,e] 確實是由 score[a,b,c,d] 和 score[b,c,d,e] 拼起來的。  
+大膽假設 score[i..j] 的是由 score[i+1..j] 和 score[i..j-1] 所組成。  
+直到子陣列長度為 1 時，分數就是元素自己本身。  
