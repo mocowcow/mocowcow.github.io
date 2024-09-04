@@ -42,3 +42,58 @@ biweekly contest 138。有高手打出 10\*9 的表，直接 O(1) 回答，太�
 
 為了避免重複計算，需要統計回文數中每個**數字的出現頻率**，重複出現就跳過。  
 此處選擇將回文轉成字串後**排序**。  
+
+---
+
+第二個問題是老朋友：**前導零**。  
+
+在 n 個數字中，有 cnt0 個 0。  
+則第一個數可以選 **0 以外的數字**，有 (n - cnt0) 種選法。  
+之後剩下 n-1 個數字，反正已經確定沒有前導零了，所以隨便填什麼都可以，有 (n-1)! 種選法。  
+
+每個數字可能出現多次，是**不盡相異物**。所以每種數字的出現次數 freq 都要除 freq!。  
+
+時間複雜度 O(10^m + n log n)，其中 m = ceil(n/2)。  
+空間複雜度 O(10^m \* n)。  
+
+```python
+factorial = cache(factorial)
+class Solution:
+    def countGoodIntegers(self, n: int, k: int) -> int:
+        vis = set()
+        ans = 0
+        for x in get_pal(n):
+            if x % k != 0:
+                continue
+
+            s = "".join(sorted(str(x)))
+            if s in vis:
+                continue
+
+            vis.add(s)
+            d = Counter(s)
+            cnt0 = d["0"]
+            res = (n - cnt0) * factorial(n - 1)
+            for freq in d.values():
+                res //= factorial(freq)
+
+            # update ans
+            ans += res
+
+        return ans
+
+
+def get_pal(n):
+    m = (n + 1) // 2
+    pa = []
+    start, end = 10 ** (m - 1), 10**m
+    for x in range(start, end):
+        left = right = x
+        if n % 2 == 1:  # odd mid
+            right //= 10
+        while right > 0:
+            right, r = divmod(right, 10)
+            left = left * 10 + r
+        pa.append(left)
+    return pa
+```
