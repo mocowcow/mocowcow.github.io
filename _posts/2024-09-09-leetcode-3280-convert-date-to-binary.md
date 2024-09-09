@@ -30,3 +30,11 @@ class Solution:
 
         return "-".join(ss)
 ```
+
+歡樂一行版本。  
+
+```python
+class Solution:
+    def convertDateToBinary(self, date: str) -> str:
+        return "-".join(bin(int(x))[2:] for x in date.split("-"))
+```
