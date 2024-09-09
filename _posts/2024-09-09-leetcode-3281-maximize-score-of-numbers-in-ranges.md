@@ -45,7 +45,7 @@ start 長度上限 1e5，要暴力枚舉肯定不可能。
 若 t 超過 x + d，則不合法，直接回傳 false。  
 若 t 小於 x，下個整數至少要是 x，所以更新 prev = max(t, x)。  
 
-時間複雜度 O(N log MX)，其中 MX = max(start) + d。  
+時間複雜度 O(N log N + N log MX)，其中 MX = max(start) + d。  
 空間複雜度 O(1)。  
 
 ```python
