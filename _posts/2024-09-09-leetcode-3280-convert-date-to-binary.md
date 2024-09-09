@@ -14,3 +14,19 @@ weekly contest 414。
 回傳 date 的二進位格式。  
 
 ## 解法
+
+python 搞這題還真方便，內建 bin 函數就可以把整數轉成二進位字串。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def convertDateToBinary(self, date: str) -> str:
+        ss = date.split("-")
+        for i in range(3):
+            x = int(ss[i])
+            ss[i] = bin(x)[2:]
+
+        return "-".join(ss)
+```
