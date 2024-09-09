@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3282. Reach End of Array With Max Score
-tags        : LeetCode Medium
+tags        : LeetCode Medium Greedy DP
 ---
 weekly contest 414。  
 感覺最近常常出這種直覺秒殺題，如果認真思考反而會掉入陷阱。  
@@ -45,4 +45,35 @@ class Solution:
             return res
 
         return dp(0)
+```
+
+本來以為是需要什麼 dp 優化技巧，想半天都沒想出來，沒辦法把轉移的 O(N) 消掉。  
+該換個角度去思考看看。  
+
+若真的可以 dp 優化，希望知道的同學能告訴我。  
+
+---
+
+仔細研究分數的公式：  
+> (j - i) \* nums[i]  
+
+他所隱含的意思是**跳幾步就得幾個 nums[i] 分**。  
+換句話說，只要找到第一個比 nums[i] 更大的 nums[j]，那麼去了 nums[j] 之後能得更多分。  
+注意：最後一個位置 nums[N-1] 需要特判，無論大小都必需跳。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def findMaximumScore(self, nums: List[int]) -> int:
+        N = len(nums)
+        ans = 0
+        i = 0
+        for j in range(N):
+            if nums[j] > nums[i] or j == N - 1:
+                ans += (j - i) * nums[i]
+                i = j
+
+        return ans
 ```
