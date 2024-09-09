@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3281. Maximize Score of Numbers in Ranges
-tags        : LeetCode Medium
+tags        : LeetCode Medium Sorting Greedy BinarySearch
 ---
 weekly contest 414。  
 
@@ -33,3 +33,43 @@ start 長度上限 1e5，要暴力枚舉肯定不可能。
 絕對差的最小值為 0，下界為 0。  
 在 d = start[i] 上限 1e9 時，所能選擇的最大整數為 2e9，上界為 2e9。  
 若 mid 不合法，嘗試更小的分數，更新上界為 mid - 1；若合法則更新下界為 mid。  
+
+---
+
+至於如何實現 ok(score)？  
+
+首先將 start 區間排序。  
+若前一個選擇的元素是 prev，為了盡可能保留更多彈性空間給後方，下個整數 t 應當貪心地選擇 t = prev + score。  
+
+遍歷 start 中所有區間的起點 x，其可選範圍為 [x, x + d]。  
+若 t 超過 x + d，則不合法，直接回傳 false。  
+若 t 小於 x，下個整數至少要是 x，所以更新 prev = max(t, x)。  
+
+時間複雜度 O(N log MX)，其中 MX = max(start) + d。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def maxPossibleScore(self, start: List[int], d: int) -> int:
+        start.sort()
+
+        def ok(score):
+            prev = -inf
+            for x in start:
+                t = prev + score
+                if t > x + d:
+                    return False
+                prev = max(t, x)
+            return True
+
+        lo = 0
+        hi = 2 * (10 ** 9) # hi = max(start) + d
+        while lo < hi:
+            mid = (lo + hi + 1) // 2
+            if not ok(mid):
+                hi = mid - 1
+            else:
+                lo = mid
+
+        return lo
+```
