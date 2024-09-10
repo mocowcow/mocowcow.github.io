@@ -77,3 +77,21 @@ class Solution:
 
         return ans
 ```
+
+用另外一種角度思考，j 可以從最大的 nums[i] 跳過來。  
+所以只需要維護 nums[i] 的**前綴最大值**即可。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def findMaximumScore(self, nums: List[int]) -> int:
+        ans = 0
+        mx = 0
+        for x in nums:
+            ans += mx
+            mx = max(mx, x)
+            
+        return ans
+```
