@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3283. Maximum Number of Moves to Kill All Pawns
-tags        : LeetCode Hard
+tags        : LeetCode Hard BitManipulation Bitmask DP BFS
 ---
 weekly contest 414。  
 
