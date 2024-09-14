@@ -110,3 +110,62 @@ class Solution:
 
         return dp(N, 0, 1)
 ```
+
+先預處理所有移動距離，複雜度 O(L^4)。  
+只稍微快了一點點。  
+
+時間複雜度 O(N^2 \* 2^N)，預處理不計入。  
+空間複雜度 O(N \* 2^N)，預處理不計入。  
+
+```python
+DIRS = ((2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (1, -2), (2, -1))
+L = 50
+dist = [[[[-1] * L for _ in range(L)] for _ in range(L)] for _ in range(L)]
+
+
+def bfs(px, py):
+    q = [[px, py]]
+    dist[px][py][px][py] = 0
+    step = 1
+    while q:
+        q2 = []
+        for x, y in q:
+            for dx, dy in DIRS:
+                xx, yy = x + dx, y + dy
+                if xx < 0 or xx >= L or yy < 0 or yy >= L or dist[px][py][xx][yy] != -1:
+                    continue
+                q2.append([xx, yy])
+                dist[px][py][xx][yy] = step
+        q = q2
+        step += 1
+    return
+
+
+for px in range(L):
+    for py in range(L):
+        bfs(px, py)
+
+
+class Solution:
+    def maxMoves(self, kx: int, ky: int, positions: List[List[int]]) -> int:
+        N = len(positions)
+        positions.append([kx, ky])
+
+        @ cache
+        def dp(i, mask, is_alice):
+            if mask == (1 << N) - 1:
+                return 0
+            px, py = positions[i]
+            compare = max if is_alice else min  # max for alice, min for bob
+            res = -inf if is_alice else inf
+            for j in range(N):
+                if mask & (1 << j) != 0:
+                    continue
+                x, y = positions[j]
+                new_mask = mask | (1 << j)
+                res = compare(
+                    res, dp(j, new_mask, is_alice ^ 1) + dist[x][y][px][py])
+            return res
+
+        return dp(N, 0, 1)
+```
