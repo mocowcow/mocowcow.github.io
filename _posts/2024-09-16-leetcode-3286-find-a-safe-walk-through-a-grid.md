@@ -4,6 +4,8 @@ title       : LeetCode 3286. Find a Safe Walk Through a Grid
 tags        : LeetCode Medium Graph BFS
 ---
 biweekly contest 139。  
+比賽時馬上連想到相似題 [2290. minimum obstacle removal to reach corner]({% post_url 2022-05-31-leetcode-2290-minimum-obstacle-removal-to-reach-corner %})。  
+隔了兩年還有印象，感覺真不錯。  
 
 ## 題目
 
@@ -30,8 +32,8 @@ biweekly contest 139。
 class Solution:
     def findSafeWalk(self, grid: List[List[int]], health: int) -> bool:
         M, N = len(grid), len(grid[0])
-        dist = [[inf] * N for _ in range(M)]
 
+        dist = [[inf] * N for _ in range(M)]
         dist[0][0] = grid[0][0]
         h = [[grid[0][0], 0, 0]]
         while h:
@@ -48,6 +50,41 @@ class Solution:
                 if new_cost < dist[rr][cc]:
                     dist[rr][cc] = new_cost
                     heappush(h, [new_cost, rr, cc])
+
+        return dist[M-1][N-1] < health
+```
+
+觀察發現 grid 中的權重只有 0 和 1 兩種，可以做 **0-1 bfs**。  
+走到邊權為 0 的相鄰格子時，將其加回隊首；走到不為 0 的相鄰格子則加到對尾。  
+如此可以保證先將較小的路徑處理完，而且比起 heap 更加有效率。  
+
+時間複雜度 O(MN)。  
+空間複雜度 O(MN)。  
+
+```python
+class Solution:
+    def findSafeWalk(self, grid: List[List[int]], health: int) -> bool:
+        M, N = len(grid), len(grid[0])
+
+        dist = [[inf] * N for _ in range(M)]
+        dist[0][0] = grid[0][0]
+        q = deque()
+        q.append([grid[0][0], 0, 0])
+        while q:
+            cost, r, c = q.popleft()
+            if r == M-1 and c == N-1:
+                break
+            for dx, dy in pairwise([0,1,0,-1,0]):
+                rr, cc = r+dx, c+dy
+                if not (0 <= rr < M and 0 <= cc < N):
+                    continue
+                if dist[rr][cc] == inf:
+                    new_cost = cost + grid[rr][cc]
+                    if grid[rr][cc] == 0: # add to head
+                        q.appendleft([new_cost, rr, cc])
+                    else: # add to tail
+                        q.append([new_cost, rr, cc])
+                    dist[rr][cc] = new_cost
 
         return dist[M-1][N-1] < health
 ```
