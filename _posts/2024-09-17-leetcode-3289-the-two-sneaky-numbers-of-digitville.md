@@ -15,10 +15,27 @@ weekly contest 415。
 
 ## 解法
 
-歡樂一行版本。  
+按照題意模擬。  
+維護出現次數，出兩第二次就加入答案。  
 
 時間複雜度 O(N)。  
 空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def getSneakyNumbers(self, nums: List[int]) -> List[int]:
+        s = set()
+        ans = []
+        for x in nums:
+            if x in s:
+                ans.append(x)
+            else:
+                s.add(x)
+
+        return ans
+```
+
+歡樂一行版本。  
 
 ```python
 class Solution:
