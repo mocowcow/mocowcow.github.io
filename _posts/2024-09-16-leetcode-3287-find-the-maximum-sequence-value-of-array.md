@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3287. Find the Maximum Sequence Value of Array
-tags        : LeetCode Hard
+tags        : LeetCode Hard DP PrefixSum BitManipulation
 ---
 biweekly contest 139。  
 
@@ -62,3 +62,49 @@ base：當 i < 0 時，只有 j = 0 一種狀態是 true，即**選擇零個**�
 
 咦只有兩個喔？那剛才轉移 128 個來源是根本在轉辛酸的。  
 這種以當前答案去**更新產生的新狀態**，叫做**刷表法**。  
+
+時間複雜度 O(N \* K \* MX + N \* MX^2)，其中 MX = 2^7。
+空間複雜度 O(N \* K \* MX)。  
+
+```python
+MX = 128
+class Solution:
+    def maxValue(self, nums: List[int], k: int) -> int:
+        N = len(nums)
+
+        pre = [[[False] * MX for _ in range(k + 1)] for _ in range(N + 1)]
+        pre[-1][0][0] = True
+        for i in range(-1, N - 1):
+            x = nums[i + 1]
+            for j in range(k + 1):
+                for v in range(MX):
+                    if pre[i][j][v]:
+                        # no take x
+                        pre[i + 1][j][v] = True 
+                        # take x
+                        if j < k: 
+                            pre[i + 1][j + 1][v | x] = True
+
+        suf = [[[False] * MX for _ in range(k + 1)] for _ in range(N + 1)]
+        suf[N][0][0] = True
+        for i in reversed(range(1, N + 1)):
+            x = nums[i - 1]
+            for j in range(k + 1):
+                for v in range(MX):
+                    if suf[i][j][v]:
+                        # take x
+                        suf[i - 1][j][v] = True
+                        # no take x
+                        if j < k:
+                            suf[i - 1][j + 1][v | x] = True
+
+        ans = 0
+        for i in range(N - 1):
+            for v1 in range(MX):
+                if pre[i][k][v1]:
+                    for v2 in range(MX):
+                        if v1 ^ v2 > ans and suf[i + 1][k][v2]:
+                            ans = v1 ^ v2
+
+        return ans
+```
