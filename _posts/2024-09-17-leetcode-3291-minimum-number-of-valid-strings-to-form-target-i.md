@@ -4,7 +4,7 @@ title       : LeetCode 3291. Minimum Number of Valid Strings to Form Target I
 tags        : LeetCode Medium DP Trie
 ---
 weekly contest 415。  
-這題測資範圍也很神祕，界於一個不知道會不會過的神奇區域。  
+這題測資範圍 N = 5000 也很神祕，猜猜看 O(N^2) 能不能過？  
 
 ## 題目
 
@@ -25,7 +25,7 @@ weekly contest 415。
 時間複雜度 O(N^2 + L)，其中 L = sum(words[i].length)。  
 空間複雜度 O(N + L)。  
 
-跑了 16000ms，有夠驚悚的時間。  
+跑了 16000ms，有夠驚悚的時間，勉強過關。  
 
 ```python
 class Solution:
