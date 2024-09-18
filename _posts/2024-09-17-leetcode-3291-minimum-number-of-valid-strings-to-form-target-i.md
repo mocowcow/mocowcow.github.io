@@ -71,3 +71,17 @@ class Trie:
         for c in s:
             curr = curr.child[c]
 ```
+
+到 Q4 的時候 N = 5e4，字典樹就超時了，得換個方法。  
+相似題原本也有 rolling hash 解法，我就在想這題應該也能用，但沒想出來。  
+
+事實上的確能行，而且是 [45. Jump Game II](https://leetcode.com/problems/jump-game-ii) 的加強版。  
+把 target 當作跳躍遊戲，最初從 target[0] 出發，看能不能跳到 target[N]。  
+
+那麼如何求 target[i] 能夠跳多遠？  
+若 target[i..j] 是某個 word 的**前綴**，則從 i 可以跳到 j+1。  
+但是前綴最多也可以達到 N 個，枚舉肯定不行。  
+
+根據**前綴的特性**，若 target[i..j] 是前綴，那麼更短的 target[i..j-1] 同樣也是前綴。  
+定義 f(j)：判斷 target[i..j] 是否為前綴，則此函數具有**單調性**，可以**二分答案**。  
+對於每個出發點 target[i]，找到滿足 target[i..j] 為前綴的最大的 j，並更新最大跳躍位置為 j+1。  
