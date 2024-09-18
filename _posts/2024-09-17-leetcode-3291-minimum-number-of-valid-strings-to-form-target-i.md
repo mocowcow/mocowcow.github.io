@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3291. Minimum Number of Valid Strings to Form Target I
-tags        : LeetCode Medium DP Trie
+tags        : LeetCode Medium String DP Trie HashTable Greedy
 ---
 weekly contest 415。  
 這題測資範圍 N = 5000 也很神祕，猜猜看 O(N^2) 能不能過？  
@@ -85,3 +85,77 @@ class Trie:
 根據**前綴的特性**，若 target[i..j] 是前綴，那麼更短的 target[i..j-1] 同樣也是前綴。  
 定義 f(j)：判斷 target[i..j] 是否為前綴，則此函數具有**單調性**，可以**二分答案**。  
 對於每個出發點 target[i]，找到滿足 target[i..j] 為前綴的最大的 j，並更新最大跳躍位置為 j+1。  
+
+---
+
+按照跳躍遊戲的方式選擇**使下次跳更遠的點**即可。  
+注意：若無法跳更遠則直接回傳 -1。  
+時間複雜度 O(L + N log N)，其中 L = sum(words[i].length)。  
+空間複雜度 O(L + N)。  
+
+```python
+MOD1 = 1000000901
+MOD2 = 1000015279
+class Solution:
+    def minValidStrings(self, words: List[str], target: str) -> int:
+        N = len(target)
+
+        # get all prefix hash
+        hashes = set()
+        for w in words:
+            dh = DoubleHash(w, MOD1, MOD2)
+            for r in range(len(w)):
+                h = dh.get(0, r)
+                hashes.add(h)
+        
+        def find(i):
+            lo = i - 1
+            hi = N - 1
+            while lo < hi:
+                mid = (lo + hi + 1) // 2
+                if dh.get(i, mid) not in hashes:
+                    hi = mid - 1
+                else:
+                    lo = mid
+            return lo
+
+        dh = DoubleHash(target, MOD1, MOD2)
+        # jump game II
+        ans = 0
+        curr_r = 0
+        next_r = 0
+        for i in range(N):
+            # find longest target[i..j] which is prefix
+            j = find(i)
+            next_r = max(next_r, j + 1)
+            if i == curr_r:
+                if curr_r == next_r:  # cant jump
+                    return -1
+                curr_r = next_r
+                ans += 1
+
+        return ans
+
+
+class RollingHash:
+    def __init__(self, s, mod):
+        self.mod = mod
+        base = 8787
+        ps = self.ps = [0]
+        p = self.p = [1]
+        for c in s:
+            ps.append((ps[-1] * base + ord(c)) % mod)
+            p.append(p[-1] * base % mod)
+
+    def get(self, L, R):
+        return (self.ps[R+1] - self.ps[L] * self.p[R-L+1]) % self.mod
+
+
+class DoubleHash:
+    def __init__(self, s, mod1, mod2):
+        self.h1 = RollingHash(s, mod1)
+        self.h2 = RollingHash(s, mod2)
+
+    def get(self, L, R):
+        return (self.h1.get(L, R), self.h2.get(L, R))
+```
