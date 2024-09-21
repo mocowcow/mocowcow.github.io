@@ -47,3 +47,18 @@ class Solution:
 
         return dp(0)
 ```
+
+改成遞推寫法。  
+
+```python
+class Solution:
+    def jump(self, nums: List[int]) -> int:
+        N = len(nums)
+        f = [inf] * N
+        f[-1] = 0
+        for i in reversed(range(N-1)):
+            for j in range(i+1, min(i+nums[i], N-1) + 1):
+                f[i] = min(f[i], f[j] + 1)
+        
+        return f[0]
+```
