@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 45. Jump Game II
-tags        : LeetCode Medium DP
+tags        : LeetCode Medium DP BFS
 ---
 比賽有碰到這題的強化版，趕快來補題解。  
 
@@ -61,4 +61,32 @@ class Solution:
                 f[i] = min(f[i], f[j] + 1)
         
         return f[0]
+```
+
+另外一種思路是 BFS。  
+從 0 開始跳，紀錄每個索引第一次抵達時花了幾步。  
+
+時間複雜度 O(N \* MX)，其中 MX = max(nums)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def jump(self, nums: List[int]) -> int:
+        N = len(nums)
+        dist = [-1] * N
+        q = deque()
+        q.append(0)
+        step = 0
+        while q:
+            for _ in range(len(q)):
+                i = q.popleft()
+                if dist[i] != -1: # visited
+                    continue
+
+                dist[i] = step
+                for j in range(i+1, min(i+nums[i], N-1) + 1):
+                    q.append(j)
+            step += 1
+
+        return dist[-1]
 ```
