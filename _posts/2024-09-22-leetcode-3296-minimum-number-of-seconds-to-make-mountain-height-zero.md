@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3296. Minimum Number of Seconds to Make Mountain Height Zero
-tags        : LeetCode Medium Math BinarySearch
+tags        : LeetCode Medium Math BinarySearch Heap
 ---
 weekly contest 416。  
 滿有趣的二分二分題。  
@@ -95,4 +95,43 @@ class Solution:
                 hi = mid
 
         return lo
+```
+
+其實我有想到用 min heap，可惜思路不正確。  
+
+如果是求**總時間最小**，那麼主要的 key 是**當前成本**沒錯。  
+但本題的工人是**平行工作**，需要比較的是個人的**總時間**，所以 key 是**下次工作後的總時間**。  
+
+很重要，是找**下次工作後的總時間**最小者！！不是當前總時間！！  
+如果只找當前總時間最少的，他如果下次耗時超大就完蛋。  
+以當前總時間為 key 的反例：  
+> 工人一：當前總時間 1，下次耗時 10000  
+> 工人二：當前總時間 2，下次耗時 1  
+
+怎麼看都是錯的。  
+
+時間複雜度 O(mountainHeight log N)，其中 N = len(workerTimes)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def minNumberOfSeconds(self, mountainHeight: int, workerTimes: List[int]) -> int:
+        h = []
+        for base in workerTimes:
+            # tot cost after next work,
+            # curr cost
+            # base cost
+            heappush(h, [base, base, base]) 
+
+        ans = 0
+        for _ in range(mountainHeight):
+            tot, curr, base = heappop(h)
+            ans = max(ans, tot)
+            
+            # update costs
+            curr += base
+            tot += curr
+            heappush(h, [tot, curr, base])
+
+        return ans
 ```
