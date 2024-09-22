@@ -75,7 +75,7 @@ class Trie:
 到 Q4 的時候 N = 5e4，字典樹就超時了，得換個方法。  
 相似題原本也有 rolling hash 解法，我就在想這題應該也能用，但沒想出來。  
 
-事實上的確能行，而且是 [45. Jump Game II](https://leetcode.com/problems/jump-game-ii) 的加強版。  
+事實上的確能行，而且是 [45. jump game ii]({% post_url 2024-09-21-leetcode-45-jump-game-ii %}) 的加強版。  
 把 target 當作跳躍遊戲，最初從 target[0] 出發，看能不能跳到 target[N]。  
 
 那麼如何求 target[i] 能夠跳多遠？  
@@ -107,7 +107,7 @@ class Solution:
             for r in range(len(w)):
                 h = dh.get(0, r)
                 hashes.add(h)
-        
+
         def find(i):
             lo = i - 1
             hi = N - 1
@@ -122,17 +122,18 @@ class Solution:
         dh = DoubleHash(target, MOD1, MOD2)
         # jump game II
         ans = 0
-        curr_r = 0
-        next_r = 0
+        r = next_r = 0
         for i in range(N):
             # find longest target[i..j] which is prefix
             j = find(i)
             next_r = max(next_r, j + 1)
-            if i == curr_r:
-                if curr_r == next_r:  # cant jump
+            if i == r:
+                # cannot jump
+                if next_r <= r :  
                     return -1
-                curr_r = next_r
+                # jump
                 ans += 1
+                r = next_r
 
         return ans
 
