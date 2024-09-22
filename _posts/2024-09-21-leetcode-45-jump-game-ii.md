@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 45. Jump Game II
-tags        : LeetCode Medium DP BFS
+tags        : LeetCode Medium DP BFS Greddy
 ---
 比賽有碰到這題的強化版，趕快來補題解。  
 
@@ -89,4 +89,62 @@ class Solution:
             step += 1
 
         return dist[-1]
+```
+
+把 dist 陣列打印出來看，會發現他是呈現**嚴格遞增**的。  
+長的類似這樣：[0,1,1,1,2,2,3,3,3,..]。  
+
+這些相鄰的數字可以看做是**特定步數可抵達的範圍**。  
+似乎暗示著每次跳躍都會**向右擴展**可達範圍？  
+
+---
+
+仔細研究看看範例 1：  
+> nums = [2,3,1,1,4]  
+
+在最初跳 0 步時，可能的起跳位置只有 0。  
+從 0 起跳，只有跳到 [1, 2] 兩個選擇。  
+
+- 方案一：跳到 1，則第二步可以從 1 跳到 [2,4]。  
+- 方案二：跳到 2，則第二步只能從 2 跳到 [3,3]。  
+
+方案二能抵達的地方，方案一全部也都能抵達，甚至能跳更遠。因此方案一優於方案二。  
+也就是說，要貪心地選擇**讓下次跳更遠的位置**。  
+
+---
+
+維護變數 next_r，代表**下次能跳的最遠的位置**。  
+枚舉當前步數的可能起跳位置 [l,r] 間的所有點 i，以 i + nums[i] 更新 next_r。  
+然後步數加 1，更新起跳區間為 [r+1, next_r]。  
+
+最初只可能位於 nums[0]，故初始化 l = r = 0。  
+重複上述步驟直到可達終點 N-1 為止。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+注意：本題保證能抵達終點，故不須檢查跳躍失敗的特例。  
+否則 next_r <= r 代表無法跳到更遠的位置。  
+
+```python
+class Solution:
+    def jump(self, nums: List[int]) -> int:
+        N = len(nums)
+        ans = 0
+        l = r = 0
+        while r < N-1:
+            # find best postision
+            next_r = 0
+            for i in range(l, r + 1):
+                next_r = max(next_r, i + nums[i])
+
+            # cannot jump more
+            # if next_r <= r:
+            #     return -1
+
+            # jump
+            ans += 1
+            l, r = r + 1, next_r
+
+        return ans
 ```
