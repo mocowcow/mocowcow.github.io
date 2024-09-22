@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3296. Minimum Number of Seconds to Make Mountain Height Zero
-tags        : LeetCode Medium
+tags        : LeetCode Medium Math BinarySearch
 ---
 weekly contest 416。  
 滿有趣的二分二分題。  
@@ -45,3 +45,54 @@ weekly contest 416。
 答案具有單調性，可以二分。  
 
 注意：兩次二分的**邊界更新邏輯不同**，取中位數時注意補 1。  
+
+---
+
+最後來確定二分的上下界。  
+比賽中我隨便都填 1e18 居然給我超時，太苦了。  
+
+外層二分：  
+最佳情況下 1 秒就能完成工作。下界 = 1。  
+最差情況下只有一個耗時超大的工人，而且山又超大。上界 = 10^5 \* (10^5 + 1) \/ 2 \* 10^6，不超過 1e16。  
+
+內層二分：  
+最差情況下沒法減少任何高度。下界 = 0。  
+最佳情況下可以減少整座山。上界 = mountainHeight。  
+
+時間複雜度 O(N \* log MX \* log mountainHeight)，其中 MX = 外層二分上界。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def minNumberOfSeconds(self, mountainHeight: int, workerTimes: List[int]) -> int:
+
+        def work(base, limit):
+            lo = 0
+            hi = mountainHeight
+            while lo < hi:
+                mid = (lo + hi + 1) // 2
+                work_cnt = mid * (mid+1) // 2
+                work_sec = work_cnt * base
+                if work_sec > limit:
+                    hi = mid - 1
+                else:
+                    lo = mid
+            return lo
+
+        def ok(limit):
+            cnt = 0
+            for base in workerTimes:
+                cnt += work(base, limit)
+            return cnt >= mountainHeight
+
+        lo = 1
+        hi = 10 ** 16
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if not ok(mid):
+                lo = mid + 1
+            else:
+                hi = mid
+
+        return lo
+```
