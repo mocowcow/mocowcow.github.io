@@ -178,8 +178,7 @@ class Solution:
     def jump(self, nums: List[int]) -> int:
         N = len(nums)
         ans = 0
-        l = r = 0
-        next_r = 0
+        r = next_r = 0
         for i in range(N-1):
             # find best postision
             next_r = max(next_r, i + nums[i])
