@@ -148,3 +148,50 @@ class Solution:
 
         return ans
 ```
+
+在上面代碼中，內層枚舉當前位置 i 的迴圈，實際上就是依序枚舉區間 [0, N-2] 的位置。  
+變數 l 只和 i 相關，可以省略掉 l，直接在外層枚舉 i。  
+
+```python
+for i in range(N-1):
+    ...
+```
+
+並且 next_r 只增不減，也可以提出到主迴圈外，不需重新宣告。  
+
+原本只有在處理過整個區間 [l,r]，更新完 next_r 後才要跳躍。  
+只在 i = r 時才需要進行跳躍檢查。  
+
+```python
+# need jump
+if i == r:
+    # cannot jump
+    ...
+    # jump
+    ...
+```
+
+精簡過的最終版本如下。  
+
+```python
+class Solution:
+    def jump(self, nums: List[int]) -> int:
+        N = len(nums)
+        ans = 0
+        l = r = 0
+        next_r = 0
+        for i in range(N-1):
+            # find best postision
+            next_r = max(next_r, i + nums[i])
+
+            # need jump
+            if i == r:
+                # cannot jump more
+                if next_r <= r:
+                    return -1
+                # jump
+                ans += 1
+                r = next_r
+
+        return ans
+```
