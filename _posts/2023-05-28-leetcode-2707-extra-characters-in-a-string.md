@@ -1,7 +1,7 @@
 --- 
 layout      : single
 title       : LeetCode 2707. Extra Characters in a String
-tags        : LeetCode Medium String DP
+tags        : LeetCode Medium String DP Trie
 ---
 雙周賽 105。這題用 python 是真的好寫，不少人被這題卡住。  
 
@@ -85,4 +85,53 @@ class Solution:
             return res
 
         return dp(0)
+```
+
+每次狀態轉移的時候都需要重新構造子字串，這部分的開銷就佔了 O(N)，其實不小。  
+使用字典樹的話可以將每個狀態的轉移複雜度從 O(N^2) 降到 O(N)。  
+
+時間複雜度 O(N^2 + L)，其中 N = len(s)， L = sum(len(dictionary[i]))。  
+空間複雜度 O(N + L)。  
+
+```python
+class Solution:
+    def minExtraChar(self, s: str, dictionary: List[str]) -> int:
+        N = len(s)
+        trie = Trie()
+        for w in dictionary:
+            trie.add(w)
+
+        @cache
+        def dp(i):
+            if i == N:
+                return 0
+            res = 1 + dp(i+1)
+            curr = trie.root
+            for j in range(i, N):
+                c = s[j]
+                if c not in curr.child:
+                    break
+                curr = curr.child[c]
+                if curr.cnt > 0:
+                    res = min(res, dp(j+1))
+            return res
+
+        return dp(0)
+
+
+class TrieNode:
+    def __init__(self) -> None:
+        self.child = defaultdict(TrieNode)
+        self.cnt = 0
+
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def add(self, s) -> None:
+        curr = self.root
+        for c in s:
+            curr = curr.child[c]
+        curr.cnt += 1  # count whole string
 ```
