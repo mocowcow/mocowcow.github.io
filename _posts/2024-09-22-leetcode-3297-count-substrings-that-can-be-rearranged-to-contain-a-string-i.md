@@ -92,9 +92,9 @@ class Solution:
 
             # all chars of word2 are covered
             while need == 0: 
-                d[word1[left]] += 1
-                if d[word1[left]] == 1:
+                if d[word1[left]] == 0:
                     need += 1
+                d[word1[left]] += 1
                 left += 1
 
             # update answer
