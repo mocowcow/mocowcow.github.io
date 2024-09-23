@@ -32,13 +32,13 @@ tags        : LeetCode Medium String DP
 
 定義 dp(s)：字串 s 的最小**多餘字元**數量。  
 轉移：min(dp(ns) FOR ALL w + ns = s)，其中 w 為 dictionary 任意單字。  
-base：當 s 為空字串時，不需繼續匹配，答案為 0。
+base：當 s 為空字串時，不需繼續匹配，答案為 0。  
 
 只能由前方依序刪除字元，至多產生 N 個狀態。  
 每個狀態需要對 M 個字串配對轉移，每次配對 O(N)。  
 
 時間複雜度 O(N^2 \* M)，其中 N = len(s)，M = len(dictionary)。  
-空間複雜度 O(N^2)。  
+空間複雜度 O(N)。  
 
 ```python
 class Solution:
@@ -56,4 +56,33 @@ class Solution:
             return res
 
         return dp(s)
+```
+
+用字串當作 dp 狀態有點邪門，搞一個比較普通的寫法。  
+為了快速查詢子字串是否合法，需要先將 dictionary 裝入集合中。  
+
+定義 dp(s)：子字串 s[i..N-1] 的最小**多餘字元**數量。  
+轉移：min(dp(j)) FOR ALL s[i..j] in dictionary。  
+base：當 i=N 時不需繼續匹配，答案為 0。  
+
+時間複雜度 O(N^3 + L)，其中 N = len(s)， L = sum(len(dictionary[i]))。  
+空間複雜度 O(N + L)。  
+
+```python
+class Solution:
+    def minExtraChar(self, s: str, dictionary: List[str]) -> int:
+        N = len(s)
+        word_set = set(dictionary)
+
+        @cache
+        def dp(i):
+            if i == N:
+                return 0
+            res = 1 + dp(i+1)
+            for j in range(i, N):
+                if s[i:j+1] in word_set:
+                    res = min(res, dp(j+1))
+            return res
+
+        return dp(0)
 ```
