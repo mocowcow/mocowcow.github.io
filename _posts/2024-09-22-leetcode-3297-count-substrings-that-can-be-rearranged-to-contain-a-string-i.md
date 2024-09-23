@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3297. Count Substrings That Can Be Rearranged to Contain a String I
-tags        : LeetCode Medium
+tags        : LeetCode Medium String TwoPointers SortedList HashTable
 ---
 weekly contest 416。  
 吐槽點實在太多了，可能比正文還多。  
@@ -59,6 +59,42 @@ class Solution:
             d1[c] += 1
             while ok():
                 d1[word1[left]] -= 1
+                left += 1
+
+            # update answer
+            # [0, left-1] are valid leftbound
+            ans += left 
+
+        return ans
+```
+
+雖然上面代碼稍微優化一下能過 Q4，實際上正解是更嚴格的 O(N) 解。  
+
+每次窗口邊界移動時**只會增減一個字元**，因此只需要處理發生變化的字元即可。  
+維護變數 need，代表 word2 中有**幾種**字元沒被滿足。  
+窗口擴展後，若某字元 c 的數量滿足 word2 中的數量，則將 need 減 1；反之，收縮時也須檢查將 need 加回。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(26)。  
+
+```python
+class Solution:
+    def validSubstringCount(self, word1: str, word2: str) -> int:
+        d = Counter(word2)
+        need = len(d)
+
+        ans = 0
+        left = 0
+        for right, c in enumerate(word1):
+            d[c] -= 1
+            if d[c] == 0:
+                need -= 1
+
+            # all chars of word2 are covered
+            while need == 0: 
+                d[word1[left]] += 1
+                if d[word1[left]] == 1:
+                    need += 1
                 left += 1
 
             # update answer
