@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3305. Count of Substrings Containing Every Vowel and K Consonants I
-tags        : LeetCode Medium
+tags        : LeetCode Medium SlidingWindow TwoPointers HashTable Math
 ---
 weekly contest 417。  
 
@@ -65,4 +65,54 @@ class Solution:
                     left += 1
 
         return ans
+```
+
+對於 Q4 的 k = 2e5 就得想想其他優化方法。  
+
+相似題 [992. Subarrays with K Different Integers](https://leetcode.com/problems/subarrays-with-k-different-integers/)。  
+
+雖然沒辦法輕鬆找到**正好 k 個**，但是找**至少 k 個**卻很簡單。  
+若找至少 k 個，同時會包含 k+1, k+2,.. 的答案。  
+根據排容原理，**至少 k 個**扣掉**至少 k+1 個**，等於**正好 k 個**。  
+
+設 f(k) 為至少 k 個子音的合法子陣列個數。  
+只需要兩次滑動窗口，分別求 f(k) 和 f(k+1) 即可。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def countOfSubstrings(self, word: str, k: int) -> int:
+        return f(word, k) - f(word, k+1)
+
+# at least k consonants
+vowel = set("aeiou")
+def f(word, k) -> int:
+    N = len(word)
+    res = 0
+    d = Counter("aeiou")
+    v_need = 5
+    c_need = k
+    left = 0
+    for right, c in enumerate(word):
+        # expand right
+        if c in vowel:
+            if d[c] == 1:
+                v_need -=1
+            d[c] -= 1
+        else:
+            c_need -= 1
+
+        while v_need == 0 and c_need <= 0:
+            t = word[left]
+            if t in vowel:
+                if d[t] == 0:
+                    v_need += 1
+                d[t] += 1
+            else:
+                c_need += 1
+            left += 1
+        res += left
+    return res
 ```
