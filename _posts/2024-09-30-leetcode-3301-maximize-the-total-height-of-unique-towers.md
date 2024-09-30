@@ -30,13 +30,12 @@ class Solution:
     def maximumTotalSum(self, maximumHeight: List[int]) -> int:
         maximumHeight.sort(reverse=True)
         ans = 0
-        prev = inf
+        curr = inf
         for x in maximumHeight:
-            t = min(prev-1, x)
-            if t < 1: # invalid
+            curr = min(curr-1, x)
+            if curr < 1:
                 return -1
-            ans += t
-            prev = t
+            ans += curr
 
         return ans
 ```
