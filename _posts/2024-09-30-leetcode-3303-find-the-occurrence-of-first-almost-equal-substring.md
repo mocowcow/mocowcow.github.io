@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3303. Find the Occurrence of First Almost Equal Substring
-tags        : LeetCode Hard
+tags        : LeetCode Hard String
 ---
 biweekly contest 140。  
 我搞了半天的 rolling hash 竟然被卡常數，真搞不懂時間限制的標準。  
@@ -39,3 +39,53 @@ Q3 的時候是求**子序列**，我們利用了**前後綴分解**的技巧找
 但是原始的 z-function 是在字串 s 本身找子字串 s[i..] 的**最長公共前綴**。  
 此處是要在 s 裡找 pattern，所以需要將兩者串接為 pattern + "#" +s。  
 其中 "#" 號是只是分隔習慣，不加也可以。  
+
+至於後綴，只需把 s 和 pattern 都反轉後，另外套一次 z-function 即可。  
+注意：z[i] 指的是 text = pattern + "#" + s，取 z[i] 值記得加上 len(pattern) + 1 的偏移量。  
+注意：z[i] 是從左向右數，所以後綴 z-array 的索引也要反轉，然後再加上偏移量。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def minStartingIndex(self, s: str, pattern: str) -> int:
+        M, N = len(s), len(pattern)
+        pre_z = z_function(pattern + "#" + s)
+        suf_z = z_function(pattern[::-1] + "#" + s[::-1])
+
+        # check substring s[i..j]
+        # where pre[i] + suf[j] >= N-1
+        for i in range(M - N + 1):
+            j = i + N - 1
+            rev_j = M - 1 - j  # reverse j
+            pre_i = i + N + 1  # offset len(pattern + "#")
+            suf_j = rev_j + N + 1  # offset len(pattern + "#")
+            if pre_z[pre_i] + suf_z[suf_j] >= N - 1:
+                return i
+
+        return -1
+
+
+def z_function(s):
+    N = len(s)
+    z = [0]*N
+    L = R = 0
+    for i in range(1, N):
+        if R < i:  # not covered by previous z-box
+            # z[i] = 0
+            pass
+        else:  # partially or fully covered
+            j = i-L
+            if j+z[j] < z[L]:  # fully covered
+                z[i] = z[j]
+            else:
+                z[i] = R-i+1
+
+        while i+z[i] < N and s[i+z[i]] == s[z[i]]:  # remaining substring
+            z[i] += 1
+        if i+z[i]-1 > R:  # R out of prev z-box, update R
+            L = i
+            R = i+z[i]-1
+    return z
+```
