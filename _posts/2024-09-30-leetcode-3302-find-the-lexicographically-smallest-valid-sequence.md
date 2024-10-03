@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3302. Find the Lexicographically Smallest Valid Sequence
-tags        : LeetCode Medium
+tags        : LeetCode Medium String Greedy PrefixSum
 ---
 biweekly contest 140。  
 
@@ -52,3 +52,49 @@ biweekly contest 140。
 > 原有合法序列 [0,1,3]  
 > 若把 word1[2] 改成 d，使 word1 = "abdd"  
 > 得到更小的合法序列 [0,1,2]  
+
+---
+
+講這麼多，到底什麼時候要改？  
+
+若有多個索引在修改後都合法，那麼應該貪心地選擇最小的索引，因為會使得字典序更小。  
+因此只要 word1[i] 修改後，後方剩於的字串還能夠匹配整個 word2，那就必須改。  
+
+回想剛才提過的 suf[i]，他表示 word1[i..] 匹配的後綴長度。  
+在 word1[i] != word2[j] 時，已經成功匹配的前綴長度為 j，而剩餘的部分 word1[i+1..] 則是 suf[i+1]。  
+我們可以修改 word1[i] = word2[j]，修改後的總長度為 pre[i] suf[i+1] + 1，只要滿足 N 則代表合法。  
+
+匹配過程，只要湊滿 N 個索引立即回傳答案。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def validSequence(self, word1: str, word2: str) -> List[int]:
+        M, N = len(word1), len(word2)
+
+        suf = [0] * (M + 1)
+        j = N-1
+        for i in reversed(range(M)):
+            if j >= 0 and word1[i] == word2[j]:
+                j -= 1
+            suf[i] = N-1-j
+
+        ans = []
+        j = 0
+        changed = False
+        for i in range(M):
+            if word1[i] == word2[j]:
+                ans.append(i)
+                j += 1
+            elif not changed and j + suf[i+1] + 1 >= N:
+                changed = True
+                ans.append(i)
+                j += 1
+
+            if j == N:
+                return ans
+
+        return ""
+```
