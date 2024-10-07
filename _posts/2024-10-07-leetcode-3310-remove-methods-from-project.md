@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3310. Remove Methods From Project
-tags        : LeetCode Medium
+tags        : LeetCode Medium Graph DFS
 ---
 weekly contest 418。  
 這題意描述挺模糊的，原文是真的看不太懂。  
@@ -19,3 +19,34 @@ weekly contest 418。
 以任意順序回傳移除**可疑方法**後剩餘的方法。若無法移除則**不必**移除。  
 
 ## 解法
+
+方法之間的調用關係是**有向圖**。  
+建圖後，從 k 開始 dfs 就可以找到所有可疑的方法。  
+
+然後再次遍歷所有調用，若有 a 不可疑且 b 可疑，則無法移除；否則移除所有可疑方法。  
+
+時間複雜度 O(N + M)。  
+空間複雜度 O(N + M)。  
+
+```python
+class Solution:
+    def remainingMethods(self, n: int, k: int, invocations: List[List[int]]) -> List[int]:
+        g = [[] for _ in range(n)]
+        for a, b in invocations:
+            g[a].append(b)
+
+        def dfs(i):
+            if i in sus:
+                return 
+            sus.add(i)
+            for j in g[i]:
+                dfs(j)
+
+        sus = set()
+        dfs(k)
+        for a, b in invocations:
+            if a not in sus and b in sus: # cannont remove
+                return set(range(n))
+
+        return set(range(n)) - sus
+```
