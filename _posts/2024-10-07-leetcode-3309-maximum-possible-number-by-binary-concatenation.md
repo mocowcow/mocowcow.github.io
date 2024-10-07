@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3309. Maximum Possible Number by Binary Concatenation
-tags        : LeetCode Medium Simulation Sorting Greedy
+tags        : LeetCode Medium Simulation Sorting Greedy BitManipulation
 ---
 weekly contest 418。  
 這題用 python 寫起來是真方便。  
@@ -74,4 +74,35 @@ class Solution:
         a.sort(key=cmp_to_key(cmp))
 
         return int("".join(a), 2)  
+```
+
+既然是二進制表示，直接做**位運算**效率更好。  
+
+試想以下例子，如何把兩者串接：  
+> a = 0b1, b = 0b10  
+> ab = 0b110  
+> 即 a 左移 2 位變成 0b100，然後加上 0b10  
+> ba = 0b101  
+> 即 b 左移 1 位變成 0b100，然後加上 0b1  
+
+也就是把左邊那個數**左移**相當於右邊數的**位元數**。  
+
+時間複雜度 O(N log N)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def maxGoodNumber(self, nums: List[int]) -> int:
+
+        def cmp(a, b):
+            ab = (a << b.bit_length()) + b
+            ba = (b << a.bit_length()) + a
+            return ba - ab
+
+        nums.sort(key=cmp_to_key(cmp))
+        ans = 0
+        for x in nums:
+            ans = (ans << x.bit_length()) + x
+
+        return ans
 ```
