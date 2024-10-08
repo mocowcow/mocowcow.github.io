@@ -41,7 +41,7 @@ comb(cnt, 2) 相當於 cnt_pair[i] + cnt_pair[2i] + cnt_pair[3i] + ..。
 
 ---
 
-1 到 MX 的倍數共有 1 + 1/2 + 1/3 + .. + 1/MX**調和級數** O(MX log MX)。  
+1 到 MX 的倍數共有 MX + MX/2 + MX/3 + .. 個，為**調和級數** O(MX log MX)。  
 共 Q 次查詢，每次二分 O(log MX)，共 O(Q log MX)。  
 
 時間複雜度 O(N + (Q + MX) log MX)，其中 MX = max(nums)。  
