@@ -48,7 +48,7 @@ base：當 i = N 時，沒有剩餘元素，若兩者 gcd 都不為 0 且相等�
 空間複雜度 O(N \* MX^2)。  
 
 老實說 N 和 MX 都是 200，光是狀態數就有大概 8e6，老實說有點危險。  
-求 gcd 也要 O(log MX)，說大也不大，反正能過就是了，而且意外耗時不長。  
+不過考慮到 gcd 只增不減，而且有些數根本不會出現，實際上無效狀態還不少。  
 
 ```python
 MOD = 10 ** 9 + 7
@@ -69,4 +69,50 @@ class Solution:
             return res % MOD
 
         return dp(0, 0, 0)
+```
+
+預處理 gcd，然後改成遞推。  
+雖然複雜度下降，但實際耗時反而增加。  
+
+時間複雜度 O(N \* MX^2)，其中 MX = max(nums)。  
+空間複雜度 O(N \* MX^2)。  
+
+```python
+MOD = 10 ** 9 + 7
+MX = 200
+GCD = [[0] * (MX+1) for _ in range(MX+1)]
+for i in range(MX+1):
+    for j in range(MX+1):
+        GCD[i][j] = gcd(i, j)
+
+class Solution:
+    def subsequencePairCount(self, nums: List[int]) -> int:
+        N = len(nums)
+        MX = max(nums)
+
+        @cache
+        def dp(i, seq1, seq2):
+            if i == N:
+                if seq1 != 0 and seq1 == seq2:
+                    return 1
+                return 0
+            
+            res = dp(i+1, GCD[seq1][nums[i]], seq2)
+            res += dp(i+1, seq1, GCD[seq2][nums[i]])
+            res += dp(i+1, seq1, seq2)
+            return res % MOD
+
+        f = [[[0] * (MX+1) for _ in range(MX+1)] for _ in range(N+1)]
+        for seq1 in range(1, MX+1):
+            f[N][seq1][seq1] = 1
+
+        for i in reversed(range(N)):
+            for seq1 in range(MX+1):
+                for seq2 in range(MX+1):
+                    res = f[i+1][GCD[seq1][nums[i]]][seq2]
+                    res += f[i+1][seq1][GCD[seq2][nums[i]]]
+                    res += f[i+1][seq1][seq2]
+                    f[i][seq1][seq2] = res % MOD
+
+        return f[0][0][0]
 ```
