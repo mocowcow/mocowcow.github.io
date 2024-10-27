@@ -71,11 +71,11 @@ class Solution:
         return dp(0, 0, 0)
 ```
 
-預處理 gcd，然後改成遞推。  
-雖然複雜度下降，但實際耗時反而增加。  
+預處理 gcd，然後改成遞推，並壓縮掉一個空間維度。  
+雖然時空複雜度下降，但實際耗時反而增加。  
 
 時間複雜度 O(N \* MX^2)，其中 MX = max(nums)。  
-空間複雜度 O(N \* MX^2)。  
+空間複雜度 O(MX^2)。  
 
 ```python
 MOD = 10 ** 9 + 7
@@ -102,17 +102,19 @@ class Solution:
             res += dp(i+1, seq1, seq2)
             return res % MOD
 
-        f = [[[0] * (MX+1) for _ in range(MX+1)] for _ in range(N+1)]
+        f = [[0] * (MX+1) for _ in range(MX+1)]
         for seq1 in range(1, MX+1):
-            f[N][seq1][seq1] = 1
+            f[seq1][seq1] = 1
 
         for i in reversed(range(N)):
+            f2 = [[0] * (MX+1) for _ in range(MX+1)]
             for seq1 in range(MX+1):
                 for seq2 in range(MX+1):
-                    res = f[i+1][GCD[seq1][nums[i]]][seq2]
-                    res += f[i+1][seq1][GCD[seq2][nums[i]]]
-                    res += f[i+1][seq1][seq2]
-                    f[i][seq1][seq2] = res % MOD
+                    res = f[GCD[seq1][nums[i]]][seq2]
+                    res += f[seq1][GCD[seq2][nums[i]]]
+                    res += f[seq1][seq2]
+                    f2[seq1][seq2] = res % MOD
+            f = f2
 
-        return f[0][0][0]
+        return f[0][0]
 ```
