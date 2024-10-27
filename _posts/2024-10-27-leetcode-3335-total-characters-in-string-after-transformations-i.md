@@ -24,8 +24,9 @@ weekly contest 421。
 而 "z" 轉換後則拆成兩個 "a" 和 "b" 分別轉換 t-1 次。  
 不同的字元都有相同的結果，是**重疊的子問題**，考慮 dp。  
 
-"z" 會對 "a", "b" 產生貢獻，這邊用**填表法**比較好寫。  
 首先統計 s 中各自元的頻率，然後模擬轉換 t 次。  
+因為轉換是線性的，產生下一個時間點的字元，所以我覺得**填表法**比較直覺。  
+"z" 會額外對 "b" 產生貢獻，記得另外補上。  
 
 時間複雜度 O(N + 26t)。  
 空間複雜度 O(26)。  
@@ -40,11 +41,33 @@ class Solution:
 
         for _ in range(t):
             f2 = [0] * 26
-            # a~x
-            for i in range(25):
-                f2[i+1] = f[i]
-            # z
-            f2[0] += f[25]
+            # a~z to next char
+            for i in range(26):
+                f2[(i+1)%26] = f[i]
+            # z to extra b
+            f2[1] += f[25]
+            f = f2
+
+        return sum(f) % MOD        
+```
+
+改成熟悉的填表法，代表時間點 t 的字元 i 是由時間點 t-1 的哪些來源產生而來。  
+其實大同小異。  
+
+```python
+MOD = 10 ** 9 + 7
+class Solution:
+    def lengthAfterTransformations(self, s: str, t: int) -> int:
+        f = [0] * 26
+        for c in s:
+            f[ord(c)-97] += 1
+
+        for _ in range(t):
+            f2 = [0] * 26
+            # a~z from prev char
+            for i in range(26):
+                f2[i] = f[i-1]
+            # extra b from z
             f2[1] += f[25]
             f = f2
 
