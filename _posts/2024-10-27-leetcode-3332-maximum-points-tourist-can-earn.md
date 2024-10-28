@@ -38,6 +38,9 @@ base：當 i = k 時，旅途結束無法繼續得分，回傳 0。
 時間複雜度 O(k \* n^2)。  
 空間複雜度 O(kn)。  
 
+k = n = 200 代入 O(kn^2) 運算量大約 8e6，有點緊張。  
+而且 python 取 max 比較慢，竟然跑了 11000ms 好險沒超時。  
+
 ```python
 class Solution:
     def maxScore(self, n: int, k: int, stayScore: List[List[int]], travelScore: List[List[int]]) -> int:
@@ -55,4 +58,32 @@ class Solution:
             return res 
         
         return max(dp(0, curr) for curr in range(n))
+```
+
+改成遞推，加速到 7600ms 上下。  
+再壓縮一個空間維度，加速到 7000ms，差不多。  
+最重要的還是手寫 max，直接剩下 2800ms。  
+
+時間複雜度 O(k \* n^2)。  
+空間複雜度 O(n)。  
+
+```python
+class Solution:
+    def maxScore(self, n: int, k: int, stayScore: List[List[int]], travelScore: List[List[int]]) -> int:
+        f = [0]*n
+        for i in reversed(range(k)):
+            f2 = [0]*n
+            for curr in range(n):
+                # stay
+                res = f[curr] + stayScore[i][curr]
+                # move
+                for dest in range(n):
+                    if dest != curr:
+                        t = f[dest] + travelScore[curr][dest]
+                        if t > res:
+                            res = t
+                f2[curr] = res
+            f = f2
+        
+        return max(f[curr] for curr in range(n))
 ```
