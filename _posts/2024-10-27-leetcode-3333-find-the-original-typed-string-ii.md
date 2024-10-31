@@ -244,3 +244,19 @@ class Solution:
 
         return ans % MOD
 ```
+
+有些大佬是先算出 f[i+1] 的所有前綴和，再跑第二次迴圈處理 f[i]。  
+感覺好像比較好除錯，在此紀錄一下，希望之後能寫得更順手。  
+
+```python
+        for i in reversed(range(M)):
+            f2 = [0] * k
+            limit = groups[i]
+            ps = list(accumulate(f))
+            for j in range(1, k):
+                f2[j] = ps[j-1]
+                if j > limit:
+                    f2[j] -= ps[j-1-limit]
+                    f2[j] %= MOD
+            f = f2
+```
