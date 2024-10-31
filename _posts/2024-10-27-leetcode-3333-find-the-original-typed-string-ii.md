@@ -169,3 +169,38 @@ class Solution:
 
         return ans % MOD
 ```
+
+上面記憶化跑了 8000ms，改成遞推之後只需要 3000ms。  
+
+```python
+MOD = 10**9 + 7
+class Solution:
+    def possibleStringCount(self, word: str, k: int) -> int:
+        ans = 1
+        groups = []
+        for _, g in groupby(word):
+            cnt = len(list(g))
+            groups.append(cnt)
+            ans = (ans * cnt) % MOD
+
+        M = len(groups)
+        if k - 1 < M:
+            return ans
+
+        f = [[0]*k for _ in range(M+1)]
+        f[M][0] = 1
+
+        for i in reversed(range(M)):
+            limit = groups[i]
+            ps = 0
+            for j in range(1, k):
+                ps += f[i+1][j-1]
+                if j > limit:
+                    ps -= f[i+1][j-1-limit]
+                f[i][j] = ps % MOD
+
+        for j in range(k):
+            ans -= f[0][j]
+
+        return ans % MOD
+```
