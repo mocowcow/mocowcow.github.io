@@ -187,7 +187,7 @@ class Solution:
         if k - 1 < M:
             return ans
 
-        f = [[0]*k for _ in range(M+1)]
+        f = [[0] * k for _ in range(M+1)]
         f[M][0] = 1
 
         for i in reversed(range(M)):
@@ -201,6 +201,46 @@ class Solution:
 
         for j in range(k):
             ans -= f[0][j]
+
+        return ans % MOD
+```
+
+對於每個 f[i] 來說只會參考到 f[i+1]，還可以優化掉一個空間維度。  
+
+時間複雜度 O(N + k^2)。  
+空間複雜度 O(k)。
+
+```python
+MOD = 10**9 + 7
+class Solution:
+    def possibleStringCount(self, word: str, k: int) -> int:
+        ans = 1
+        groups = []
+        for _, g in groupby(word):
+            cnt = len(list(g))
+            groups.append(cnt)
+            ans = (ans * cnt) % MOD
+
+        M = len(groups)
+        if k - 1 < M:
+            return ans
+
+        f = [0]*  k
+        f[0] = 1
+
+        for i in reversed(range(M)):
+            f2 = [0] * k
+            limit = groups[i]
+            ps = 0
+            for j in range(1, k):
+                ps += f[j-1]
+                if j > limit:
+                    ps -= f[j-1-limit]
+                f2[j] = ps % MOD
+            f = f2
+
+        for j in range(k):
+            ans -= f[j]
 
         return ans % MOD
 ```
