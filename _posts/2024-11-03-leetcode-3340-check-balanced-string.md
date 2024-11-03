@@ -32,3 +32,12 @@ class Solution:
 
         return bal == 0
 ```
+
+快樂懶人寫法。  
+
+```python
+class Solution:
+    def isBalanced(self, num: str) -> bool:
+        a = list(map(int, num))
+        return sum(a[::2]) == sum(a[1::2])
+```
