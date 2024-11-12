@@ -49,3 +49,11 @@ class Solution:
 
         return -1
 ```
+
+很難看的一行版本。  
+
+```python
+class Solution:
+    def smallestNumber(self, n: int, t: int) -> int:
+        return next(x for x in count(n) if reduce(mul, map(int, str(x))) % t == 0)  
+```
