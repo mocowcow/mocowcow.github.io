@@ -91,11 +91,11 @@ class Solution:
             while j+1 < N and nums[j] < nums[j+1]:
                 j += 1
 
-            curr = j-i+1 # size of current subarray
-            if pre >= k and curr >= k or curr >= k*2:
+            cur = j-i+1 # size of current subarray
+            if pre >= k and cur >= k or cur >= k*2:
                 return True
 
-            pre = curr
+            pre = cur
             i = j+1
 
         return False
