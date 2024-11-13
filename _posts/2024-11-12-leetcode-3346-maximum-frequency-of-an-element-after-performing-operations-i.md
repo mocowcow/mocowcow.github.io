@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3346. Maximum Frequency of an Element After Performing Operations I
-tags        : LeetCode Medium PrefixSum
+tags        : LeetCode Medium PrefixSum HashTable Sorting
 ---
 biweekly contest 143。  
 這題還真有夠難的，差點沒做出來，但是寫得有夠醜。  
@@ -72,6 +72,13 @@ class Solution:
 
 差分構造完之後，我們只需要將出現過的索引位置排序後做前綴和即可。  
 
+注意：某些情況答案會出現在 nums 中原有的索引，例如：  
+> nums = [10,11], k = 5, numOperations = 1。  
+> diff 中的鍵值只有 [10-5, 10+5+1, 11-5, 11+5+1]  
+> = [5, 16, 6, 17]  
+
+但正確答案應該是把其中一個移到 10 或 11 上。因此原有的索引位置也須列入考慮。  
+
 時間複雜度 O(N log N)。  
 空間複雜度 O(N)。  
 
@@ -80,7 +87,7 @@ class Solution:
     def maxFrequency(self, nums: List[int], k: int, numOperations: int) -> int:
         diff = Counter()
         for x in nums:
-            diff[x] += 0
+            diff[x] += 0 # original pos
             diff[x-k] += 1
             diff[x+k+1] -= 1
 
