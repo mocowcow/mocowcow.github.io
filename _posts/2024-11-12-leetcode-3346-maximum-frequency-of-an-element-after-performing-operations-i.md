@@ -66,3 +66,31 @@ class Solution:
 
         return ans
 ```
+
+但對於 Q3 來說，MX 高達 10^9，不可能直接開陣列，因此必須改用雜湊表。  
+雜湊表可以接受負數索引，就不必對 nums 加上偏移量。  
+
+差分構造完之後，我們只需要將出現過的索引位置排序後做前綴和即可。  
+
+時間複雜度 O(N log N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def maxFrequency(self, nums: List[int], k: int, numOperations: int) -> int:
+        diff = Counter()
+        for x in nums:
+            diff[x] += 0
+            diff[x-k] += 1
+            diff[x+k+1] -= 1
+
+        freq = Counter(nums)
+        ps = 0
+        ans = 1
+        for i in sorted(diff.keys()):
+            ps += diff[i]
+            inc = min(ps - freq[i], numOperations)
+            ans = max(ans, freq[i] + inc)
+
+        return ans
+```
