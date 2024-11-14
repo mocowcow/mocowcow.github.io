@@ -173,12 +173,46 @@ class Solution:
         return ans
 ```
 
-答案在 nums 中的情況，隨著選索引 x 遞增，lo 和 hi 同步遞增。可以用**雙指針**優化。  
+隨著選索引 x 遞增，lo 和 hi 也同步遞增。可以用**雙指針**優化。  
 
-不在 nums 中的情況，位於 [x, x+2k] 區間內的元素都可以移動到相同位置，可以用**滑動窗口**計算。  
+```python
+class Solution:
+    def maxFrequency(self, nums: List[int], k: int, numOperations: int) -> int:
+        N = len(nums)
+        nums.sort()
+        freq = Counter(nums)
+        pos = set()
+        for x in nums:
+            pos.add(x)
+            pos.add(x-k)
+            pos.add(x+k)
 
-時間複雜度 O(N log N)。  
-空間複雜度 O(N)。  
+        lo = 0
+        hi = 0
+        ans = 1
+        for x in sorted(pos):
+            # [x-k, x+k]
+            # nums[lo] >= x-k
+            while nums[lo] < x-k:
+                lo += 1
+
+            # nums[hi] <= x+k
+            while hi+1 < N and nums[hi+1] <= x+k:
+                hi += 1
+
+            t = hi - lo + 1
+            inc = min(numOperations, t-freq[x])
+            ans = max(ans, freq[x] + inc)
+
+        return ans
+```
+
+分別處理答案的兩種情形。  
+
+答案在 nums **沒有**的索引上，位於 [x-2k, x] 區間內的元素都可以移動到相同位置。  
+可以枚舉右端點 x，並以**滑動窗口**維護左端點。  
+
+答案在 nums **原有**的索引上，則枚舉 nums 中的 x，以剛才的**雙指針**更新 [x-k, x+k] 區間。  
 
 ```python
 class Solution:
