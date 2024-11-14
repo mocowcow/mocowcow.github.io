@@ -67,17 +67,52 @@ class Solution:
         return ans
 ```
 
-但對於 Q3 來說，MX 高達 10^9，不可能直接開陣列，因此必須改用雜湊表。  
-雜湊表可以接受負數索引，就不必對 nums 加上偏移量。  
+仔細分析問題的本質，發現答案只有兩種情形：  
 
-差分構造完之後，我們只需要將出現過的索引位置排序後做前綴和即可。  
+1. 答案出現在 nums **原有**的索引上。  
+2. 答案出現在 nums **沒有**的索引上。  
 
-注意：某些情況答案會出現在 nums 中原有的索引，例如：  
-> nums = [10,11], k = 5, numOperations = 1。  
-> diff 中的鍵值只有 [10-5, 10+5+1, 11-5, 11+5+1]  
-> = [5, 16, 6, 17]  
+我們在做差分的時候，只有在 x-k, x+k+1 頻率會變化。只需檢查這兩個位置，就可以覆蓋情形一的答案。  
+至於情形二當然就是 nums 原有的 x。  
 
-但正確答案應該是把其中一個移到 10 或 11 上。因此原有的索引位置也須列入考慮。  
+---
+
+對於 Q3 來說，MX 高達 10^9，不可能直接開陣列。  
+但 N 依然是 10^5，每個 x 對應到 [x-k, x, x+k+1]，可以把用到的索引進行**離散化**，剩餘步驟相同。  
+
+時間複雜度 O(N log N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def maxFrequency(self, nums: List[int], k: int, numOperations: int) -> int:
+        pos = set()
+        for x in nums:
+            pos.add(x)
+            pos.add(x-k)
+            pos.add(x+k+1)
+
+        mp = {x:i for i, x in enumerate(sorted(pos))}
+        N = len(mp)
+        diff = [0] * (N + 5)
+        freq = Counter()
+        for x in nums:
+            diff[mp[x-k]] += 1
+            diff[mp[x+k+1]] -= 1
+            freq[mp[x]] += 1
+
+        ps = 0
+        ans = 1
+        for i in range(N+1):
+            ps += diff[i]
+            inc = min(ps - freq[i], numOperations)
+            ans = max(ans, freq[i] + inc)
+
+        return ans
+```
+
+其實根本不用離散化，直接用雜湊表就行，畢竟本來就是拿來存不連續的資料。  
+注意要把 nums 中的 x 也加入雜湊表的鍵值中。  
 
 時間複雜度 O(N log N)。  
 空間複雜度 O(N)。  
