@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3346. Maximum Frequency of an Element After Performing Operations I
-tags        : LeetCode Medium PrefixSum HashTable Sorting
+tags        : LeetCode Medium PrefixSum HashTable Sorting BinarySearch
 ---
 biweekly contest 143。  
 這題還真有夠難的，差點沒做出來，但是寫得有夠醜。  
@@ -98,6 +98,42 @@ class Solution:
             ps += diff[i]
             inc = min(ps - freq[i], numOperations)
             ans = max(ans, freq[i] + inc)
+
+        return ans
+```
+
+不知道差分的同學也可以用二分搜來做。  
+
+同樣地，先對每個 x 找出對應的 [x-k, x, x+k] 做為最高頻率的候選索引。  
+再將 nums 排序，枚舉候選索引 x，找到第一個大於等於 x-k 的索引、以及最後一個小於等於 x+k 的索引。  
+此區間大小扣掉 freq[x] 後，再與 numOperations 取最小值，即為可增加的頻率 inc。  
+
+時間複雜度 O(N log N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def maxFrequency(self, nums: List[int], k: int, numOperations: int) -> int:
+        nums.sort()
+        freq = Counter(nums)
+        pos = set()
+        for x in nums:
+            pos.add(x)
+            pos.add(x-k)
+            pos.add(x+k)
+
+        ans = 1
+        for x in pos:
+            # [x-k, x-k]
+            # first index >= x-k
+            left = bisect_left(nums, x-k)
+            # last index <= x+k
+            right = bisect_right(nums, x+k) - 1
+            t = right - left + 1
+
+            # update answer
+            inc = min(t - freq[x], numOperations)
+            ans = max(ans, freq[x] + inc)
 
         return ans
 ```
