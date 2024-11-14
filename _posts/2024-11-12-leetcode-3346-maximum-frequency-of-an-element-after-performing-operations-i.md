@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3346. Maximum Frequency of an Element After Performing Operations I
-tags        : LeetCode Medium PrefixSum HashTable Sorting BinarySearch
+tags        : LeetCode Medium PrefixSum HashTable Sorting BinarySearch SlidingWindow
 ---
 biweekly contest 143。  
 這題還真有夠難的，差點沒做出來，但是寫得有夠醜。  
@@ -140,7 +140,7 @@ class Solution:
 不知道差分的同學也可以用二分搜來做。  
 
 同樣地，先對每個 x 找出對應的 [x-k, x, x+k] 做為最高頻率的候選索引。  
-再將 nums 排序，枚舉候選索引 x，找到第一個大於等於 x-k 的索引、以及最後一個小於等於 x+k 的索引。  
+再將 nums 排序，枚舉候選索引 x，找到第一個大於等於 x-k 的索引 lo、以及最後一個小於等於 x+k 的索引 hi。  
 此區間大小扣掉 freq[x] 後，再與 numOperations 取最小值，即為可增加的頻率 inc。  
 
 時間複雜度 O(N log N)。  
@@ -159,15 +159,57 @@ class Solution:
 
         ans = 1
         for x in pos:
-            # [x-k, x-k]
-            # first index >= x-k
-            left = bisect_left(nums, x-k)
-            # last index <= x+k
-            right = bisect_right(nums, x+k) - 1
-            t = right - left + 1
+            # [x-k, x+k]
+            # nums[lo] >= x-k 
+            lo = bisect_left(nums, x-k)
+            # nums[hi] <= x+k
+            hi = bisect_right(nums, x+k) - 1
+            t = hi - lo + 1
 
             # update answer
             inc = min(t - freq[x], numOperations)
+            ans = max(ans, freq[x] + inc)
+
+        return ans
+```
+
+答案在 nums 中的情況，隨著選索引 x 遞增，lo 和 hi 同步遞增。可以用**雙指針**優化。  
+
+不在 nums 中的情況，位於 [x, x+2k] 區間內的元素都可以移動到相同位置，可以用**滑動窗口**計算。  
+
+時間複雜度 O(N log N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def maxFrequency(self, nums: List[int], k: int, numOperations: int) -> int:
+        N = len(nums)
+        nums.sort()
+        ans = 1
+
+        # case: answer index not in nums
+        left = 0
+        for right, x in enumerate(nums):
+            if nums[left] < x - k*2:
+                left += 1
+            ans = max(ans, min(numOperations, right-left+1))
+
+        # case: answer index in nums
+        freq = Counter(nums)
+        lo = 0
+        hi = 0
+        for x in nums:
+            # [x-k, x+k]
+            # nums[lo] >= x-k
+            while nums[lo] < x-k:
+                lo += 1
+
+            # nums[hi] <= x+k
+            while hi+1 < N and nums[hi+1] <= x+k:
+                hi += 1
+
+            t = hi - lo + 1
+            inc = min(numOperations, t-freq[x])
             ans = max(ans, freq[x] + inc)
 
         return ans
