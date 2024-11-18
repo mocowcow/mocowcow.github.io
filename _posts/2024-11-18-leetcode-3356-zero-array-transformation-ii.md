@@ -41,8 +41,7 @@ weekly contest 424。
 ```python
 class Solution:
     def minZeroArray(self, nums: List[int], queries: List[List[int]]) -> int:
-        N = len(nums)
-        Q = len(queries)
+        N, Q = len(nums), len(queries)
         
         def ok(k):
             diff = [0] * (N+5)
@@ -70,4 +69,26 @@ class Solution:
             return -1
 
         return lo
+```
+
+用內建函數看起來更簡潔。  
+
+```python
+class Solution:
+    def minZeroArray(self, nums: List[int], queries: List[List[int]]) -> int:
+        N, Q = len(nums), len(queries)
+        
+        def ok(k):
+            diff = [0] * (N+5)
+            for l, r, val in queries[:k]:
+                diff[l] += val
+                diff[r+1] -= val
+            return all(x<=y for x, y in zip(nums, accumulate(diff)))
+
+        ans = bisect_left(range(Q), True, key=ok)
+
+        if not ok(ans):
+            return -1
+
+        return ans
 ```
