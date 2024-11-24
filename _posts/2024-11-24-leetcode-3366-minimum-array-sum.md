@@ -42,7 +42,7 @@ base：當 op1 或 op2 小於 0，代表超過操作次數限制，不合法回�
 時間複雜度 O(N \* op1 \* op2)。  
 空間複雜度 O(N \* op1 \* op2)。  
 
-記憶化比較好寫，多加一個遞迴終止條件就好，不需要每次都檢查操作次數。  
+記憶化比較好寫，多加一個遞迴終止條件就好，不需要每次都檢查一堆條件。  
 
 ```python
 class Solution:
@@ -80,4 +80,37 @@ class Solution:
             return res
         
         return dp(0, op1, op2)
+```
+
+寫成遞推，執行速度差不多，個人感覺可讀性變低。  
+
+```python
+class Solution:
+    def minArraySum(self, nums: List[int], k: int, op1: int, op2: int) -> int:
+        N = len(nums)
+
+        # f[i][op1][op2]
+        f = [[[0] * (op2+1) for _ in range(op1+1)] for _ in range(N+1)]
+
+        for i in reversed(range(N)):
+            x = nums[i]
+            x2 = (x+1) // 2
+            x2k = x2-k
+            xk = x-k
+            xk2 = (xk+1) // 2
+            for o1 in range(op1+1):
+                for o2 in range(op2+1):
+                    res = f[i+1][o1][o2] + x
+                    if o1 > 0:
+                        res = min(res, f[i+1][o1-1][o2] + x2)
+                    if o2 > 0 and xk >= 0:
+                        res = min(res, f[i+1][o1][o2-1] + xk)
+                    if o1 > 0 and o2 > 0:
+                        if x2k >= 0:
+                            res = min(res, f[i+1][o1-1][o2-1] + x2k)
+                        if xk >= 0:
+                            res = min(res, f[i+1][o1-1][o2-1] + xk2)
+                    f[i][o1][o2] = res
+
+        return f[0][op1][op2]
 ```
