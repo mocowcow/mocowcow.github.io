@@ -89,3 +89,39 @@ class Solution:
 
         return ans
 ```
+
+改成遞推寫法。  
+
+```python
+class Solution:
+    def maxCollectedFruits(self, fruits: List[List[int]]) -> int:
+        N = len(fruits)
+
+        ans = 0
+        for i in range(N):
+            ans += fruits[i][i]
+
+        f = [[-inf] * N for _ in range(N)]
+        g = [[-inf] * N for _ in range(N)]
+        f[-1][-1] = g[-1][-1] = 0
+
+        # upper right guy
+        for r in reversed(range(N-1)):
+            for c in range(r+1, N):
+                res = -inf
+                for cc in [c-1, c, c+1]:
+                    if 0 <= cc < N:
+                        res = max(res, f[r+1][cc])
+                f[r][c] = res + fruits[r][c]
+
+        # bottom left guy
+        for c in reversed(range(N-1)):
+            for r in range(c+1, N):
+                res = -inf
+                for rr in [r-1, r, r+1]:
+                    if 0 <= rr < N:
+                        res = max(res, g[rr][c+1])
+                g[r][c] = res + fruits[r][c]
+
+        return ans + f[0][N-1] + g[N-1][0]
+```
