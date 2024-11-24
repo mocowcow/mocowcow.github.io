@@ -114,3 +114,42 @@ class Solution:
 
         return f[0][op1][op2]
 ```
+
+dp[i] 只參考到 dp[i+1]，可以優化掉一維度的空間。  
+但是速度還是差不多。  
+
+時間複雜度 O(N \* op1 \* op2)。  
+空間複雜度 O(op1 \* op2)。  
+
+```python
+class Solution:
+    def minArraySum(self, nums: List[int], k: int, op1: int, op2: int) -> int:
+        N = len(nums)
+
+        # f[op1][op2]
+        f = [[0] * (op2+1) for _ in range(op1+1)]
+
+        for i in reversed(range(N)):
+            x = nums[i]
+            x2 = (x+1) // 2
+            x2k = x2-k
+            xk = x-k
+            xk2 = (xk+1) // 2
+            f2 = [[0] * (op2+1) for _ in range(op1+1)]
+            for o1 in range(op1+1):
+                for o2 in range(op2+1):
+                    res = f[o1][o2] + x
+                    if o1 > 0:
+                        res = min(res, f[o1-1][o2] + x2)
+                    if o2 > 0 and xk >= 0:
+                        res = min(res, f[o1][o2-1] + xk)
+                    if o1 > 0 and o2 > 0:
+                        if x2k >= 0:
+                            res = min(res, f[o1-1][o2-1] + x2k)
+                        if xk >= 0:
+                            res = min(res, f[o1-1][o2-1] + xk2)
+                    f2[o1][o2] = res
+            f = f2
+
+        return f[op1][op2]
+```
