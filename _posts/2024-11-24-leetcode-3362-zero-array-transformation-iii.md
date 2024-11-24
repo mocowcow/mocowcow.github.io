@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3362. Zero Array Transformation III
-tags        : LeetCode Medium
+tags        : LeetCode Medium PrefixSum Sorting Greedy SegmentTree Heap
 ---
 biweekly contest 144。  
 這屌題也是 5 分，其實應該給個 6 分。  
@@ -175,4 +175,61 @@ class SegmentTree:
         if M < j:
             self.update(id*2+1, M+1, R, i, j, val)
         self.push_up(id)
+```
+
+上述方法有兩個很重要的重點：  
+
+- 循序，由左至右處理 (掃描線)。  
+- 貪心，優先刪除**較小區間** (優先保留較大區間)。  
+
+其實我們只需要將所有區間按照左端點排序，並且**由左至右**依序處理每個 nums[i]，並在區間數量不足之時嘗試加入新區間。  
+
+試想以下例子：  
+> 當前 nums[5] = 1，但 ps[i] = 0 的區間數不足  
+> 有 [2,5], [2,7], [4,8] 三個區間可選，選哪個最佳？  
+
+因為我們是**由左至右**處理，所以 num[0..4] 肯定已經被滿足，不需要考慮。  
+而 [4,8] 可以對 [5..8] 三個位置做出貢獻，因此選擇 [4,8] 是最佳方案。  
+
+---
+
+計算每個位置的覆蓋區間數，同樣使用**差分陣列**。  
+
+另外還需要**維護可用的區間**，並取出**右端點最大者**，可使用 max heap。  
+注意：在 ps[i] 不足時，heap 裝的區間有可能位於 i 左方，無法使用。  
+
+時間複雜度 O(N + Q log Q)。  
+空間複雜度 O(N + Q)。  
+
+```python
+class Solution:
+    def maxRemoval(self, nums: List[int], queries: List[List[int]]) -> int:
+        N = len(nums)
+        diff = [0] * (N+5)
+        ps = 0
+
+        q = deque(sorted(queries))
+        h = [] # right bound of available invervals
+        ans = len(queries)
+        for i in range(N):
+            # maintain available intervals
+            while q and q[0][0] == i:
+                t = q.popleft()
+                heappush(h, -t[1])
+
+
+            ps += diff[i]
+            # add new intervals while not enough
+            while ps < nums[i] and h:
+                e = -heappop(h)
+                if e >= i: # [i, r] increased by 1
+                    ans -= 1
+                    ps += 1
+                    diff[e+1] -= 1
+            
+            # still not possible to zero
+            if ps < nums[i]:
+                return -1
+
+        return ans
 ```
