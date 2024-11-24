@@ -5,12 +5,15 @@ from post_maker import PostMaker
 
 
 def main():
+    print("輸入前言：")
+    foreword = input()
+
     print("輸入題目網址：")
     maker = PostMaker()
     while True:
         link = input()
         title_slug = link.split("/")[4]
-        maker.make_leetcode_post(title_slug)
+        maker.make_leetcode_post(title_slug, foreword=foreword)
 
 
 if __name__ == "__main__":
