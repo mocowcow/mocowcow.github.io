@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3372. Maximize the Number of Target Nodes After Connecting Trees I
-tags        : LeetCode Medium Graph BFS
+tags        : LeetCode Medium Graph Tree BFS Greedy
 ---
 weekly contest 426。
 
