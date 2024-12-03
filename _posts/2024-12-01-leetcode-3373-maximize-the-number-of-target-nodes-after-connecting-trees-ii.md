@@ -102,3 +102,48 @@ class Solution:
 
         return ans
 ```
+
+改寫成 dfs 寫法。  
+
+```python
+class Solution:
+    def maxTargetNodes(self, edges1: List[List[int]], edges2: List[List[int]]) -> List[int]:
+        N, M = len(edges1) + 1, len(edges2) + 1
+        g1 = [[] for _ in range(N)]
+        g2 = [[] for _ in range(M)]
+        for a, b in edges1:
+            g1[a].append(b)
+            g1[b].append(a)
+        for a, b in edges2:
+            g2[a].append(b)
+            g2[b].append(a)
+
+        # find odd/even of tree
+        def dfs(g, i, fa, parity):
+            res = [0, 0]
+            res[parity] = 1
+            for j in g[i]:
+                if j == fa:
+                    continue
+                t = dfs(g, j, i, parity^1)
+                res[0] += t[0]
+                res[1] += t[1]
+            return res
+
+        tree1 = dfs(g1, 0, -1, 0)
+        tree2 = dfs(g2, 0, -1, 0)
+        # can add odd or even of tree2
+        mx = max(tree2)
+        ans = [0] * N
+
+        def dfs(i, fa, even, odd):
+            ans[i] = even + mx
+            for j in g1[i]:
+                if j == fa:
+                    continue
+                dfs(j, i, odd, even)
+
+        dfs(0, -1, tree1[0], tree1[1])
+
+        return ans
+```
