@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3372. Maximize the Number of Target Nodes After Connecting Trees I
-tags        : LeetCode Medium Graph Tree BFS Greedy
+tags        : LeetCode Medium Graph Tree BFS DFS Greedy
 ---
 weekly contest 426。
 
@@ -77,6 +77,46 @@ class Solution:
         ans = [0] * N
         for i in range(N):
             res = bfs(g1, i, k)
+            ans[i] = res + mx
+
+        return ans
+```
+
+改成 dfs 寫法，比 bfs 短了不少。  
+
+```python
+class Solution:
+    def maxTargetNodes(self, edges1: List[List[int]], edges2: List[List[int]], k: int) -> List[int]:
+        N, M = len(edges1) + 1, len(edges2) + 1
+        g1 = [[] for _ in range(N)]
+        g2 = [[] for _ in range(M)]
+        for a, b in edges1:
+            g1[a].append(b)
+            g1[b].append(a)
+        for a, b in edges2:
+            g2[a].append(b)
+            g2[b].append(a)
+        
+        def dfs(g, i, fa, step):
+            if step < 0:
+                return 0
+            res = 1
+            for j in g[i]:
+                if j == fa:
+                    continue
+                res += dfs(g, j, i, step-1)
+            return res
+
+        # find best conn node of tree2
+        mx = 0
+        if k > 0:
+            for i in range(M):
+                res = dfs(g2, i, -1, k-1)
+                mx = max(mx, res)
+
+        ans = [0] * N
+        for i in range(N):
+            res = dfs(g1, i, -1, k)
             ans[i] = res + mx
 
         return ans
