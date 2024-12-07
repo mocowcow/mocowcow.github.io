@@ -6,6 +6,8 @@ tags        : LeetCode Medium HashTable
 weekly contest 426。  
 題目有點繞，多看幾次才懂。  
 
+最近在刷 CF，發現根本就是 [1512D - Corrupted Array](https://codeforces.com/problemset/problem/1512/D)。  
+
 ## 題目
 
 輸入整數陣列 nums。  
