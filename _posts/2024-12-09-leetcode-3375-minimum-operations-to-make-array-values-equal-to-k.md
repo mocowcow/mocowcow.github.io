@@ -55,3 +55,26 @@ class Solution:
 
         return ans
 ```
+
+其實根本不用每次都重新找最大值。  
+假設有 s = {1,2,3,..}，必定需要刪 len(s) - 1 後，剩下 1 個元素。  
+若最後的元素不是 k，還需要多操作一次。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def minOperations(self, nums: List[int], k: int) -> int:
+        s = set(nums)
+
+        if min(s) < k:
+            return -1
+
+        ans = len(s) - 1
+
+        if min(s) != k:
+            ans += 1
+ 
+        return ans
+```
