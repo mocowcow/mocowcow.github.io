@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3376. Minimum Time to Break Locks I
-tags        : LeetCode Medium Simulation
+tags        : LeetCode Medium Simulation DP BitManipulation Bitmask
 ---
 biweekly contest 145。  
 這題好像有點爭議，暴力枚舉聽說會卡常數，狀壓 dp 好像不該出現在 Q2，非常尷尬。  
@@ -44,4 +44,45 @@ class Solution:
             ans = min(ans, time)
 
         return ans
+```
+
+更快的做法是**狀壓 dp**。  
+
+---
+
+在枚舉開鎖順序時，不同的選擇順序可能會剩下相同的鎖，有**重疊的子問題**，考慮 dp。  
+以 bitmask 表示鎖的狀態，0 代表沒開，1 代表已開。  
+
+定義 dp(i, mask)：已開 i 個鎖，開剩下 N-i 個鎖的最小時間。  
+轉移：dp(i, mask) = min(dp(i+1, new_mask) + time[j])，其中 time[j] = 開第 j 個鎖的時間。  
+base：當 i = N 時，鎖全開完，回傳 0。  
+
+答案入口 dp(0, 0)。  
+
+時間複雜度 O(2^N \* N)。  
+空間複雜度 O(2^N)。  
+
+注意：狀態的 i 一定等同於 mask 的 bit 數，因此每個 mask 只會對應一種 i。  
+
+```python
+class Solution:
+    def findMinimumTime(self, strength: List[int], K: int) -> int:
+        N = len(strength)
+
+        @cache
+        def dp(i, mask):
+            if i == N:
+                return 0
+                
+            x = 1 + K*i
+            res = inf
+            for j in range(N):
+                if (1<<j) & mask == 0:
+                    req = strength[j]
+                    time = (req+x-1) // x
+                    new_mask = mask | (1<<j)
+                    res = min(res, dp(i+1, new_mask) + time)
+            return res
+
+        return dp(0, 0)
 ```
