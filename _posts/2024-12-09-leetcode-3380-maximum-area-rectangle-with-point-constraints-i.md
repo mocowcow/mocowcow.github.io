@@ -71,3 +71,47 @@ class Solution:
 
         return ans
 ```
+
+最最最暴力的做法，且跟座標值域無關。  
+
+直接枚舉四個點，看否正好湊成矩形。  
+若湊成，再掃一次全點，看哪些在矩形內。正好四個就更新答案。  
+
+時間複雜度 O(N^5)。  
+空間複雜度 O(1)。  
+
+老實說我寫起來非常不舒服，光是變數命名就快吐了，一堆嵌套甚至要把 if 換行。  
+很配服能快速寫出來的人。  
+
+```python
+class Solution:
+    def maxRectangleArea(self, points: List[List[int]]) -> int:
+        N = len(points)
+        ans = 0
+        # enumerate 4 vertices
+        # x1y2 y2y2
+        # x1y1 x2y1
+        for ll in points: # lower left
+            for ur in points:# upper right
+                for ul in points: # upper left
+                    for lr in points: # lower right
+                        if ll[0] == ul[0] and ll[1] == lr[1] \
+                        and ur[0] == lr[0] and ur[1] == ul[1]:
+                            # count points inside
+                            x1, y1 = ll
+                            x2, y2 = ur
+                            cnt = 0
+                            for x, y in points:
+                                if x1 <= x <= x2 and y1 <= y <= y2:
+                                    cnt += 1
+                            # update answer if only 4 points
+                            if cnt == 4:
+                                w = x2-x1
+                                h = y2-y1
+                                ans = max(ans, w*h)
+
+        if ans == 0:
+            return -1
+
+        return ans
+```
