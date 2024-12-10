@@ -89,7 +89,7 @@ class Solution:
         N = len(points)
         ans = 0
         # enumerate 4 vertices
-        # x1y2 y2y2
+        # x1y2 x2y2
         # x1y1 x2y1
         for ll in points: # lower left
             for ur in points:# upper right
@@ -114,4 +114,15 @@ class Solution:
             return -1
 
         return ans
+```
+
+前面四層寫成這樣，照圖施工或許比較方便。  
+
+```python
+# x3y3 x2y2
+# x1y1 x4y4
+for x1, y1 in points: # lower left
+    for x2, y2 in points:# upper right
+        for x3, y3 in points: # upper left
+            for x4, y4 in points: # lower right
 ```
