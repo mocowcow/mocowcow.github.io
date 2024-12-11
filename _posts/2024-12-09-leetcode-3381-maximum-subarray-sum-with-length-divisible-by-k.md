@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3381. Maximum Subarray Sum With Length Divisible by K
-tags        : LeetCode Medium Math DP
+tags        : LeetCode Medium Math DP PrefixSum
 ---
 weekly contest 427。  
 這題挺妙的，我本來以為做不出來，後來靠著**從特殊到一般**的技巧找出答案。  
@@ -83,6 +83,39 @@ class Solution:
                 
             # update answer
             ans = max(ans, mx)
+
+        return ans
+```
+
+另外一種思路是**前綴和**。  
+
+如果有一個子陣列 nums[..i] 長度為 sz，要刪掉的前綴長度為何，才能使得剩餘子陣列長度為 k 的倍數？  
+
+同樣從特殊到一般，k = 1 時隨便刪都行。  
+k = 2 時，若 sz 是偶數，則也要扣掉偶數長度的前綴；奇數同理。  
+推廣到更大的 k，子陣列必須刪掉對 k 同餘長度前綴。  
+有式子：  
+> pre_sum[i] - pre_min[i%k]  
+
+為了使子陣列和盡可能大，故刪除的前綴越小越好 (負數更好)，因此維護最小值。  
+注意： 在子陣列長度正好為 k 時，可以不刪除任何前綴，故 pre_min[k-1] 初始值 0。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(k)。  
+
+```python
+class Solution:
+    def maxSubarraySum(self, nums: List[int], k: int) -> int:
+        pre_min = [inf] * k
+        pre_min[k-1] = 0
+
+        ans = -inf
+        ps = 0
+        for i, x in enumerate(nums):
+            grp = i % k
+            ps += x
+            ans = max(ans, ps - pre_min[grp])
+            pre_min[grp] = min(pre_min[grp], ps) 
 
         return ans
 ```
