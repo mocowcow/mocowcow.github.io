@@ -126,3 +126,44 @@ for x1, y1 in points: # lower left
         for x3, y3 in points: # upper left
             for x4, y4 in points: # lower right
 ```
+
+另一種比較不暴力的方式，同樣和值域無關。  
+
+枚舉兩個點作為對角線 (可能是斜線或反斜線)，並推出相對的兩個點。  
+然後掃一次全點，只統計頂點數。要是某點不在矩形外、也不是頂點，那就不合法。  
+
+時間複雜度 O(N^3)。  
+空間複雜度 O(1)。  
+
+```python
+class Solution:
+    def maxRectangleArea(self, points: List[List[int]]) -> int:
+        N = len(points)
+        ans = 0
+        for p1 in points:
+            for p2 in points:
+                x1, x2 = min(p1[0], p2[0]), max(p1[0], p2[0])
+                y1, y2 = min(p1[1], p2[1]), max(p1[1], p2[1])
+                cnt = 0 # count only vertices
+                for x, y in points:
+                    # outside
+                    if x < x1 or x > x2 or y < y1 or y > y2: 
+                        continue
+                    # vertex
+                    if x in [x1, x2] and y in [y1, y2]:
+                        cnt += 1
+                    # inside but not vertex
+                    else:
+                        cnt = inf
+
+                # update answer if only 4 vertices
+                if cnt == 4:
+                    w = x2-x1
+                    h = y2-y1
+                    ans = max(ans, w*h)
+
+        if ans == 0:
+            return -1
+
+        return ans
+```
