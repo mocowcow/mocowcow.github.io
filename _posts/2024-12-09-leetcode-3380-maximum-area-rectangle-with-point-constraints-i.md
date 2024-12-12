@@ -45,7 +45,7 @@ class Solution:
         for x, y in points:
             a[x][y] = 1
             
-        ans = -inf
+        ans = -1
         for x2, y2 in points:
             x = x2-1
             y = y2-1
@@ -66,9 +66,6 @@ class Solution:
                     h = y2-y
                     ans = max(ans, w*h)
 
-        if ans == -inf:
-            return -1
-
         return ans
 ```
 
@@ -87,7 +84,7 @@ class Solution:
 class Solution:
     def maxRectangleArea(self, points: List[List[int]]) -> int:
         N = len(points)
-        ans = 0
+        ans = -1
         # enumerate 4 vertices
         # x1y2 x2y2
         # x1y1 x2y1
@@ -109,9 +106,6 @@ class Solution:
                                 w = x2-x1
                                 h = y2-y1
                                 ans = max(ans, w*h)
-
-        if ans == 0:
-            return -1
 
         return ans
 ```
@@ -139,7 +133,7 @@ for x1, y1 in points: # lower left
 class Solution:
     def maxRectangleArea(self, points: List[List[int]]) -> int:
         N = len(points)
-        ans = 0
+        ans = -1
         for p1 in points:
             for p2 in points:
                 x1, x2 = min(p1[0], p2[0]), max(p1[0], p2[0])
