@@ -5,6 +5,7 @@ tags        : LeetCode Medium Graph Tree DFS HashTable
 ---
 weekly contest 428。  
 又是一長串垃圾題目，而且跟 Q1 一樣疑惑，再加上一堆變數。  
+而且浮點數運算還沒有給誤差允許範圍，非常爛的題。  
 
 ## 題目
 
@@ -29,7 +30,7 @@ weekly contest 428。
 光是題目就有 8 個段落，然後下面測資限制有 12 項。  
 一下子說可以逆著把 target 轉回 start，下面又說保證沒有循環，這樣到底是不是循環？  
 
-反正我覺得是有循環，但當天內換過的沒必要換回去，不影響做題。  
+反正當天內換過的沒必要換回去，不影響做題。  
 
 ---
 
@@ -56,21 +57,74 @@ weekly contest 428。
 class Solution:
     def maxAmount(self, initialCurrency: str, pairs1: List[List[str]], rates1: List[float], pairs2: List[List[str]], rates2: List[float]) -> float:
         memo1 = defaultdict(lambda: -inf)
-        dfs(initialCurrency, 1, pairs1, rates1, memo1)
+        dfs(initialCurrency, "", 1, pairs1, rates1, memo1)
 
         memo2 = defaultdict(lambda: -inf)
         for curr, cnt in memo1.items():
-            dfs(curr, cnt, pairs2, rates2, memo2)
-
+            dfs(curr, "", cnt, pairs2, rates2, memo2)
+            
         return memo2[initialCurrency]
 
-def dfs(curr, cnt, pair, rate, memo):
-    if memo[curr] >= cnt:
-        return
-    memo[curr] = cnt
+def dfs(curr, fa, cnt, pair, rate, memo):
+    memo[curr] = max(memo[curr], cnt)
     for i, (s, e) in enumerate(pair):
-        if s == curr: # rate
-            dfs(e, cnt*rate[i], pair, rate, memo)
-        if e == curr: #  1 / rate
-            dfs(s, cnt/rate[i], pair, rate, memo)
+        if s == curr and fa != e: # rate
+            dfs(e, curr, cnt*rate[i], pair, rate, memo)
+        if e == curr and fa != s: #  1 / rate
+            dfs(s, curr, cnt/rate[i], pair, rate, memo)
+```
+
+把匯兌方式建圖可以優化枚舉的複雜度。  
+start 到 target 邊權 rate；target 到 start 邊權 1/rate。  
+
+---
+
+仔細觀察貨幣兌換的過程：  
+> 第一天從 init 換成 x，、二天再從 x 換回 init。  
+
+可以枚舉中間貨幣 temp，以第一天 init 換 temp，第二天再把 temp 換回 init。  
+
+但 dfs 求出的是 init 換成各貨幣的匯率，memo[temp] 代表 init 換 temp。  
+可以對第二天**逆向建圖**；也可以使用**除法**當作反向匯兌。此處選擇後者。  
+
+---
+
+也可能不存在有效的中間貨幣，故答案初始值 1。  
+枚舉 temp 並以 memo1[temp] / memo2[temp] 更新答案。  
+
+另外兩天各只需要一次 dfs，不會有重複訪問，可以把 max 改回普通賦值。  
+
+時間複雜度 O(M + N)。  
+空間複雜度 O(M + N)。  
+
+```python
+class Solution:
+    def maxAmount(self, initialCurrency: str, pairs1: List[List[str]], rates1: List[float], pairs2: List[List[str]], rates2: List[float]) -> float:
+        g1 = make_graph(pairs1, rates1)
+        memo1 = defaultdict(lambda: -inf)
+        dfs(initialCurrency, "", 1, g1, memo1)
+
+        g2 = make_graph(pairs2, rates2)
+        memo2 = defaultdict(lambda: -inf)
+        dfs(initialCurrency, "", 1, g2, memo2)
+
+        ans = 1
+        for temp in memo1: # enumerate middle currency
+            ans = max(ans, memo1[temp] / memo2[temp])
+
+        return ans
+
+def make_graph(pairs, rates):
+    g = defaultdict(list)
+    for i, (s, e) in enumerate(pairs):
+        g[s].append([e, rates[i]])
+        g[e].append([s, 1/rates[i]])
+    return g
+
+def dfs(curr, fa, cnt, g, memo):
+    memo[curr] = cnt
+    for adj, rate in g[curr]:
+        if adj == fa:
+            continue
+        dfs(adj, curr, cnt*rate, g, memo)
 ```
