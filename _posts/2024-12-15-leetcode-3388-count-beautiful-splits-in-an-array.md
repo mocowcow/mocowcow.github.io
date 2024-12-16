@@ -65,11 +65,16 @@ class Solution:
 再來是作者預期的作法。  
 
 a1, a2, a3 屬於 nums。  
-要檢查是否互為前綴關係，可以求 nums 的**最長公共前綴** LCP (Longest Common Prefix)。  
+要檢查是否互為前綴關係，可以求 nums 的**最長公共子陣列** LCS (Longest Common Subarray)。  
+注意是 substring 不是 subsequence，但大同小異。  
+相似題 [718. Maximum Length of Repeated Subarray](https://leetcode.com/problems/maximum-length-of-repeated-subarray/)。  
 
-lcp[i][j] 代表 nums[i..] 和 nums[j..] 的最長公共前綴長度。  
-若 nums[i] == nums[j]，則為 lcp[i+1][j+1] + 1；否則為 0。  
+---
 
+lcs[i][j] 指的是 nums[i..] 和 nums[j..] 的最長公共前綴長度。  
+為符合本題題意，改叫 LCP (Longest Common Prefix)。  
+
+若 nums[i] == nums[j]，則 lcp[i][j] = lcp[i+1][j+1] + 1；否則為 0。  
 注意：lcp[i][j] 和 lcp[j][i] 是等價的，但因為本題測資很爛的關係，全算會噴 MLE，所以只能限制 i<j。  
 
 ---
