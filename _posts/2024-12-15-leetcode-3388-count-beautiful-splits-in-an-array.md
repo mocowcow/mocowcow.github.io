@@ -84,7 +84,7 @@ lcs[i][j] 指的是 nums[i..] 和 nums[j..] 的最長公共前綴長度。
 - a1 和 a2 求 lcp[0][i]。  
 - a2 和 a3 求 lcp[i][j]。  
 
-lcp 在計算時沒有考慮到子陣列的右端點，因此可能發生重疊。例如：  
+lcp 在計算時沒有考慮到子陣列的右端點，因此可能發生**重疊**。例如：  
 > nums = [1,0,1,0,1,0]  
 > i, j = 2, 3  
 > 分割成 [1,0], [1], [0,1,0]  
@@ -108,9 +108,9 @@ class Solution:
                 if nums[i] == nums[j]:
                     lcp[i][j] = lcp[i+1][j+1] + 1
 
-        # a1 = [..i-1], sz1 = i
+        # a1 = [0..i-1], sz1 = i
         # a2 = [i..j-1], sz2 = j-i
-        # a3 = [j..], sz3 = N-j
+        # a3 = [j..N-1], sz3 = N-j
         ans = 0
         for i in range(1, N-1):
             sz1 = i
@@ -125,4 +125,73 @@ class Solution:
                     ans += 1
 
         return ans
+```
+
+a1 和 a2 匹配前綴，本質上是 nums 和**自己的後綴**找**共通前綴**。  
+有持續打周賽的同學應該會想到 z-function。  
+
+---
+
+總之先拿 nums 求一次 z，記做 z0。  
+對於所有 a2 各算一次 z。每次 O(N)，總共要算 O(N) 次。  
+
+然後可以 O(1) 求**最長共通前綴** lcp：  
+
+- 若 a2 = nums[i..]，則 a1 和 a2 的 lcp = z[i]。  
+- 若 a3 = nums[i..]，則 a2 和 a3 的 lcp = z[j-i]，因為要扣掉最前方沒用到的 a1 偏移量。  
+
+同樣需注意子陣列的**重疊**問題，透過檢查子陣列長度保證沒有重疊。  
+雖然我比賽時就是這個作法，但被重疊卡了很久，太苦了。  
+
+雖然時間複雜度和 dp 求 lcp 相同，但是只需要同時保留兩個 z，節省更多空間。  
+
+時間複雜度 O(N^2)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def beautifulSplits(self, nums: List[int]) -> int:
+        N = len(nums)
+        z0 = z_function(nums)
+
+        # a1 = [0..i-1], sz = i
+        # a2 = [i..j-1], sz = j-i
+        # a3 = [j..N-1], sz = N-j
+        ans = 0
+        for i in range(1, N-1):
+            sz1 = i
+            z = z_function(nums[i:])
+            for j in range(i+1, N):
+                sz2 = j-i
+                sz3 = N-j
+                case1 = sz1 <= sz2 and z0[i] >= sz1
+                case2 = sz2 <= sz3 and z[j-i] >= sz2
+                if case1 or case2:
+                    ans += 1
+
+        return ans
+
+
+def z_function(s):
+    N = len(s)
+    z = [0]*N
+    L = R = 0
+    for i in range(1, N):
+        if R < i:  # not covered by previous z-box
+            # z[i] = 0
+            pass
+        else:  # partially or fully covered
+            j = i-L
+            if j+z[j] < z[L]:  # fully covered
+                z[i] = z[j]
+            else:
+                z[i] = R-i+1
+
+        while i+z[i] < N and s[i+z[i]] == s[z[i]]:  # remaining substring
+            z[i] += 1
+        if i+z[i]-1 > R:  # R out of prev z-box, update R
+            L = i
+            R = i+z[i]-1
+
+    return z
 ```
