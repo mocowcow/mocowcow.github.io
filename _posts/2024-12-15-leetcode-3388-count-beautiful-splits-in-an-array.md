@@ -138,7 +138,7 @@ a1 和 a2 匹配前綴，本質上是 nums 和**自己的後綴**找**共通前�
 然後可以 O(1) 求**最長共通前綴** lcp：  
 
 - 若 a2 = nums[i..]，則 a1 和 a2 的 lcp = z[i]。  
-- 若 a3 = nums[i..]，則 a2 和 a3 的 lcp = z[j-i]，因為要扣掉最前方沒用到的 a1 偏移量。  
+- 若 a3 = nums[j..]，則 a2 和 a3 的 lcp = z[j-i]，因為要扣掉最前方沒用到的 a1 偏移量。  
 
 同樣需注意子陣列的**重疊**問題，透過檢查子陣列長度保證沒有重疊。  
 雖然我比賽時就是這個作法，但被重疊卡了很久，太苦了。  
@@ -164,9 +164,8 @@ class Solution:
             for j in range(i+1, N):
                 sz2 = j-i
                 sz3 = N-j
-                case1 = sz1 <= sz2 and z0[i] >= sz1
-                case2 = sz2 <= sz3 and z[j-i] >= sz2
-                if case1 or case2:
+                if sz1 <= sz2 and z0[i] >= sz1 or \
+                sz2 <= sz3 and z[j-i] >= sz2:
                     ans += 1
 
         return ans
@@ -194,4 +193,52 @@ def z_function(s):
             R = i+z[i]-1
 
     return z
+```
+
+其實 rolling hash 也可以做，只是我看這測資感覺會 TLE 就沒嘗試。  
+然而並不會超時，而且寫起來還很快。  
+
+- 若 a2 = nums[i..]，則 a1 和 a2 比對 h[0..i-1] 和 h[i..i+i-1]。  
+- 若 a3 = nums[j..]，則 a2 和 a3 比對 h[i..j-1] 和 h[j..j+(j-1)-1]。  
+
+時間複雜度 O(N^2)。  
+空間複雜度 O(N)。  
+
+```python
+MOD = 1_000_000_901
+class Solution:
+    def beautifulSplits(self, nums: List[int]) -> int:
+        N = len(nums)
+        rh = RollingHash(nums, MOD)
+
+        # a1 = [0..i-1], sz = i
+        # a2 = [i..j-1], sz = j-i
+        # a3 = [j..N-1], sz = N-j
+        ans = 0
+        for i in range(1, N-1):
+            sz1 = i
+            for j in range(i+1, N):
+                sz2 = j-i
+                sz3 = N-j
+                if sz1 <= sz2 and rh.get(0, i-1) == rh.get(i, i+sz1-1) or \
+                sz2 <= sz3 and rh.get(i, j-1) == rh.get(j, j+sz2-1):
+                    ans += 1
+
+        return ans
+
+
+class RollingHash:
+    def __init__(self, s, mod):
+        # self.s = s
+        self.mod = mod
+        base = 87
+        ps = self.ps = [0] * (len(s) + 1)
+        base_pow = self.base_pow = [1] * (len(s) + 1)
+        for i, c in enumerate(s):
+            ps[i+1] = (ps[i] * base + c) % mod
+            base_pow[i+1] = (base_pow[i] * base) % mod
+
+    def get(self, L, R):
+        # print(self.s[L:R+1])
+        return (self.ps[R+1] - self.ps[L] * self.base_pow[R-L+1]) % self.mod
 ```
