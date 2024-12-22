@@ -18,6 +18,7 @@ weekly contest 429。
 ## 解法
 
 暴力模擬，有重複就刪。  
+py 切片還挺方便，不用考慮剩餘原素是否足夠。  
 
 時間複雜度 O(N^2)。  
 空間複雜度 O(N)。  
@@ -35,4 +36,27 @@ class Solution:
             ans += 1
 
         return ans
+```
+
+因為刪除只能從前方進行，所以可以逆著遍歷，找到**最長**的不重複後綴。  
+找到後綴之後，其餘都要刪除，除 3 向上取整。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def minimumOperations(self, nums: List[int]) -> int:
+        N = len(nums)
+        s = set()
+        for i in reversed(range(N)):
+            if nums[i] in s: 
+                # delete nums[0..i], sz = i+1
+                # return ceil(sz / 3)
+                return (i+1+3-1) // 3
+
+            s.add(nums[i])
+
+        # no need delete
+        return 0
 ```
