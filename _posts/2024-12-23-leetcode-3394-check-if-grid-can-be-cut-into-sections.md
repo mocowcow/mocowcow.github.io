@@ -57,13 +57,39 @@ class Solution:
 
         def ok(a):
             a.sort()
-            cnt = 1
-            mx = a[0][1]
-            for s, e in a[1:]:
+            mx = cnt = 0
+            for s, e in a:
                 if s >= mx:
                     cnt += 1
                 mx = max(mx, e)
             return cnt >= 3
 
         return ok(xs) or ok(ys)
+```
+
+總感覺這東西有點熟悉，原來是**區間合併**。  
+[56. Merge Intervals](https://leetcode.com/problems/merge-intervals/)。  
+
+差別在於原題在兩區間碰到就可以合併，貼過來稍微改一下即可。  
+
+```python
+class Solution:
+    def checkValidCuts(self, n: int, rectangles: List[List[int]]) -> bool:
+        xs = []
+        ys = []
+        for x1, y1, x2, y2 in rectangles:
+            xs.append([x1, x2])
+            ys.append([y1, y2])
+
+        def merge(a):
+            a.sort()
+            res = []
+            for s, e in a:
+                if not res or s > res[-1][1]:
+                    res.append([s, e])
+                else:
+                    res[-1][1] = max(res[-1][1], e)
+            return len(res) >= 3
+                
+        return merge(xs) or merge(ys)
 ```
