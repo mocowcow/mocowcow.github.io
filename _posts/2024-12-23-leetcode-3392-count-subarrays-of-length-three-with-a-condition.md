@@ -45,3 +45,21 @@ func countSubarrays(nums []int) int {
     return ans
 }
 ```
+
+或是把等式移項：  
+> a + c = b / 2  
+> 2a + 2c = b  
+
+```go
+func countSubarrays(nums []int) int {
+    N := len(nums)
+    ans := 0
+    for i := 0; i < N-2; i++ {
+        if (nums[i] + nums[i+2])*2 == nums[i+1] {
+            ans++
+        }
+    }
+
+    return ans
+}
+```
