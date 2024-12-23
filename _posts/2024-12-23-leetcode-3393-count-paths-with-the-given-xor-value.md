@@ -36,16 +36,56 @@ class Solution:
         M, N = len(grid), len(grid[0])
 
         @cache
-        def dp(r, c, val):
-            if r == M-1 and c == N-1:
+        def dp(i, j, val):
+            if i == M-1 and j == N-1:
                 return int(val == k)
 
             res = 0
-            if r+1 < M:
-                res = dp(r+1, c, val^grid[r+1][c])
-            if c+1 < N:
-                res += dp(r, c+1, val^grid[r][c+1])
+            if i+1 < M:
+                res = dp(i+1, j, val ^ grid[i+1][j])
+            if j+1 < N:
+                res += dp(i, j+1, val ^ grid[i][j+1])
             return res % MOD
 
         return dp(0, 0, grid[0][0])
+```
+
+注意本題保證 k 小於 16，也就是最大 15 = 0b1111。  
+不超過 15 的數互相 XOR 也只會在 [0, 15] 的範圍內，因此遞推參數要開 16 格。  
+
+但如果 k 的最大值二進制不完全是 1 位元，做完 XOR 後很有可能超過 k。例如：  
+> k 上限 2  
+> 1 XOR 2 = 3  
+
+因此大小 MX 應該是取決於 k 與 grid 內元素的最大位元長度 bit_len，把每個位都設為 1，也就是 2^bitlen 格。  
+
+```python
+MOD = 10 ** 9 + 7
+class Solution:
+    def countPathsWithXorValue(self, grid: List[List[int]], k: int) -> int:
+        M, N = len(grid), len(grid[0])
+
+        mx = k
+        for row in grid:
+            for x in row:
+                if x > mx:
+                    mx = x
+
+        MX = 1 << mx.bit_length()
+        f = [[[0] * MX for _ in range(N)] for _ in range(M)]
+        f[M-1][N-1][k] = 1
+
+        for i in reversed(range(M)):
+            for j in reversed(range(N)):
+                if i == M-1 and j == N-1:
+                    continue
+                for val in range(MX):
+                    res = 0
+                    if i+1 < M:
+                        res = f[i+1][j][val ^ grid[i+1][j]]
+                    if j+1 < N:
+                        res += f[i][j+1][val ^ grid[i][j+1]]
+                    f[i][j][val] = res % MOD
+
+        return f[0][0][grid[0][0]]
 ```
