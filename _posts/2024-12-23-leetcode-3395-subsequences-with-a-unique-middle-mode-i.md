@@ -112,3 +112,58 @@ class Solution:
 
         return ans % MOD
 ```
+
+其實後綴直接透過前綴計算就好，節省空間，速度也快了不少。  
+
+時間複雜度 O(N^2)。  
+空間複雜度 O(N)。  
+
+```python
+MOD = 10 ** 9 + 7
+class Solution:
+    def subsequencesWithMiddleMode(self, nums: List[int]) -> int:
+        N = len(nums)
+
+        # 前後綴分解
+        pre = Counter()
+        suf = Counter(nums)
+
+        # 全排列，扣掉不合法的
+        ans = comb(N, 5)
+        keys = suf.keys()
+        for i, x in enumerate(nums):
+            l_cnt, r_cnt = i, N-1-i
+            suf[x] -= 1
+            pre_x, suf_x = pre[x], suf[x]
+
+            # x = 1，全都不合法
+            # 左右各選 2 個不為 x 的
+            l, r = l_cnt - pre_x, r_cnt - suf_x
+            ans -= comb(l, 2) * comb(r, 2)
+
+            for y in keys:
+                if y == x:
+                    continue
+
+                pre_y, suf_y = pre[y], suf[y]
+                pre_z, suf_z = (l_cnt - pre_x - pre_y), (r_cnt - suf_x - suf_y)
+                # x = 2，y = 3 不合法
+                #   case1: yy x xy
+                ans -= comb(pre_y, 2) * suf_x * suf_y
+                #   case2: xy x yy
+                ans -= pre_x * pre_y * comb(suf_y, 2)
+
+                # x = 2，y >= 2 不合法
+                #   case1: yy x x_
+                ans -= comb(pre_y, 2) * suf_x * suf_z
+                #   case2: y_ x xy
+                ans -= pre_y * pre_z * suf_x * suf_y
+                #   case3: x_ x yy
+                ans -= pre_x * pre_z * comb(suf_y, 2)
+                #   case4: xy x y_
+                ans -= pre_x * pre_y * suf_y * suf_z
+
+            pre[x] += 1
+
+        return ans % MOD
+```
