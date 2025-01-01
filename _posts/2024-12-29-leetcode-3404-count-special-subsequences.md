@@ -21,34 +21,34 @@ weekly contest 430。
 
 ## 解法
 
-p, q, r, s 對應的值以下記做 x, a, y, b，要滿足：  
-> x \* y = a \* b  
+p, q, r, s 對應的值以下記做 a, b, c, d，要滿足：  
+> a\* c = b \* d  
 
 我第一個直覺是**移項**，變成：  
-> x / b = a / y  
+> a / d = b / c  
 
 雖然在數學上是正確的，但是考慮到浮點數**精度誤差**，很有可能有誤差問題，馬上改想其他辦法。  
 
 ---
 
-注意到 nums 的長度 N = 1000，應該是在暗示 O(N^2)，枚舉 (a, b) 的話應該可行。  
-既然知道 ab，就可以枚舉滿足 xy = ab 的因子對 (x, y)。  
+注意到 nums 的長度 N = 1000，應該是在暗示 O(N^2)，枚舉 (a, c) 或 (b, d) 的話應該可行。  
+既然知道 bd，就可以枚舉滿足 ac = bd 的因子對 (a, c)。  
 
-為了知道 xy 的因子有哪些，先枚舉 nums 中的所有 (x, y) 數對，加入 xy 的因子，並以集合去重維護。  
+為了知道某個乘積的的因子有哪些，先枚舉 nums 中的所有 (x, y) 對，加到 xy 的因子中，並以集合去重維護。  
 例如：  
 > x, y = 2, 2  
 > 4 的因子對有 (2, 2)  
 > x, y = 1, 4  
 > 4 的因子對有 (1, 4)  
 
-當然，x, y 對調也可以。方便起見我們只維護 x < y，實際使用到時再處理。  
+當然，x, y 對調也可以。方便起見維護時保證 x <= y，實際使用時再處理。  
 
-粗估一下，在 x <= y <= 1000 時，任意乘積 xy 的組成至多 29 種，複雜度 O(sqrt(N))。  
+粗估一下，在 MX <= 1000 時，任意乘積 xy 的組成至多 29 種，複雜度 O(sqrt(MX))。  
 但在 nums 中不可能每個都達到最大值，實際計算量不會這麼多。  
 
 ---
 
-現在知道因子對有哪些，還需要快速求區間 x, y 頻率的方法。  
+現在知道因子對有哪些，還需要快速求區間某數字頻率的方法。  
 既然是區間查詢，就想到**前綴和**。剛好 nums 中至多 1000 種數。這部分複雜度也是 O(N^2)。  
 
 時間複雜度 O(N^2 \* sqrt(N))。  
@@ -73,24 +73,24 @@ class Solution:
             ps[i+1] = ps[i].copy()
             ps[i+1][x] += 1
 
-        # (x, a, y, b)
+        # (a, b, c, d)
         ans = 0
         for i in range(2, N):
             for j in range(i+4, N):
-                mul = nums[i] * nums[j]  # (a, b)
-                for x, y in factors[mul]:
-                    # x in [0, i-2]
-                    # y in [i+2, j-2]
-                    cnt_x = ps[i-2+1][x]
-                    cnt_y = ps[j-2+1][y]-ps[i+2-1+1][y]
-                    ans += cnt_x * cnt_y
+                mul = nums[i] * nums[j]  # (b, d)
+                for a, c in factors[mul]:
+                    # a in [0, i-2]
+                    # c in [i+2, j-2]
+                    cnt_a = ps[i-2+1][a]
+                    cnt_c = ps[j-2+1][c]-ps[i+2-1+1][c]
+                    ans += cnt_a * cnt_c
 
-                    if x != y:
-                        # y in [0, i-2]
-                        # x in [i+2, j-2]
-                        cnt_y = ps[i-2+1][y]
-                        cnt_x = ps[j-2+1][x]-ps[i+2-1+1][x]
-                        ans += cnt_x * cnt_y
+                    if a != c:
+                        # c in [0, i-2]
+                        # a in [i+2, j-2]
+                        cnt_c = ps[i-2+1][c]
+                        cnt_a = ps[j-2+1][a]-ps[i+2-1+1][a]
+                        ans += cnt_a * cnt_c
 
         return ans
 ```
