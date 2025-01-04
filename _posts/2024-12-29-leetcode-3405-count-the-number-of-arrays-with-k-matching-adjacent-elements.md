@@ -52,3 +52,29 @@ class Solution:
     def countGoodArrays(self, n: int, m: int, k: int) -> int:
         return comb(n-1, k) * m * pow(m-1, n-k-1, MOD) % MOD
 ```
+
+正規寫法還得計算乘法逆元，才能正確處理模運算下的除法。  
+
+```python
+# precompute all factorial and modular multiplicative inverse for factorial
+# O(MX log EXP) where EXP = MOD-2
+MOD = 10**9 + 7
+MX = 10**5 + 5
+f = [0]*(MX+1)
+finv = [0]*(MX+1)
+f[0] = finv[0] = 1
+f[1] = finv[1] = 1
+for i in range(2, MX+1):
+    f[i] = (f[i-1]*i) % MOD
+    finv[i] = pow(f[i], -1, MOD)
+
+
+class Solution:
+    def countGoodArrays(self, n: int, m: int, k: int) -> int:
+        return comb(n-1, k) * m * pow(m-1, n-k-1, MOD) % MOD
+
+
+def comb(n, k):
+    res = f[n] * finv[k] * finv[n-k]
+    return res
+```
