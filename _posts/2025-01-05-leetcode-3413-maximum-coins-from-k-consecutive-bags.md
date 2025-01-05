@@ -98,3 +98,41 @@ class Solution:
 
         return ans
 ```
+
+看了不少大神的寫法，共通點都是**基於對稱性**的**函數複用**。  
+只需要寫對齊一邊的邏輯，封裝起來，把 coins 區間翻轉後重新跑一次就行。  
+
+```python
+class Solution:
+    def maximumCoins(self, coins: List[List[int]], k: int) -> int:
+        ans = f(coins, k)
+        # 對稱性
+        for x in coins:
+            x[0], x[1] = -x[1], -x[0]
+
+        return max(ans, f(coins, k))
+
+
+def f(coins, k):
+    N = len(coins)
+    coins.sort()
+    ans = 0
+    # 枚舉區間 [l, r]
+    # 對齊右端點，拿 [r-k+1, r] 的袋子
+    sm = 0
+    j = 0
+    for i, (l, r, c) in enumerate(coins):
+        ll = r-k+1
+        sm += (r-l+1)*c
+        while j <= i and coins[j][0] < ll:  # 刪掉不完全包含的區間
+            sm -= (coins[j][1]-coins[j][0]+1) * coins[j][2]
+            j += 1
+
+        extra = 0  # 部分包含的區間
+        if j > 0:
+            extra = max(0, (coins[j-1][1]-ll+1) * coins[j-1][2])
+
+        ans = max(ans, sm+extra)
+
+    return ans
+```
