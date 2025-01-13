@@ -82,3 +82,38 @@ class Solution:
 
         return lo
 ```
+
+另一個思路是先走**權重較小的邊**，一直走直到所有點都抵達為止。  
+其實就是 djikstra 的變形，只是把**路徑權重和**改成**路徑權眾最大值**，一樣優先選最大值最小的。  
+
+時間複雜度 O(E log E)，其中 E = len(edges)。  
+空間複雜度 O(E)。  
+
+```python
+class Solution:
+    def minMaxWeight(self, n: int, edges: List[List[int]], threshold: int) -> int:
+        g = [[] for _ in range(n)]
+        for a, b, w in edges:
+            g[b].append([a, w])
+
+        dist = [inf] * n
+        dist[0] = 0
+        heap = [(0, 0)]  # max weight, node
+        while heap:
+            weight, curr = heappop(heap)
+            if weight > dist[curr]:
+                continue
+            dist[curr] = weight
+            for adj, w in g[curr]:
+                new_weight = max(weight, w)
+                if new_weight < dist[adj]:
+                    dist[adj] = new_weight  # important pruning
+                    heappush(heap, (new_weight, adj))
+
+        ans = max(dist)
+
+        if ans == inf:
+            return -1
+            
+        return ans
+```
