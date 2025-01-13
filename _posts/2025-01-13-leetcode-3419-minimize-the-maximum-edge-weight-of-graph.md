@@ -48,8 +48,8 @@ weekly contest 432。
 定義 ok(limit)，反向 dfs 邊權小於等於 limit 的邊，判斷所有節點是否抵達。  
 進行二分即可。  
 
-時間複雜度 O()。  
-空間複雜度 O()。  
+時間複雜度 O(E log MX)，其中 E = len(edges)，MX = 邊權最大值。  
+空間複雜度 O(E)。  
 
 ```python
 class Solution:
