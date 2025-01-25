@@ -98,9 +98,43 @@ for i, x in enumerate(nums):
 組合數除了巴斯卡三角形遞推以外，還可以用**階乘**來算。  
 > comb(n, k) = f(n) / f(k) / f(n-k)  
 
-但取餘數後，除法無法正確計算，因此需引入**乘法逆元**。  
+但取餘數後，除法無法正確計算，因此需引入**乘法逆元**來模擬除法。  
 同樣先預處理所有階乘以及階乘逆元，其餘部分同上。  
 
 ```python
+MOD = 10**9+7
+MX = 10**5+5
+f = [0]*(MX+1)
+inv = [0]*(MX+1)
+finv = [0]*(MX+1)
+f[0] = inv[0] = finv[0] = 1
+f[1] = inv[1] = finv[1] = 1
+for i in range(2, MX+1):
+    f[i] = (f[i-1]*i) % MOD
+    inv[i] = (MOD-MOD//i)*inv[MOD % i] % MOD
+    finv[i] = finv[i-1]*inv[i] % MOD
 
+
+# combanations of n choose k
+def comb(n, k):
+    if n < k:
+        return 0
+    res = f[n] * finv[k] * finv[n-k]
+    return res
+
+
+class Solution:
+    def minMaxSums(self, nums: List[int], k: int) -> int:
+        N = len(nums)
+        ans = 0
+        nums.sort()
+        for i, x in enumerate(nums):
+            for j in range(k):
+                # x 做為最大值貢獻
+                ans += comb(i, j) * x
+                # x 做為最小值貢獻
+                ans += comb(N-1-i, j) * x
+                ans %= MOD
+
+        return ans
 ```
