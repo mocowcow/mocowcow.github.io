@@ -6,6 +6,9 @@ tags        : LeetCode Medium Sorting Heap
 weekly contest-434。  
 這題有點噁心，前 50 名甚至有 34 個中招。  
 
+反正就是一堆細節 + 轉型 + 字串處理。  
+要是改成設計題也不至於這麼噁心。  
+
 ## 題目
 
 <https://leetcode.com/problems/maximum-frequency-after-subarray-operation/>
@@ -22,7 +25,7 @@ weekly contest-434。
 然後還有**下線**事件，讓某人在 t 下線，然後會在 t+60 秒自動**上線**。  
 
 **沒有其他的上限方式**，且保證下線事件發生時，人一定在線。  
-還算有良心。  
+目前還算有良心。  
 
 ---
 
@@ -109,8 +112,49 @@ class Solution:
                     ans[i] += 1
                 continue
 
-            ss = s.split(" ")
-            for x in ss:
+            for x in s.split():
+                id = int(x[2:])
+                ans[id] += 1
+
+        return ans
+```
+
+看完[大神的做法](https://leetcode.cn/problems/count-mentions-per-user/solutions/3057699/an-zhao-shi-jian-chuo-fen-zu-mo-ni-by-en-w77b/)，真的是學習了。  
+
+其實具體有誰在線根本不重要。  
+只要知道每個人**上線的時間點**。  
+
+```python
+
+class Solution:
+    def countMentions(self, n: int, events: List[List[str]]) -> List[int]:
+        events.sort(key=lambda x: (int(x[1]), -(x[0] == "OFFLINE")))
+
+        ans = [0] * n
+        online = [0] * n
+
+        for msg, curr_time, s in events:
+            curr_time = int(curr_time)
+
+            # OFFLINE
+            if msg == "OFFLINE":
+                id = int(s)
+                online[id] = curr_time+60
+                continue
+
+            # MESSAGE
+            if s == "ALL":
+                for i in range(n):
+                    ans[i] += 1
+                continue
+
+            if s == "HERE":
+                for i in range(n):
+                    if online[i] <= curr_time:
+                        ans[i] += 1
+                continue
+
+            for x in s.split():
                 id = int(x[2:])
                 ans[id] += 1
 
