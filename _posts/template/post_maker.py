@@ -15,6 +15,7 @@ POST_TEMPLATE = Template(POST_TEMPLATE_STRING)
 LC_POST_CONTENT_TEMPLATE_STRING = """$FOREWORD
 
 ## 題目
+$LCLINK
 
 ## 解法
 """
@@ -48,7 +49,7 @@ class PostMaker:
         with open(file_name, 'w', encoding='utf8') as f:
             f.write(text)
 
-    def make_leetcode_post(self, title_slug, foreword=""):
+    def make_leetcode_post(self, title_slug, foreword="", lclink=""):
         q_info = leetcode_api.get_question(title_slug)
         front_id = q_info["questionFrontendId"]
         title = q_info["title"]
@@ -61,6 +62,8 @@ class PostMaker:
 
         post_title = f"LeetCode {front_id}. {title}"
         tags = f"LeetCode {difficulty}"
-        content = LC_POST_CONTENT_TEMPLATE.substitute(FOREWORD=foreword)
+        content = LC_POST_CONTENT_TEMPLATE.substitute(
+            FOREWORD=foreword, LCLINK=lclink)
         self.make_post(post_title, tags, content)
         self.leetcode_posts.add(front_id)
+        print("建立成功：", post_title)

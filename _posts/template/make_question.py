@@ -13,7 +13,7 @@ def main():
     while True:
         link = input()
         title_slug = link.split("/")[4]
-        maker.make_leetcode_post(title_slug, foreword=foreword)
+        maker.make_leetcode_post(title_slug, foreword=foreword, lclink=link)
 
 
 if __name__ == "__main__":
