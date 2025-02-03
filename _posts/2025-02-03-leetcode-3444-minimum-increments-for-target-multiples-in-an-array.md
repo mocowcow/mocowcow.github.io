@@ -86,12 +86,12 @@ class Solution:
             # no op
             res = dp(i + 1, mask)
 
-            # try lcm
+            # try lcm of subsets
             x = nums[i]
-            for try_mask, t in mask_to_lcm.items():
-                if mask & try_mask == 0:
+            for sub_mask, t in mask_to_lcm.items():
+                if mask & sub_mask != sub_mask: # not subset
                     continue
-                new_mask = mask ^ try_mask
+                new_mask = mask ^ sub_mask
                 cost = (x + t - 1) // t * t - x
                 res = min(res, dp(i + 1, new_mask) + cost)
             return res
