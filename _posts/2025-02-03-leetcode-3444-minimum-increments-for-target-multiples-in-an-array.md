@@ -54,8 +54,8 @@ def get_cost(x, t):
 其實也很簡單，一堆元素的**共同倍數**，又要**越小越好**。  
 正是**最小公倍數** lcm。  
 
-枚舉任意 t 的所有組合遮罩 mask，維護對應的 lcm。  
-dp 時枚舉 mask 與對應的 lcm，嘗試使 x 變成 lcm 的倍數 mul，以成本更新答案。  
+枚舉任意 target 所有子集的遮罩 sub，維護對應的 lcm。  
+dp 時枚舉子集 sub 與對應的 lcm，嘗試使 x 變成 lcm 的倍數 mul，以成本更新答案。  
 
 定義 dp(i, mask)：使得 nums[i..N-1] 滿足 mask 對應 t 的倍數的最小成本。  
 答案入口為 dp(0, (1 << M) - 1)。  
@@ -83,15 +83,15 @@ class Solution:
             if i == N:
                 return inf
 
-            # no op
+            # no change
             res = dp(i + 1, mask)
 
             # try lcm of subsets
             x = nums[i]
-            for sub_mask, t in mask_to_lcm.items():
-                if mask & sub_mask != sub_mask: # not subset
+            for sub, t in mask_to_lcm.items():
+                if mask & sub != sub: # not subset
                     continue
-                new_mask = mask ^ sub_mask
+                new_mask = mask ^ sub
                 cost = (x + t - 1) // t * t - x
                 res = min(res, dp(i + 1, new_mask) + cost)
             return res
