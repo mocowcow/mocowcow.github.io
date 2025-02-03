@@ -25,8 +25,8 @@ weekly contest 435。
 
 統計 N, S 出現次數，修改前的距離為 abs(N - S)；可修改次數為 min(N, S)。  
 
-W, E 同理，求出兩軸距離和 dist 還有可修改次數 cnt。  
-修改次數受限於 k，所以實際最遠距離為 dist + min(cnt, k) * 2。  
+W, E 同理，求出兩軸距離和 dist 還有可修改次數 change  
+修改次數受限於 k，所以實際最遠距離為 dist + min(change, k) * 2。  
 
 ---
 
@@ -55,8 +55,8 @@ class Solution:
                 W += 1
 
             dist = abs(N - S) + abs(W - E)
-            cnt = min(N, S) + min(W, E)
-            ans = max(ans,  dist + min(cnt, k) * 2)
+            change = min(N, S) + min(W, E)
+            ans = max(ans,  dist + min(change, k) * 2)
 
         return ans
 ```
@@ -82,4 +82,32 @@ class Solution:
             ans = max(ans, dist)
 
         return ans
+```
+
+也有人直接枚舉四個方位。  
+往指定方位移動的話距離加 1；否則距離減 1，可翻轉次數加 1。並在遍歷途中更新答案。  
+
+```python
+class Solution:
+    def maxDistance(self, s: str, k: int) -> int:
+
+        def f(dirs):
+            dist = 0
+            change = 0
+            mx = 0
+            for c in s:
+                if c in dirs:
+                    dist += 1
+                else:
+                    dist -= 1
+                    change += 1
+                mx = max(mx, dist + min(change, k) * 2)
+            return mx
+
+        return max(
+            f("NE"),
+            f("ES"),
+            f("SW"),
+            f("WN")
+        )
 ```
