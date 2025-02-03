@@ -60,3 +60,26 @@ class Solution:
 
         return ans
 ```
+
+其實根本不用在意可以修改幾次，只要保證修改後**不超過當前字元數**即可。  
+
+```python
+class Solution:
+    def maxDistance(self, s: str, k: int) -> int:
+        x = y = 0
+        ans = 0
+        for i, c in enumerate(s):
+            if c == "N":
+                y += 1
+            elif c == "S":
+                y -= 1
+            elif c == "E":
+                x += 1
+            else:
+                x -= 1
+
+            dist = min(abs(x) + abs(y) + k * 2, i + 1)
+            ans = max(ans, dist)
+
+        return ans
+```
