@@ -98,3 +98,50 @@ class Solution:
 
         return dp(0, (1 << M) - 1)
 ```
+
+共有 2^M 個子集狀態，每個狀態需要轉移 2^M 次，複雜度 O(4^M)。  
+如果使用更有效率的方式枚舉子集，則可以降到 O(3^M)。  
+
+```python
+sub = mask
+while sub:
+    sub = (sub - 1) & mask  # next sub
+```
+
+另外 dp[i] 只依賴於 dp[i+1]，可以將空間壓縮掉一個維度。  
+
+時間複雜度 O(N \* 3^M)，其中 N = len(nums)，M = len(target)。  
+空間複雜度 O(2^M)。  
+
+```python
+class Solution:
+    def minimumIncrements(self, nums: List[int], target: List[int]) -> int:
+        N, M = len(nums), len(target)
+
+        mask_to_lcm = {}
+        for mask in range(1, 1 << M):
+            l = 1
+            for i, t in enumerate(target):
+                if (1 << i) & mask:
+                    l = lcm(l, t)
+            mask_to_lcm[mask] = l
+
+        f = [inf] * (1 << M)
+        f[0] = 0
+        for i in reversed(range(N)):
+            f2 = [0] * (1 << M)
+            for mask in range(1, 1 << M):
+                res = f[mask]
+                x = nums[i]
+                sub = mask
+                while sub:
+                    t = mask_to_lcm[sub]
+                    new_mask = mask ^ sub
+                    cost = (x + t - 1) // t * t - x
+                    res = min(res, f[new_mask] + cost)
+                    sub = (sub - 1) & mask  # next sub
+                f2[mask] = res
+            f = f2
+
+        return f[(1 << M) - 1]
+```
