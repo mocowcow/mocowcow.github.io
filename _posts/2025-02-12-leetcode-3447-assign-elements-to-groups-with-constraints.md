@@ -11,13 +11,10 @@ weekly contest 436。
 
 ## 解法
 
-本想枚舉 groups[i] 的因數，再去 elements 裡面找。  
-但枚舉因數的複雜度是 sqrt(MX)，對於 MX = M = 10^5 來說 O(M sqrt(MX))有點微妙，就換了個方法。  
+MX = max(groups) = 10^5。  
 
----
-
-改成枚舉 elements[j] 的倍數並標記。  
-對於至多 N = 10^5 個不同的元素 1..10^5，分別枚舉倍數到 MX，所需循環次數分別為：  
+改成枚舉 elements[j] 不超過 MX 的倍數並標記。  
+至多 N = 10^5 個不同的元素 [1,..,N]，分別枚舉倍數到 MX，所需循環次數分別為：  
 > MX / 1 次  
 > MX / 2 次  
 > ...
@@ -35,7 +32,7 @@ weekly contest 436。
 
 枚舉完 elements 的倍數之後，只要對每個 groups[i] 去查表填答案就行。  
 
-時間複雜度 O((MX log N) + M)。  
+時間複雜度 O((MX log N) + M)，其中 MX = max(groups)。  
 空間複雜度 O(MX)。  
 
 ```python
