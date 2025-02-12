@@ -75,3 +75,42 @@ class Solution:
 
         return ans
 ```
+
+改成遞推寫法。  
+注意到 dp[i] 只依賴 dp[i+1]，可以壓縮掉一個空間維度。  
+
+時間複雜度 O(ND^2)，其中 D = 9，為合法的結尾數字個數。  
+空間複雜度 O(D)。  
+
+```python
+class Solution:
+    def countSubstrings(self, s: str) -> int:
+        N = len(s)
+        a = list(map(int, s))
+
+        def solve(k):
+            cnt = 0
+            f = [0] * k
+            for i in reversed(range(N)):
+                x = a[i]
+                f2 = [0] * k
+                for rem in range(k):
+                    rem2 = (rem*10 + x) % k
+                    res = 0
+                    if x == k and rem2 == 0:  # can end here
+                        res = 1
+                    res += f[rem2]
+                    f2[rem] = res
+                    
+                # iterate and update answer
+                f = f2
+                cnt += f[0]
+            return cnt
+
+        ans = 0
+        for k in set(a):
+            if k > 0:
+                ans += solve(k)
+
+        return ans
+```
