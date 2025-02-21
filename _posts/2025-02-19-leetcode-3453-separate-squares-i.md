@@ -81,3 +81,39 @@ class Solution:
 
         return lo
 ```
+
+每次二分，使答案的可能區間 L = (hi - lo) 減半。需滿足：  
+> L / 2^k <= 1e-5
+> 移項得  
+> k > log(2, L \* 1e5)  
+
+代入本題區間 L = 2e9：  
+> k > log(2, 1e15)  
+> k = 48  
+
+至多只需二分 48 次。  
+以後乾脆直接 100 次算了，肯定夠。  
+
+```python
+class Solution:
+    def separateSquares(self, squares: List[List[int]]) -> float:
+        tot = sum(l*l for _, _, l in squares)
+
+        def ok(lim):
+            cnt = 0
+            for _, y, l in squares:
+                if lim > y:
+                    cnt += (min(y+l, lim) - y) * l
+            return cnt >= tot - cnt
+
+        lo = 0
+        hi = 2e9
+        for _ in range(48):
+            mid = (lo + hi) / 2
+            if not ok(mid):
+                lo = mid
+            else:
+                hi = mid
+
+        return lo
+```
