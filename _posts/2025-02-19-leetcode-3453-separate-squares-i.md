@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3453. Separate Squares I
-tags        : LeetCode Medium Math BinarySearch
+tags        : LeetCode Medium Math BinarySearch PrefixSum
 ---
 biweekly contest 150。  
 以前沒仔細研究浮點數二分，這次吃了大虧，差點沒寫出來。  
@@ -116,4 +116,54 @@ class Solution:
                 hi = mid
 
         return lo
+```
+
+想像這條分割線從下往上，面積 cnt 逐漸增加，這就是**掃描線**。  
+對於矩形左下角 (x, y) 來說，當掃描線移動到 y 時，x 的和增加 l；移動到 x+l 時，x 的和減少 l。  
+先把矩形轉換成**差分**，並在移動時以**前綴和**維護 x 的和，記做 x_ps。  
+
+每次移動到高度 y，與前一個高度差為 h = y - pre_y，本次移動所新增的面積為：  
+> h \* x_ps  
+
+---
+
+在某個高度 y，滿足 cnt 超過總面積 tot 一半時，答案高度肯定不超過 y。  
+超出一半面積的部分為：  
+> extra = cnt - half
+
+以知當前 x 的和為 x_ps。  
+若要減少 extra 面積，則需使高度下降 (extra / x_ps)。  
+答案即 y - (extra / x_ps)。  
+
+時間複雜度 O(N log N)，瓶頸為排序。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def separateSquares(self, squares: List[List[int]]) -> float:
+        tot = sum(l * l for _, _, l in squares)
+        half = tot / 2
+
+        # turn squares into difference array
+        diff = Counter()
+        for _, y, l in squares:
+            diff[y] += l
+            diff[y + l] -= l
+
+        # sweep y-axis from low to high
+        # and maintain prefix sum of x
+        ys = sorted(diff)
+        cnt = 0
+        x_ps = 0
+        for i, y in enumerate(ys):  
+            if i > 0:  
+                h = y - ys[i - 1] # height between current and previous y
+                cnt += h * x_ps
+                if cnt >= half: 
+                    extra = cnt - half
+                    return y - (extra / x_ps)
+
+            x_ps += diff[y]
+
+        return -1
 ```
