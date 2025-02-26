@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 850. Rectangle Area II
-tags        : LeetCode Hard
+tags        : LeetCode Hard Matrix HashTable
 ---
 
 以前只知道一種做法，原來有兩種更快的優化。  
@@ -60,6 +60,61 @@ class Solution:
                     x_width = xs[x+1] - xs[x]
                     y_height = ys[y+1] - ys[y]
                     ans += x_width * y_height
+
+        return ans % (10 ** 9 + 7)
+```
+
+想像 y 軸有一條**掃描線**，由下往上移動。  
+每次移動，統計 x 軸有多少線段被覆蓋。  
+
+對於矩形 x1, y1, x2, y2 來說，當掃描線掃到 y1 時，線段 [x1, x2] 從此時開始被覆蓋；  
+掃到 y2 時，線段 [x1, x2] 的覆蓋結束。  
+
+把每個矩形轉換成覆蓋開始 / 結束的事件，以 y 軸排序。  
+每次 y 軸掃瞄線移動，增加的面積即：  
+> y 軸差值 \* x 軸覆蓋長度  
+
+我們只需要維護 x 軸被覆蓋的線段，所以只有 x 軸需要離散化。  
+
+時間複雜度 O(N^2)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def rectangleArea(self, rectangles: List[List[int]]) -> int:
+        # collect coord
+        # and turn rect into event
+        xs = set()
+        ys = set()
+        events = []
+        for x1, y1, x2, y2 in rectangles:
+            xs.add(x1)
+            xs.add(x2)
+            events.append([y1, x1, x2, 1])
+            events.append([y2, x1, x2, -1])
+
+        # discretize
+        xs = sorted(xs)
+        mp_x = {x: i for i, x in enumerate(xs)}
+
+        # mark cover
+        X = len(xs) - 1
+        cover = [0] * X 
+
+        # sweep line
+        events.sort()
+        ans = 0
+        for i, (y, x1, x2, val) in enumerate(events):
+            if i > 0:
+                pre_y = events[i-1][0]
+                y_height = y - pre_y
+                for j, cnt in enumerate(cover):
+                    if cnt > 0:
+                        x_width = xs[j+1] - xs[j]
+                        ans += x_width * y_height
+
+            for x in range(mp_x[x1], mp_x[x2]):
+                cover[x] += val
 
         return ans % (10 ** 9 + 7)
 ```
