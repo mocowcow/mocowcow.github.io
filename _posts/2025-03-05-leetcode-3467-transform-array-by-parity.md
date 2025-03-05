@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 3467. Transform Array by Parity
 tags        : LeetCode Easy Simulation
 ---
-biweekly contest-151。
+biweekly contest 151。
 
 ## 題目
 

@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 3469. Find Minimum Cost to Remove Array Elements
 tags        : LeetCode Medium DP
 ---
-biweekly contest-151。  
+biweekly contest 151。  
 這題挺奇妙的，除了測資很爛，記憶化會卡 MLE 以外，算是不錯的題。  
 
 ## 題目

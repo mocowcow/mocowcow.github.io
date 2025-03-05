@@ -3,7 +3,7 @@ layout      : single
 title       : LeetCode 3468. Find the Number of Copy Arrays
 tags        : LeetCode Medium Simulation
 ---
-biweekly contest-151。
+biweekly contest 151。
 
 ## 題目
 
