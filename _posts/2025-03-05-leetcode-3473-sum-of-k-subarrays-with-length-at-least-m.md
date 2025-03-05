@@ -110,3 +110,29 @@ class Solution:
 
         return ans
 ```
+
+改成遞推寫法。  
+複雜度不變，但執行時間從 15000ms 降到 6000ms，快了非常多。  
+
+```python
+class Solution:
+    def maxSum(self, nums: List[int], k: int, m: int) -> int:
+        N = len(nums)
+        ps = list(accumulate(nums, initial=0))
+
+        dp = [[-inf] * (k + 1) for _ in range(N + 1)]
+        dp_ps = [[-inf] * (k + 1) for _ in range(N + 1)]
+        for i in range(N + 1):
+            dp[i][0] = 0
+            dp_ps[i][0] = 0
+
+        for i in reversed(range(N)):
+            for rem in range(1, k + 1):
+                dp_ps[i][rem] = dp_ps[i+1][rem] + nums[i]
+                if i + m <= N:
+                    sm = ps[i+m] - ps[i]
+                    dp_ps[i][rem] = max(dp_ps[i][rem], dp[i+m][rem-1] + sm)
+                dp[i][rem] = max(dp[i+1][rem], dp_ps[i][rem])
+
+        return dp[0][k]
+```
