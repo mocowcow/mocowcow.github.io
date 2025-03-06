@@ -30,7 +30,7 @@ weekly contest 439。
 轉移：  
 
 - 不選：dp(i+1, rem)。  
-- 選：sum(dp(j+1, rem-1) + sum(nums[i..j]) FOR ALL i+m-1 <= j < N-1)。  
+- 選：max(dp(j+1, rem-1) + sum(nums[i..j]) FOR ALL i+m-1 <= j < N-1)。  
 
 BASE：當 k = 0 時，分割完成，回傳 0；否則當 i+m > N 時，無法繼續分割，回傳 -inf。  
 
