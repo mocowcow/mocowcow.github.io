@@ -91,3 +91,83 @@ class Solution:
 
         return ans
 ```
+
+對其他語言來說，這個 get_ways(n) 是大麻煩。  
+很明顯 get_ways(100) = 50!50! 是一個超大數。  
+如果不用大整數的函數庫，就需要用到一些技巧處理，是本題的另一個難點。  
+
+---
+
+只要 k 小於等於 ways，就可以確認要填當前的數 j。  
+至於 ways 究竟是多少並不重要，因此超過 MXK = 1e15 時，一律當作 MXK 就好。  
+
+但要確認 odd!even! 是否溢位也很麻煩。因此改變策略，直接預處理 get_ways(n)。  
+建表 fways[i] 代表 get_ways(n) 的實際值，先看看前幾項：  
+
+- fways[0] = 0!0! = 1
+- fways[1] = 1!0! = 1  
+- fways[2] = 1!1! = 1  
+- fways[3] = 2!1! = 2  
+- fways[4] = 2!2! = 4  
+- fways[5] = 3!2! = 12  
+- fways[6] = 3!3! = 36  
+
+發現 fways[0] = 1。  
+之後從 1 開始枚舉乘數 x，把最後一項乘上 x，重複兩次，再換下一個乘數。  
+直到最後一項大於等於 MXK 為止。  
+
+```python
+MXK = 10 ** 15
+fways = [1]
+x = 1
+while fways[-1] < MXK:
+    fways.append(fways[-1] * x)
+    fways.append(fways[-1] * x)
+    x += 1
+```
+
+之後 get_ways(n) 先查表，如果 fways 表內有對應值，值接回傳 fways[n]；否則一定超過 MXK，直接給 MXK。  
+替換之前的算法就可以了。  
+
+```python
+MXK = 10 ** 15
+fways = [1]
+x = 1
+while fways[-1] < MXK:
+    fways.append(fways[-1] * x)
+    fways.append(fways[-1] * x)
+    x += 1
+
+def get_ways(n):
+    if n < len(fways):
+        return fways[n]
+    return MXK
+
+
+class Solution:
+    def permute(self, n: int, k: int) -> List[int]:
+        tot = get_ways(n)
+        if n % 2 == 0:
+            tot *= 2
+
+        if k > tot:
+            return []
+
+        used = set()
+        ans = []
+        parity = 1
+        for i in range(n):
+            ways = get_ways(n-i-1)
+            for j in range(1, n+1):
+                if j in used:
+                    continue
+                if (i == 0 and n % 2 == 0) or (j % 2 == parity):
+                    if k <= ways:
+                        ans.append(j)
+                        used.add(j)
+                        parity = (j % 2) ^ 1
+                        break
+                    k -= ways
+
+        return ans
+```
