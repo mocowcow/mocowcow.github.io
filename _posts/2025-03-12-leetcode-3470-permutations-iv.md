@@ -175,57 +175,58 @@ class Solution:
 附上 golang 版本，當做不會溢位的證明。  
 
 ```go
+package main
+
 var MXK int64 = 1e15
 var fways []int64
 
 func init() {
-    fways = make([]int64, 1)
-    fways[0] = 1
-    for i := int64(1); fways[len(fways)-1] < MXK; i++ {
-        fways = append(fways, fways[len(fways)-1]*i)
-        fways = append(fways, fways[len(fways)-1]*i)
-    }
+	fways = make([]int64, 1)
+	fways[0] = 1
+	for i := int64(1); fways[len(fways)-1] < MXK; i++ {
+		fways = append(fways, fways[len(fways)-1]*i)
+		fways = append(fways, fways[len(fways)-1]*i)
+	}
 }
 
 func get_ways(n int) int64 {
-    if n < len(fways) {
-        return fways[n]
-    }
-    return MXK
+	if n < len(fways) {
+		return fways[n]
+	}
+	return MXK
 }
 
 func permute(n int, k int64) []int {
-    tot := get_ways(n)
-    if n%2 == 0 {
-        tot *= 2
-    }
+	tot := get_ways(n)
+	if n%2 == 0 {
+		tot *= 2
+	}
 
-    if k > tot {
-        return []int{}
-    }
+	if k > tot {
+		return []int{}
+	}
 
-    used := make([]bool, n+1)
-    parity := 1
-    ans := make([]int, n)
-    for i := 0; i < n; i++ {
-        ways := get_ways(n - 1 - i)
-        for j := 1; j <= n; j++ {
-            if used[j] {
-                continue
-            }
-            if (i == 0 && n%2 == 0) || (j%2 == parity) {
-                if k <= ways {
-                    ans[i] = j
-                    used[j] = true
-                    parity = (j % 2) ^ 1
-                    break
-                }
-                k -= ways
-            }
-        }
-    }
-
-    return ans
+	used := make([]bool, n+1)
+	parity := 1
+	ans := make([]int, n)
+	for i := 0; i < n; i++ {
+		ways := get_ways(n - 1 - i)
+		for j := 1; j <= n; j++ {
+			if used[j] {
+				continue
+			}
+			if (i == 0 && n%2 == 0) || (j%2 == parity) {
+				if k <= ways {
+					ans[i] = j
+					used[j] = true
+					parity = (j % 2) ^ 1
+					break
+				}
+				k -= ways
+			}
+		}
+	}
+	return ans
 }
 
 ```
