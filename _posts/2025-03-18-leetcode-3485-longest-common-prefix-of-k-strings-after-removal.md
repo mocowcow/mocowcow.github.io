@@ -39,8 +39,8 @@ O(N^2) 高達 10^5，理論上是會超時的 (但不知道為啥 python 能過)
 我們還需要優化子陣列的枚舉方式，例如**字典樹**或是 **rolling hash**，將每次枚舉的複雜度降低到 O(1)。  
 此處選用 rolling hash。  
 
-時間複雜度 O()。  
-空間複雜度 O()。  
+時間複雜度 O(L log L)，其中 L = sum(len(words[i]))。  
+空間複雜度 O(L)。  
 
 ```python
 from sortedcontainers import SortedList as SL
