@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3483. Unique 3-Digit Even Numbers
-tags        : LeetCode Easy Simulation
+tags        : LeetCode Easy Simulation Backtracking
 ---
 biweekly contest 152。
 有點囉嗦的暴力題。  
@@ -50,6 +50,39 @@ class Solution:
             val = x * 100 + y * 10 + z
             if val >= 100 and val % 2 == 0:
                 s.add(val)
+
+        return len(s)
+```
+
+如果題目改成 k 位數的偶數，就需要使用到回溯。  
+枚舉第 i 位數要選哪個，選完所有數字後判斷是否滿足條件。  
+
+時間複雜度 O(N^k)。  
+空間複雜度 O(N^k)。  
+
+```python
+class Solution:
+    def totalNumbers(self, digits: List[int]) -> int:
+        N = len(digits)
+        used = [False] * N
+        s = set()
+
+        k = 3
+
+        def dfs(i, val):
+            if i == k:
+                if val % 2 == 0:
+                    s.add(val)
+                return
+            for j in range(N):
+                if i == 0 and digits[j] == 0:
+                    continue
+                if not used[j]:
+                    used[j] = True
+                    dfs(i+1, val * 10 + digits[j])
+                    used[j] = False
+
+        dfs(0, 0)
 
         return len(s)
 ```
