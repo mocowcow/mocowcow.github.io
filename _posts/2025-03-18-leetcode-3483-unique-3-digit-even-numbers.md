@@ -39,3 +39,17 @@ class Solution:
 
         return len(s)
 ```
+
+也可以用內建的排列函數枚舉。  
+
+```python
+class Solution:
+    def totalNumbers(self, digits: List[int]) -> int:
+        s = set()
+        for x, y, z in permutations(digits, 3):
+            val = x * 100 + y * 10 + z
+            if val >= 100 and val % 2 == 0:
+                s.add(val)
+
+        return len(s)
+```
