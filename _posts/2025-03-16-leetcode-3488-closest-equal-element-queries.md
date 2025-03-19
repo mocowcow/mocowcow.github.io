@@ -134,3 +134,46 @@ class Solution:
 
         return ans
 ```
+
+還有一種處理**循環陣列**的技巧，就是把原陣列複製一次，變成 2N 的大小 (或是遍歷兩次)。  
+
+假設原陣列 nums = [0,1,2]，新陣列 = [0,1,2] + [0,1,2]。  
+在遍歷到 i >= N 時，永遠可以保證左方肯定有某個 j 滿足 nums[j] == nums[i]。  
+對各元素值**維護最後一次出現的索引 j** ，即可得 nums[i] 與左邊第一個相同元素的距離；  
+同理，從 2N - 1 往左遍歷，在 i < N 時可得 nums[i] 與右邊第一個相同元素的距離。  
+
+兩方最近元素的距離取最小值。若等於 N 代表該元素只出現一次，是自己與自己的距離。答案為 -1。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def solveQueries(self, nums: List[int], queries: List[int]) -> List[int]:
+        N = len(nums)
+
+        dist = [0] * N
+        last = {}
+        for i in range(N*2):
+            x = nums[i % N]
+            if i >= N:
+                dist[i % N] = i - last[x]
+            last[x] = i
+
+        last = {}
+        for i in reversed(range(N*2)):
+            x = nums[i % N]
+            if i < N:
+                dist[i % N] = min(dist[i % N], last[x] - i)
+            last[x] = i
+
+        # get closest
+        ans = []
+        for q in queries:
+            if dist[q] == N:
+                ans.append(-1)
+            else:
+                ans.append(dist[q])
+
+        return ans
+```
