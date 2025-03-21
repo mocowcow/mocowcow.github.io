@@ -48,7 +48,9 @@ biweekly contest 152。
 
 剛才我們刪除了 path[..mn_last] 這段，確保剩下的 path[mn_last+1..] 至多只有一個顏色重複。  
 但剩下的重複顏色並非 mn_last+1，而是 mx_last。  
-mx_last 即為下一次遞迴的 pre_last。
+mx_last 即為下一次遞迴的 pre_last。  
+
+![示意圖](/assets/img/3486.jpg)
 
 最後討論遞迴入口。  
 最初沒有顏色時，自然沒有 pre_last。  
