@@ -53,3 +53,36 @@ class UnionFind:
             self.parent[x] = self.find(self.parent[x])
         return self.parent[x]
 ```
+
+不用併查集也可以。  
+建圖，若 i, j 交集滿足 >= k 則將 i, j 連邊。  
+最後 dfs 遍歷。  
+
+```python
+class Solution:
+    def numberOfComponents(self, properties: List[List[int]], k: int) -> int:
+        N = len(properties)
+        pps = [set(x) for x in properties]
+        g = [[] for _ in range(N)]
+        for i in range(N):
+            for j in range(i+1, N):
+                if len(pps[i] & pps[j]) >= k:
+                    g[i].append(j)
+                    g[j].append(i)
+
+        vis = [False] * N
+        def dfs(i):
+            for j in g[i]:
+                if not vis[j]:
+                    vis[j] = True
+                    dfs(j)
+
+        ans = 0
+        for i in range(N):
+            if not vis[i]:
+                ans += 1
+                vis[i] = True
+                dfs(i)
+
+        return ans
+```
