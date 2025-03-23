@@ -39,8 +39,9 @@ weekly contes 442。
 最後要從 need([l..r]) 中，每次選兩個一起操作。  
 
 敏銳的同學大概能猜到結論：  
-只要每次選剩餘次數最大和次大，就保證所有剩餘次數的差保持連續。  
-sum(need[l..r]) 為偶數剛好配完；奇數會剩下 [0,..,0,1]，需要再除一次。  
+題目保證 L < R 故至少有兩個值。  
+只要每次選剩餘最大和次大，就保證所有剩餘次數的差保持連續。  
+sum(need[l..r]) 為偶數剛好配完；奇數會剩下 1，需要再除一次。  
 
 因此單次查詢答案 ceil(sum(need[l..r]) / 2)。  
 將所有查詢答案加總即可。  
@@ -55,9 +56,8 @@ def f(n):
     ops = 1
     p0, p = 1, 4  # [p0..p-1] divide for "ops" times
     while p0 <= n:
-        p1 = min(n, p-1)
-        need = (p1 - p0 + 1) * ops
-        tot += need
+        cnt = min(n, p-1) - p0 + 1
+        tot += cnt * ops
         # next group
         p0, p = p, p*4
         ops += 1
