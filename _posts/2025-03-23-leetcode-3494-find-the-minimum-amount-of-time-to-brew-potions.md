@@ -75,4 +75,6 @@ class Solution:
             # 之後依序加工，算出下一個人的 "實際結束時間"
             for i in range(1, N):
                 pre_end[i] = pre_end[i-1] + cost[i]
+
+        return pre_end[-1]       
 ```
