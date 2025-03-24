@@ -78,3 +78,37 @@ class Solution:
 
         return pre_end[-1]       
 ```
+
+提供另外一種思路。  
+
+假設允許閒置等待，只有**最後一個人的完工時間**會是正確的，但前方可能會有若干個閒置段。  
+既然我們知道每個人的工時，那麼可以從最後一個人的完工時間倒著扣掉工時。  
+
+![示意圖](/assets/img/3494.jpg)
+
+```python
+class Solution:
+    def minTime(self, skill: List[int], mana: List[int]) -> int:
+        N = len(skill)
+
+        # 上次結束時間
+        pre_end = [0] * N
+        for x in mana:
+            # 預處理製作時間
+            cost = [x*y for y in skill]
+
+            # 假設允許等待
+            # 先算出包含等待的完工時間
+            last_end = pre_end[0] + cost[0]
+            for i in range(1, N):
+                last_end = max(last_end, pre_end[i]) + cost[i]
+
+            # 至少最後一人是正確的最早完工時間
+            # 倒著往回推算出其他人的完工時間
+            # 而等待時間會自動移到開工之前
+            pre_end[-1] = last_end
+            for i in reversed(range(N-1)):
+                last_end[i] = last_end[i+1] - cost[i+1]
+
+        return pre_end[-1]
+```
