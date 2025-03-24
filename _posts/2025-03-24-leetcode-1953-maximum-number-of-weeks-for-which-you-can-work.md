@@ -45,7 +45,7 @@ tags        : LeetCode Medium Greedy
 分類討論 MX 是否能放完：  
 
 - 若 MX 超 ceil(S / 2)，則沒辦法全部放完。  
-    這時其他的任務有 S - MX 個，用做間隔，能夠搭配 (S - MX) + 1 個最多的任務。  
+    這時其他的任務有 S - MX 個，用做間隔，能夠搭配 (S - MX) + 1 個相同任務。  
     共能放 (S - MX) \* 2 + 1 個。  
 - 若 MX 不超過 ceil(S / 2)，則隨便放都能放完。  
     能 S 個全放。  
@@ -60,6 +60,30 @@ class Solution:
         MX = max(milestones)
 
         if MX > (S+1) // 2:
+            return (S - MX) * 2 + 1
+        else:
+            return S
+```
+
+或是從間隔的角度去思考。  
+
+最多的任務有 MX 個，其他的任務就有 S - MX 個。  
+這些不同的任務做為間隔，可以放置最多 (S - MX) + 1 個相同任務。  
+
+若 MX 超過 (MX - S) + 1，則不可能放完。  
+這時答案依賴於間隔，只能放 (MX - S) \* 2 + 1 個。  
+
+---
+
+其實 MX > (S+1) // 2 移項整理過後就是 MX > S - MX + 1。  
+
+```python
+class Solution:
+    def numberOfWeeks(self, milestones: List[int]) -> int:
+        S = sum(milestones)
+        MX = max(milestones)
+
+        if MX > (S - MX) + 1:
             return (S - MX) * 2 + 1
         else:
             return S
