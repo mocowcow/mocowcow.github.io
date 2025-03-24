@@ -37,11 +37,15 @@ weekly contes 442。
 ---
 
 最後要從 need([l..r]) 中，每次選兩個一起操作。  
+問題轉換成：  
+> 每個元素有不同操作次數，每次選不同的兩個元素一起操作  
+
+相似題 [1953. Maximum Number of Weeks for Which You Can Work](https://leetcode.com/problems/maximum-number-of-weeks-for-which-you-can-work/description/)。  
 
 敏銳的同學大概能猜到結論：  
-題目保證 L < R 故至少有兩個值。  
-只要每次選剩餘最大和次大，就保證所有剩餘次數的差保持連續。  
-sum(need[l..r]) 為偶數剛好配完；奇數會剩下 1，需要再除一次。  
+設 S = sum(needs)，MX = max(needs)。  
+因 needs 遞增，所以必定滿足 MX <= ceil(S / 2)，故肯定可以配對到另一個不同元素。  
+共需操作 ceil(S / 2) 次。  
 
 因此單次查詢答案 ceil(sum(need[l..r]) / 2)。  
 將所有查詢答案加總即可。  
@@ -54,7 +58,7 @@ def f(n):
     # sum of need([1..n])
     tot = 0
     ops = 1
-    p0, p = 1, 4  # [p0..p-1] divide for "ops" times
+    p0, p = 1, 4  # [p0..p-1] divide "ops" times
     while p0 <= n:
         cnt = min(n, p-1) - p0 + 1
         tot += cnt * ops
@@ -68,10 +72,10 @@ class Solution:
     def minOperations(self, queries: List[List[int]]) -> int:
         ans = 0
         for l, r in queries:
-            ops = f(r) - f(l-1)
+            tot = f(r) - f(l-1)
             # make pair
-            # ceil up
-            ans += (ops+1) // 2
+            # ceil(tot / 2)
+            ans += (tot+1) // 2
 
         return ans
 ```
