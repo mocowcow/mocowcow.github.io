@@ -40,9 +40,6 @@ weekly contes 442。
 問題轉換成：  
 > 每個元素有要求操作次數，每次選不同的兩個元素一起操作  
 
-相似題 [1953. Maximum Number of Weeks for Which You Can Work](https://leetcode.com/problems/maximum-number-of-weeks-for-which-you-can-work/description/)。  
-相似題 [CF 1907C](https://codeforces.com/problemset/problem/1907/C)。  
-
 敏銳的同學大概能猜到結論：  
 設 S = sum(needs)，MX = max(needs)。  
 因 needs 遞增，所以必定滿足 MX <= ceil(S / 2)，故肯定可以配對到另一個不同元素。  
@@ -53,6 +50,13 @@ weekly contes 442。
 
 時間複雜度 O(Q log MX)，其中 MX = max(R)。  
 空間複雜度 O(1)。  
+
+相似題：  
+
+- [1953. Maximum Number of Weeks for Which You Can Work](https://leetcode.com/problems/maximum-number-of-weeks-for-which-you-can-work/description/)  
+- [CF 1907C](https://codeforces.com/problemset/problem/1907/C)  
+- [767. Reorganize String](https://leetcode.com/problems/reorganize-string/description/) (需構造具體方案)  
+- [CF 2003C](https://codeforces.com/contest/2003/problem/C) (需構造具體方案)  
 
 ```python
 def f(n):
