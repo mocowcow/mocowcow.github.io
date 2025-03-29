@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 767. Reorganize String
-tags        : LeetCode Medium Greedy Math
+tags        : LeetCode Medium Greedy Math Heap
 ---
 
 
@@ -44,6 +44,50 @@ class Solution:
                 i += 2
                 if i >= S:  # 偶數填完，填奇數位
                     i = 1
+
+        return "".join(ans)
+```
+
+也可以按照剩餘次數裝進 max heap，每次拿出剩餘最多的兩種元素出來判斷：  
+若剩最多和前一個元素不同，就放；如果相同，就考慮第二多的；如果沒第二多的就代表不合法。  
+
+時間複雜度 O(N + D log D)，其中 D = 不同元素個數，本題為 26。  
+空間複雜度 O(D)。  
+
+```python
+class Solution:
+    def reorganizeString(self, s: str) -> str:
+        h = []
+        d = Counter(s)
+        for k, v in d.items():
+            heappush(h, [-v, k])
+
+        ans = []
+        last = ""
+        while h:
+            t = heappop(h)
+            cnt, c = -t[0], t[1]
+            # use max
+            if c != last:
+                last = c
+                ans.append(c)
+                if cnt - 1 > 0:  # check if put mx back
+                    heappush(h, [-(cnt-1), c])
+                continue
+
+            # use max2
+            if h:
+                t = heappop(h)
+                cnt2, c2 = -t[0], t[1]
+                last = c2
+                ans.append(c2)
+                heappush(h, [-(cnt), c])  # always put mx back
+                if cnt2 - 1 > 0:  # check if put mx2 back
+                    heappush(h, [-(cnt2-1), c2])
+                continue
+
+            # invalid
+            return ""
 
         return "".join(ans)
 ````
