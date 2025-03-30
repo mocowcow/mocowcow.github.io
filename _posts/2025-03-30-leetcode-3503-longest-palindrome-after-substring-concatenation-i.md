@@ -25,10 +25,47 @@ class Solution:
         M, N = len(s), len(t)
         ans = 1
         for i in range(M):
-            for j in range(i-1, M):
+            for j in range(i-1, M): # s[i:i-1+1] = ""
                 sub1 = s[i:j+1]
                 for k in range(N):
-                    for l in range(k-1, N):
+                    for l in range(k-1, N): # s[k:k-1+1] = ""
+                        sub2 = t[k:l+1]
+                        merge = sub1 + sub2
+                        if merge == merge[::-1]:
+                            ans = max(ans, len(merge))
+
+        return ans
+```
+
+也可以單獨處理 t 和 s 的回文子字串。  
+有點冗長就是。  
+
+```python
+class Solution:
+    def longestPalindrome(self, s: str, t: str) -> int:
+        M, N = len(s), len(t)
+
+        ans = 1
+        # palindromic substring of s
+        for i in range(M):
+            for j in range(i, M):
+                sub = s[i:j+1]
+                if sub == sub[::-1]:
+                    ans = max(ans, len(sub))
+
+        # palindromic substring of t
+        for i in range(N):
+            for j in range(i, N):
+                sub = t[i:j+1]
+                if sub == sub[::-1]:
+                    ans = max(ans, len(sub))
+
+        # palindromic substring of s[i..j] + t[k..l]
+        for i in range(M):
+            for j in range(i, M):
+                sub1 = s[i:j+1]
+                for k in range(N):
+                    for l in range(k, N):
                         sub2 = t[k:l+1]
                         merge = sub1 + sub2
                         if merge == merge[::-1]:
