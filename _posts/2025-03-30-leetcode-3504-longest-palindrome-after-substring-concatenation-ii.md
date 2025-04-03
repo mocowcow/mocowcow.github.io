@@ -118,3 +118,76 @@ class Solution:
 
         return ans
 ```
+
+上面版本有有非常大的優化空間。  
+
+首先是對稱性：pre_s 和 suf_t 是相同的邏輯，理論上只需要反轉字串就可以重複使用。  
+考慮原本由 s 貢獻中心回文的情形：  
+> s = "aaabcb", t = "aaa"  
+
+存在答案相同，但改由 t 貢獻中心部分的對稱情形：  
+> s2 = "aaa", t2 = "bcbaaa"  
+
+如果把 s, t 都反轉，然後交換位置：  
+> s' = "bcbaaa", t' = "aaa"  
+> t' = "aaa", s' = "bcbaaa"  
+
+兩者是等價的，因此我們只需要實現 pre_s 。  
+封裝邏輯，透過反轉輸入字串 s, t 與 reversed(t), resversed(s) 即可求出答案。  
+
+---
+
+再來是遞迴改遞推。上版跑了 15000ms+，等得我都很難受。  
+
+看看遞迴的調用順序：  
+> dp() -> pre_s() -> pal()  
+
+光是想想就覺得堆疊很多層。而且 pal(i, j) 計算不太有規律，對於 cpu 快取非常不友好。  
+然後再改用**中心擴展法**處理回文，就剩不到 4000ms 了。~~雖然比不上大神的 1000ms~~。  
+
+```python
+class Solution:
+    def longestPalindrome(self, s: str, t: str) -> int:
+        return max(self.solve(s, t), self.solve(t[::-1], s[::-1]))
+
+    def solve(self, s, t):
+        M, N = len(s), len(t)
+
+        # palindrome of s[i..j]
+        pal = [[0] * M for _ in range(M)]
+        for i in range(M):
+            # odd mid
+            l = r = i
+            while l >= 0 and r < M and s[l] == s[r]:
+                pal[l][r] = r-l+1
+                l, r = l-1, r+1
+            # even mid
+            l, r = i, i+1
+            while l >= 0 and r < M and s[l] == s[r]:
+                pal[l][r] = r-l+1
+                l, r = l-1, r+1
+
+        # longest palindrome of s[i..]
+        pre_s = [max(row) for row in pal]
+        # pre_s = [0] * M
+        # for i in range(M):
+        #     for j in range(i, M):
+        #         pre_s[i] = max(pre_s[i], pal[i][j])
+
+        # longest palindrome of s[i..] + t[..j]
+        dp = [[0] * (N+1) for _ in range(M+1)]
+        for i in range(M):
+            dp[i][-1] = pre_s[i]
+        for i in reversed(range(M)):
+            for j in range(N):
+                if s[i] != t[j]:
+                    dp[i][j] = pre_s[i]
+                else:
+                    dp[i][j] = 2 + dp[i+1][j-1]
+                    
+        res = 1
+        for i in range(M):
+            for j in range(N):
+                res = max(res, dp[i][j])
+        return res
+```
