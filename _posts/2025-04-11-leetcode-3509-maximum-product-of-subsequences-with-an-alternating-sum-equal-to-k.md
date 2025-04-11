@@ -14,6 +14,7 @@ weekly contest 444。
 
 相似題 [3490. count beautiful numbers]({% post_url 2025-03-16-leetcode-3490-count-beautiful-numbers %})。  
 在複雜度分析上有異曲同工之妙，都是受限於**乘積**。  
+相似題 [879. Profitable Schemes](https://leetcode.com/problems/profitable-schemes/description/)。狀態定義使用相同技巧。  
 
 ---
 
@@ -46,6 +47,16 @@ weekly contest 444。
 只依靠 sm 和 prod 無法判斷是否已經選過元素，還需要多一個狀態 is_empty = True/False。  
 同時滿足三項限制才合法。  
 
+定義 dp(i, sign, sm, prod, is_empty)：  
+
+- 從 nums[i..] 決定選或不選  
+- 下一個選的數對交錯和的影響為 sign  
+- 當前交錯和為 sm  
+- 當前乘積為 sm  
+- 當前子序列是否為空  
+
+答案入口 ans = dp(0, 1, 0, 1, True)。  
+
 ```python
 class Solution:
     def maxProduct(self, nums: List[int], k: int, limit: int) -> int:
@@ -70,4 +81,20 @@ class Solution:
         dp.cache_clear()  # prevent MLE
 
         return ans
+```
+
+複雜度我搞不太懂，就不亂寫了。  
+至少可以把上次用過的暴力小程式拿出來，看看到底能有幾種 prod：  
+
+```python
+limit = 5000
+s = {1}
+for _ in range(150):
+    s2 = set()
+    for x in s:
+        for y in range(1, 13):
+            if x * y <= limit:
+                s2.add(x * y)
+    s = s2
+print(len(s))  # 394
 ```
