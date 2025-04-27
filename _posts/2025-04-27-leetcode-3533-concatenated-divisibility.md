@@ -70,7 +70,7 @@ class Solution:
                 zeros[i] *= 10
                 x //= 10
 
-        FULL = (1 << N)-1
+        FULL = (1 << N) - 1
         ans = []
 
         @cache
@@ -92,4 +92,26 @@ class Solution:
             return []
 
         return ans[::-1]
+```
+
+或是另外寫一個構造函數，這樣就不需要反轉答案。  
+
+```python
+def build(mask, r):
+    if mask == FULL:
+        return 
+    for i in range(N):
+        bit = 1 << i
+        if mask & bit > 0:
+            continue
+        new_r = (r * zeros[i] + nums[i]) % k
+        new_mask = mask | bit
+        if dp(new_mask, new_r):
+            ans.append(nums[i])
+            build(new_mask, new_r)
+            return
+
+build(0, 0)
+
+return ans
 ```
