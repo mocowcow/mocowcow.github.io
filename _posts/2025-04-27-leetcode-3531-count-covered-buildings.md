@@ -21,8 +21,8 @@ Q1 又是中等，這還真不太簡單。
 y 軸同理，分組後二分搜。  
 兩軸都滿足則答案加 1。  
 
-時間複雜度 O(n log n)。  
-空間複雜度 O(n)。  
+時間複雜度 O(M log M)，其中 M = len(buildings)。  
+空間複雜度 O(n + M)。  
 
 ```python
 class Solution:
@@ -42,11 +42,39 @@ class Solution:
             idx = bisect_left(xs[x], y)
             if idx == 0 or idx == len(xs[x])-1:
                 continue
-
             idx = bisect_left(ys[y], x)
             if idx == 0 or idx == len(ys[y])-1:
                 continue
+            ans += 1
 
+        return ans
+```
+
+其實不用二分，只要確認不是組內第一個或最後一個位置即可。  
+遍歷的時候直接維護行列的最大最小值，座標點也不用排序了。  
+
+時間複雜度 O(n + M)，其中 M = len(buildings)。  
+空間複雜度 O(n)。  
+
+```python
+class Solution:
+    def countCoveredBuildings(self, n: int, buildings: List[List[int]]) -> int:
+        mx_x = [0] * (n+1)
+        mn_x = [inf] * (n+1)
+        mx_y = [0] * (n+1)
+        mn_y = [inf] * (n+1)
+        for x, y in buildings:
+            mx_x[x] = max(mx_x[x], y)
+            mn_x[x] = min(mn_x[x], y)
+            mx_y[y] = max(mx_y[y], x)
+            mn_y[y] = min(mn_y[y], x)
+
+        ans = 0
+        for x, y in buildings:
+            if y == mn_x[x] or y == mx_x[x]:
+                continue
+            if x == mn_y[y] or x == mx_y[y]:
+                continue
             ans += 1
 
         return ans
