@@ -63,3 +63,31 @@ class UnionFind:
             self.parent[x] = self.find(self.parent[x])
         return self.parent[x]
 ```
+
+有個更簡單的想法，不需要併查集。  
+
+以 left[i] 表示 i 往左可達的最遠位置。  
+在 i 無法往左時，left[i] = i；  
+否則一旦能抵達 i-1，則也可達 left[i-1]。  
+
+每次查詢檢查 left[x], left[y] 是否相同即可。  
+
+時間複雜度 O(n)。  
+空間複雜度 O(n)。  
+
+```python
+class Solution:
+    def pathExistenceQueries(self, n: int, nums: List[int], maxDiff: int, queries: List[List[int]]) -> List[bool]:
+        left = [0] * n
+        for i in range(1, n):
+            if nums[i] - nums[i-1] <= maxDiff:
+                left[i] = left[i-1]
+            else:
+                left[i] = i
+
+        ans = []
+        for u, v in queries:
+            ans.append(left[u] == left[v])
+
+        return ans
+```
