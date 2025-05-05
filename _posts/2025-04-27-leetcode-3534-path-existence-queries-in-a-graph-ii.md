@@ -67,7 +67,7 @@ step 可以由若干個二的冪所組成，選擇對應的 fa[x][jump] 進行�
 
 注意：若查詢 x == y 則不用跳，記得特判。  
 
-時間複雜度 O(n log log n)。  
+時間複雜度 O((n log n) + (Q log log n))。  
 空間複雜度 O(n log n)。  
 
 ```python
@@ -120,6 +120,91 @@ class Solution:
 
             if lo <= n:
                 ans.append(lo)
+            else:
+                ans.append(-1)
+
+        return ans
+```
+
+可能有同學會問：為什麼大神的做法不需要二分搜？  
+沒錯，上述做法可以繼續優化，把二分和倍增合併同時做。  
+
+---
+
+二分找最小值，實際上是找**第一個滿足條件**的 step。  
+假設存在合法的答案 step 存在，理論上可以由若干個 f[i][jump] 組成。  
+
+但有個小問題，f[i][jump] 的定義是從 i 跳 2^jump 次後的位置。  
+如果後面沒有其他可達的位置，則不管跳幾次都會停在同一點，無法得到正確的 step。  
+例如：  
+> nums = [.., 99, 100], maxDiff = 1  
+
+不管從 99 跳幾次都會停在 100。沒辦法得到正確 step。  
+
+---
+
+所以我們需要小小的修改，改找**最後一個不滿足條件** 的位置，即保證 x 跳躍後依然小於 y。  
+如果某個 f[x][jump] >= y，則代表更大的 jump 肯定也至少會到 y，都不滿足限制，需要找更小的 jump。  
+
+如果由大到小枚舉 jump，一旦 f[x][jump] >= y，則代表他可能超過 step，不跳；  
+否則從 x 跳到 f[x][jump]，並記錄跳了 2^jump 次。  
+
+按照上述二分邏輯，x 會停在**最後一個**小於 y 的點。  
+若存在合法的答案 step，按照定義，**從 x 再跳一次**肯定能到 y 上 (有可能超過 y)。  
+
+注意：最後判斷 x >= y，而非 x == y。  
+
+時間複雜度 O((n + Q) log n)。  
+空間複雜度 O(n log n)。  
+
+```python
+class Solution:
+    def pathExistenceQueries(self, n: int, nums: List[int], maxDiff: int, queries: List[List[int]]) -> List[bool]:
+        MX = n.bit_length()
+
+        sorted_pos = sorted(range(n), key=lambda x: nums[x])
+        mp = [0] * n
+        for i, old_idx in enumerate(sorted_pos):
+            mp[old_idx] = i
+
+        # find farest pos can reach by 1 jump
+        f = [[-1]*MX for _ in range(n)]
+        j = 0
+        for i in range(n):
+            while j+1 < n and nums[sorted_pos[j+1]] - nums[sorted_pos[i]] <= maxDiff:
+                j += 1
+            f[i][0] = j
+
+        # binary lifting
+        for jump in range(1, MX):
+            for i in range(n):
+                t = f[i][jump-1]
+                f[i][jump] = f[t][jump-1]
+
+        ans = []
+        for x, y in queries:
+            if x == y:  # same pos
+                ans.append(0)
+                continue
+
+            x, y = mp[x], mp[y]
+            if x > y:
+                x, y = y, x
+
+            step = 0
+            for jump in reversed(range(MX)):
+                t = f[x][jump]
+                if t < y:
+                    x = t
+                    step += 1 << jump
+
+            # x need one more jump to y
+            step += 1
+            x = f[x][0]
+
+            # check if valid
+            if x >= y: # x could be more than y
+                ans.append(step)
             else:
                 ans.append(-1)
 
