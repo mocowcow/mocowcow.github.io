@@ -35,7 +35,7 @@ tags        : LeetCode Hard Array Graph BitManipulation BinaryLifting
 而這還可以繼續分解，拆成好幾個相同的子問題。我們要維護的是每個從位置i移動2^j次後的位置和成本。  
 k可以被分解成log(k)個2的次方數，每次計算從i出發跳k步，只需要log(k)次傳球，
 
-定義pos[i][j]代表從玩家i開始傳球2^j次後的位置，而val[i][j]代表這2^j個接球人的id總和(不包含最開始發球的)。  
+定義f[i][j]代表從玩家i開始傳球2^j次後的位置，而val[i][j]代表這2^j個接球人的id總和(不包含最開始發球的)。  
 從小到大遍歷j，可以保證使用到的j-1一定被處理過。  
 
 最後窮舉所有玩家做為出發點，若k的第j個位元為1，則傳球2^j次。傳完k次後更新答案。  
@@ -46,30 +46,37 @@ k可以被分解成log(k)個2的次方數，每次計算從i出發跳k步，只�
 ```python
 class Solution:
     def getMaxFunctionValue(self, receiver: List[int], k: int) -> int:
-        n=len(receiver)
-        m=k.bit_length()
-        
-        pos=[[0]*m for _ in range(n)]
-        val=[[0]*m for _ in range(n)]
-        for i in range(n):
-            pos[i][0]=receiver[i]
-            val[i][0]=receiver[i]
-            
-        for j in range(1,m):
-            for i in range(n):
-                fa=pos[i][j-1]
-                pos[i][j]=pos[fa][j-1]
-                val[i][j]=val[i][j-1]+val[fa][j-1]
-                
-        ans=0
-        for i in range(n):
-            curr=i
-            sm=i
-            for j in range(m):
-                if k&(1<<j):
-                    sm+=val[curr][j]
-                    curr=pos[curr][j]
-            ans=max(ans,sm)
-            
-        return ans
+        N = len(receiver)
+        MX = k.bit_length()
+
+        # f[i][jump]: 從 i 跳 2^jump 次的位置
+        # -1 代表沒有下一個點
+        f = [[-1]*MX for _ in range(N)]
+        val = [[-1]*MX for _ in range(N)]
+
+        # 初始化每個位置跳一次
+        # 實作細節自行修改
+        for i in range(N):
+            f[i][0] = receiver[i]
+            val[i][0] = receiver[i]
+
+        # 倍增遞推
+        for jump in range(1, MX):
+            for i in range(N):
+                temp = f[i][jump-1]
+                if temp != -1:  # 必須存在中繼點
+                    f[i][jump] = f[temp][jump-1]
+                    val[i][jump] = val[i][jump-1] + val[temp][jump-1]
+
+        # 從 x 跳 k 次
+        # -1 表示不合法
+        def k_jump(x, k):
+            val_sm = x
+            for jump in range(MX):
+                if k & (1 << jump):
+                    val_sm += val[x][jump]
+                    x = f[x][jump]
+            return val_sm
+
+        return max(k_jump(i, k) for i in range(N))
 ```
