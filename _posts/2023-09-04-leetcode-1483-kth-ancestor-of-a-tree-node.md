@@ -30,25 +30,37 @@ f[i][j]代表從節點i往上跳2^j步後的位置，先以parent初始化f[i][0
 
 ```python
 class TreeAncestor:
+
     def __init__(self, n: int, parent: List[int]):
-        global f,m
-        m=n.bit_length()
-        f=[[-1]*m for _ in range(n)]
-        for i in range(1,n):
-            f[i][0]=parent[i]
-            
-        for j in range(1,m):
-            for i in range(n):
-                fa=f[i][j-1]
-                if fa!=-1:
-                    f[i][j]=f[fa][j-1]
-        
+        global MX, N, f
+
+        N = n
+        MX = N.bit_length()
+
+        # f[i][jump]: 從 i 跳 2^jump 次的位置
+        # -1 代表沒有下一個點
+        f = [[-1]*MX for _ in range(N)]
+
+        # 初始化每個位置跳一次
+        # 實作細節自行修改
+        for i in range(N):
+            f[i][0] = parent[i]
+
+        # 倍增遞推
+        for jump in range(1, MX):
+            for i in range(N):
+                temp = f[i][jump-1]
+                if temp != -1:  # 必須存在中繼點
+                    f[i][jump] = f[temp][jump-1]
+
     def getKthAncestor(self, node: int, k: int) -> int:
-        curr=node
-        for j in range(m):
-            if k&(1<<j):
-                curr=f[curr][j]
-            if curr==-1:
-                return -1
-        return curr
+        def k_jump(x, k):
+            for jump in range(MX):
+                if k & (1 << jump):
+                    temp = f[x][jump]
+                    if temp == -1:  # 不能跳
+                        return -1
+                    x = temp
+            return x
+        return k_jump(node, k)
 ```
