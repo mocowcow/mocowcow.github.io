@@ -3,7 +3,8 @@ layout      : single
 title       : LeetCode 3534. Path Existence Queries in a Graph II
 tags        : LeetCode Hard HashTable Sorting BinarySearch BinaryLifting
 ---
-weekly contest 447。
+weekly contest 447。  
+花了點時間整理倍增模板，以後可以節省不少時間。  
 
 ## 題目
 
@@ -67,50 +68,52 @@ step 可以由若干個二的冪所組成，選擇對應的 fa[x][jump] 進行�
 
 注意：若查詢 x == y 則不用跳，記得特判。  
 
-時間複雜度 O((n log n) + (Q log log n))。  
+時間複雜度 O((n log n) + (Q log n log n))。  
 空間複雜度 O(n log n)。  
 
 ```python
 class Solution:
     def pathExistenceQueries(self, n: int, nums: List[int], maxDiff: int, queries: List[List[int]]) -> List[bool]:
-        MX = n.bit_length()
-
-        sorted_pos = sorted(range(n), key=lambda x: nums[x])
+        pos = sorted(range(n), key=lambda x: nums[x])
         mp = [0] * n
-        for i, old_idx in enumerate(sorted_pos):
+        for i, old_idx in enumerate(pos):
             mp[old_idx] = i
 
-        # find farest pos can reach by 1 jump
-        f = [[-1]*MX for _ in range(n)]
+        N = n
+        MX = N.bit_length()
+
+        # f[i][jump]: 從 i 跳 2^jump 次的位置
+        f = [[-1]*MX for _ in range(N)]
+
+        # 初始化每個位置跳一次
         j = 0
-        for i in range(n):
-            while j+1 < n and nums[sorted_pos[j+1]] - nums[sorted_pos[i]] <= maxDiff:
+        for i in range(N):
+            while j+1 < N and nums[pos[j+1]] - nums[pos[i]] <= maxDiff:
                 j += 1
             f[i][0] = j
 
-        # binary lifting
+        # 倍增遞推
         for jump in range(1, MX):
-            for i in range(n):
-                t = f[i][jump-1]
-                f[i][jump] = f[t][jump-1]
+            for i in range(N):
+                temp = f[i][jump-1]
+                if temp != -1:  # 必須存在中繼點
+                    f[i][jump] = f[temp][jump-1]
 
+        # x 跳 step 次可否抵達 y
         def ok(x, y, step):
             for jump in range(MX):
                 if step & (1 << jump):
                     x = f[x][jump]
             return x >= y
 
-        ans = []
-        for x, y in queries:
-            if x == y:  # no need to jump
-                ans.append(0)
-                continue
+        def solve(x, y):
+            if x == y:
+                return 0
 
-            x, y = mp[x], mp[y]
             if x > y:
                 x, y = y, x
 
-            lo, hi = 1, n + 1
+            lo, hi = 1, n+1
             while lo < hi:
                 mid = (lo + hi) // 2
                 if not ok(x, y, mid):
@@ -119,11 +122,10 @@ class Solution:
                     hi = mid
 
             if lo <= n:
-                ans.append(lo)
-            else:
-                ans.append(-1)
+                return lo
+            return -1
 
-        return ans
+        return [solve(mp[x], mp[y]) for x, y in queries]
 ```
 
 可能有同學會問：為什麼大神的做法不需要二分搜？  
@@ -160,53 +162,55 @@ class Solution:
 ```python
 class Solution:
     def pathExistenceQueries(self, n: int, nums: List[int], maxDiff: int, queries: List[List[int]]) -> List[bool]:
-        MX = n.bit_length()
-
-        sorted_pos = sorted(range(n), key=lambda x: nums[x])
+        pos = sorted(range(n), key=lambda x: nums[x])
         mp = [0] * n
-        for i, old_idx in enumerate(sorted_pos):
+        for i, old_idx in enumerate(pos):
             mp[old_idx] = i
 
-        # find farest pos can reach by 1 jump
-        f = [[-1]*MX for _ in range(n)]
+        N = n
+        MX = N.bit_length()
+
+        # f[i][jump]: 從 i 跳 2^jump 次的位置
+        f = [[-1]*MX for _ in range(N)]
+
+        # 初始化每個位置跳一次
         j = 0
-        for i in range(n):
-            while j+1 < n and nums[sorted_pos[j+1]] - nums[sorted_pos[i]] <= maxDiff:
+        for i in range(N):
+            while j+1 < N and nums[pos[j+1]] - nums[pos[i]] <= maxDiff:
                 j += 1
             f[i][0] = j
 
-        # binary lifting
+        # 倍增遞推
         for jump in range(1, MX):
-            for i in range(n):
-                t = f[i][jump-1]
-                f[i][jump] = f[t][jump-1]
+            for i in range(N):
+                temp = f[i][jump-1]
+                if temp != -1:  # 必須存在中繼點
+                    f[i][jump] = f[temp][jump-1]
 
-        ans = []
-        for x, y in queries:
-            if x == y:  # same pos
-                ans.append(0)
-                continue
+        # x >= y 最少要跳幾次
+        # -1 表示跳不到
+        def min_jump(x, y):
+            if x == y:
+                return 0
 
-            x, y = mp[x], mp[y]
             if x > y:
                 x, y = y, x
 
+            # 最多先跳到 y-1
             step = 0
             for jump in reversed(range(MX)):
-                t = f[x][jump]
-                if t < y:
-                    x = t
+                temp = f[x][jump]
+                if temp < y:
+                    x = temp
                     step += 1 << jump
 
-            # x need one more jump to y
+            # 再跳一次
             step += 1
             x = f[x][0]
 
-            # check if valid
-            if x >= y: # x could be more than y
-                ans.append(step)
-            else:
-                ans.append(-1)
+            if x >= y:
+                return step
+            return -1
 
-        return ans
+        return [min_jump(mp[x], mp[y]) for x, y in queries]
 ```
