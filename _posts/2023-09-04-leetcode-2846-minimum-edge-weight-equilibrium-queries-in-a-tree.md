@@ -51,9 +51,9 @@ tags        : LeetCode Hard Array Tree PrefixSum BitManipulation BinaryLifting
 
 最後處理每個查詢[a, b]：  
 
-1. 先找到ab的lca  
-2. 求a到lca，再從lca到b的路徑  
-3. 找到最高的權重出現次數max_w，把總邊數tot扣掉max_w就是答案  
+1. 先找到 lca
+2. 求 lca 到 a 的路徑和，再上 lca 到 b 的路徑和  
+3. 找到最高的權重出現次數 max_w，把總邊數 tot 扣掉 max_w 就是答案  
 
 預處理倍增O(n log n)，每次查詢O(log n)，整體時間複雜度O( n log n + Q log n )。  
 空間複雜度O(n log n)。  
@@ -61,68 +61,74 @@ tags        : LeetCode Hard Array Tree PrefixSum BitManipulation BinaryLifting
 ```python
 class Solution:
     def minOperationsQueries(self, n: int, edges: List[List[int]], queries: List[List[int]]) -> List[int]:
-        m=n.bit_length()
-        g=[[] for _ in range(n)]
-        for a,b,w in edges:
-            g[a].append([b,w-1])
-            g[b].append([a,w-1])
-            
-        pos=[[-1]*m for _ in range(n)]
-        dep=[0]*n
-        weight=[None]*n
-        weight[0]=[0]*26
-        
-        # build depth and weights
-        def dfs(i,fa,d):
-            pos[i][0]=fa
-            dep[i]=d
-            for j,w in g[i]:
-                if j==fa:
+        g = [[] for _ in range(n)]
+        for a, b, w in edges:
+            g[a].append([b, w-1])
+            g[b].append([a, w-1])
+
+        ps = [[0]*26 for _ in range(n)]
+        parent = [0] * n
+        depth = [0] * n
+
+        def dfs(i, fa, dep):
+            parent[i] = fa
+            depth[i] = dep
+            for j, w in g[i]:
+                if j == fa:
                     continue
-                weight[j]=weight[i][:]
-                weight[j][w]+=1
-                dfs(j,i,d+1)
-        
-        dfs(0,-1,0)
-        
-        # build binary lifting
-        for j in range(1,m):
-            for i in range(n):
-                fa=pos[i][j-1]
-                if fa!=-1:
-                    pos[i][j]=pos[fa][j-1]
-        
-        def get_lca(x,y):
-            if dep[x]>dep[y]:
-                x,y=y,x
-                
-            # make x and y same depth
-            # by move diff steps from y
-            diff=dep[y]-dep[x]
-            for j in range(m):
-                if diff&(1<<j):
-                    y=pos[y][j]
-                    
-            # found lca
-            if x==y:
+                ps[j] = ps[i].copy()
+                ps[j][w] += 1
+                dfs(j, i, dep+1)
+
+        dfs(0, -1, 0)
+
+        N = n  # 有多少點
+        MX = N.bit_length()  # 最大跳躍次數取 log
+
+        # f[i][jump]: 從 i 跳 2^jump 次的位置
+        # -1 代表沒有下一個點
+        f = [[-1]*MX for _ in range(N)]
+
+        # 初始化每個位置跳一次
+        # 實作細節自行修改
+        for i in range(N):
+            f[i][0] = parent[i]
+
+        # 倍增遞推
+        for jump in range(1, MX):
+            for i in range(N):
+                temp = f[i][jump-1]
+                f[i][jump] = f[temp][jump-1]
+
+        def get_LCA(x, y):
+            if depth[x] > depth[y]:
+                x, y = y, x
+
+            # 把 y 調整到和 x 相同深度
+            diff = depth[y]-depth[x]
+            for jump in range(MX):
+                if diff & (1 << jump):
+                    y = f[y][jump]
+
+            # 已經相同
+            if x == y:
                 return x
-            
-            # find lowest non-lca
-            for j in reversed(range(m)):
-                if pos[x][j]!=pos[y][j]:
-                    x=pos[x][j]
-                    y=pos[y][j]
-                    
-            # now x and y are below lca 1 step
-            # one more step to lca
-            return pos[x][0]
-        
-        ans=[]
-        for a,b in queries:
-            lca=get_lca(a,b)
-            tot=dep[a]+dep[b]-dep[lca]*2
-            w_sum=[x1+x2-x3*2 for x1,x2,x3 in zip(weight[a],weight[b],weight[lca])]
-            ans.append(tot-max(w_sum))
-            
-        return ans
+
+            # 否則找最低的非 LCA
+            for jump in reversed(range(MX)):
+                if f[x][jump] != f[y][jump]:
+                    x = f[x][jump]
+                    y = f[y][jump]
+
+            # 再跳一次到 LCA
+            return f[x][0]
+
+        def solve(x, y):
+            lca = get_LCA(x, y)
+            cnt = [0]*26
+            for w in range(26):
+                cnt[w] = ps[x][w] + ps[y][w] - ps[lca][w]*2
+            return sum(cnt)-max(cnt)
+
+        return [solve(*q) for q in queries]
 ```
