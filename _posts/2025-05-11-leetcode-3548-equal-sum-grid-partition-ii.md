@@ -112,3 +112,56 @@ def solve(a):
                     return True
     return False
 ```
+
+其實不只水平垂直可以複用同一個邏輯，連水平切裡面上下半段也可以複用。  
+只需要實作檢查上半段的邏輯，將矩陣上下翻轉，就可以刪上下段了。  
+
+```python
+class Solution:
+    def canPartitionGrid(self, grid: List[List[int]]) -> bool:
+        # 1. 水平切
+        # 2. 右轉 90 度後水平切 = 垂直切
+        trans = [list(row) for row in zip(*grid)]
+        return solve(grid) or solve(trans)
+
+
+def solve(a):
+    # 1. 刪上半段
+    # 2. 上下翻轉後刪上半段 = 刪下半段
+    return delete_up(a) or delete_up(a[::-1])
+
+
+def delete_up(a):
+    M, N = len(a), len(a[0])
+
+    down = 0
+    for row in a:
+        for x in row:
+            down += x
+
+    up = 0
+    d = Counter()
+    for i in range(M-1):
+        for j in range(N):
+            x = a[i][j]
+            up += x
+            d[x] += 1
+            down -= x
+
+        # 不刪
+        if up == down:
+            return True
+
+        # 刪上面
+        if up > down:
+            delta = up - down
+            if d[delta] > 0:
+                # 特判 M x 1
+                if N == 1:
+                    if a[0][0] == delta or a[i][0] == delta:
+                        return True
+                    continue
+                if i > 0 or a[0][0] == delta or a[0][-1] == delta:
+                    return True
+    return False
+```
