@@ -52,6 +52,11 @@ edge case 放在 hidden case，太壞了。
 當原矩陣呈一條直線時，分割後的兩個子矩陣也是直線。  
 所以兩個子矩陣只能刪除**最上面**或是**最下面**的部分，否則會破壞連通性。  
 
+![示意圖](/assets/img/3548.jpg)  
+
+時間複雜度 O(MN)。  
+空間複雜度 O(MN)。  
+
 ```python
 class Solution:
     def canPartitionGrid(self, grid: List[List[int]]) -> bool:
