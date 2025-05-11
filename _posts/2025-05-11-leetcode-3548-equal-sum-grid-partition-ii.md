@@ -41,7 +41,7 @@ edge case 放在 hidden case，太壞了。
 
 - up == down，不用刪  
 - up > down，若 (up-down) 存在於上半段，且不破壞連通性  
-- up < down，若 (up-down) 存在於下半段，且不破壞連通性  
+- up < down，若 (down-up) 存在於下半段，且不破壞連通性  
 
 我們只需要在遍歷過程中維護上下半段剩餘的元素即可。  
 
