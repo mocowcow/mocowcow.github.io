@@ -69,3 +69,39 @@ class Solution:
 
         return ans
 ```
+
+用陣列做記憶化。  
+狀態定義改 sign = 1/0 表示是否反轉過。  
+實現細節稍有不同。  
+
+```python
+class Solution:
+    def subtreeInversionSum(self, edges: List[List[int]], nums: List[int], k: int) -> int:
+        N = len(edges) + 1
+        g = [[] for _ in range(N)]
+        for a, b in edges:
+            g[a].append(b)
+            g[b].append(a)
+
+        memo = [[[inf]*k for _ in range(2)] for _ in range(N)]
+
+        def dp(i, fa, sign, cd):
+            if memo[i][sign][cd] != inf:
+                return memo[i][sign][cd]
+
+            res = nums[i] if sign == 1 else -nums[i]
+            for j in g[i]:
+                if j == fa:
+                    continue
+                t = dp(j, i, sign, max(0, cd-1))
+                if cd == 0:  # flip
+                    t = max(t, dp(j, i, sign^1, k-1))
+                res += t
+            memo[i][sign][cd] = res
+            return res
+
+        ans = dp(0, -1, 1, 0)  # no flip
+        ans = max(ans, dp(0, -1, 0, k-1))  # flip root
+
+        return ans
+```
