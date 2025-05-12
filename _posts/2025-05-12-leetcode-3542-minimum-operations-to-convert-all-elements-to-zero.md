@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3542. Minimum Operations to Convert All Elements to Zero
-tags        : LeetCode Medium DevideAndConquer SegmentTree BinarySearch
+tags        : LeetCode Medium DevideAndConquer SegmentTree BinarySearch MonotonicStack
 ---
 biweekly contest 156。  
 挺難的，應該是能算上前幾難的 Q2。  
@@ -115,4 +115,57 @@ class SegmentTree:
         if M+1 <= j:
             res = self.op(res, self.query(id*2+1, M+1, R, i, j))
         return res
+```
+
+根據上述子問題處理方式，有個很重要的性質：  
+> 若某數 x 的左或右有更小的數，則 x 需要自己刪除一次  
+
+聽起來很像廢話。先看最簡單的例子：  
+> nums = [1,2,3,3]  
+
+陣列嚴格遞增，操作次數等於不同元素個數。  
+再來看別的例子：
+> nums = [1,2,1,5,1,2]  
+
+被 1 分隔的元素都需要自己操作。  
+
+---
+
+問題轉換成：每個元素**找下一個更小的元素**。  
+相似題 [496. next greater element i]({% post_url 2022-03-04-leetcode-496-next-greater-element-i %})。  
+
+維護**嚴格單調遞增**堆疊。  
+若當前元素 x 比堆疊頂端元素更小，代表頂端元素需要獨自操作。刪除頂端元素，操作次數加 1，直接滿足遞增為止。  
+
+刪除堆頂後，有時候相連的元素可以一起操作，例如：  
+> nums = [2,2]  
+> 兩個 2 可一起操作  
+> nums = [1,2,1]  
+> 2 刪掉之後剩下 [1,0,1]，兩個 1 可一起操作  
+
+只有在當前元素 x 與堆頂不同時才要加入。  
+
+遍歷結束後，堆疊中大小即不同元素個數，即所需操作次數。  
+記得特判 0 是否存在，因為 0 本身不需操作，操作次數需減 1。  
+
+時間複雜度 O(N)。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def minOperations(self, nums: List[int]) -> int:
+        ans = 0
+        st = []
+        for x in nums:
+            while st and x < st[-1]:  # 發現更小值，先前元素需操作
+                ans += 1
+                st.pop()
+            if not st or st[-1] != x:  # 嚴格遞增，相同的元素可合併操作
+                st.append(x)
+
+        ans += len(st)
+        if st[0] == 0:  # 原有的 0 不需操作
+            ans -= 1
+
+        return ans
 ```
