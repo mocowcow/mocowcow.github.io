@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3552. Grid Teleportation Traversal
-tags        : LeetCode Medium
+tags        : LeetCode Medium Graph BFS
 ---
 weekly contest 450。  
 BFS + 傳送門，總記得有做過相似題，一時找不到。  
@@ -80,6 +80,58 @@ class Solution:
                 if new_cost < dist[rr][cc]:
                     dist[rr][cc] = new_cost  # important pruning
                     heappush(h, (new_cost, rr, cc))
+
+        return -1
+```
+
+注意到路徑成本只有 0 和 1 兩種，可用 **0-1 BFS** 優化。  
+使用**雙端隊列**，傳送成本為 0，優先處理，加到隊列前方；普通移動成本 1，晚點處理，加到後方。  
+
+時間複雜度 O(MN)。  
+空間複雜度 O(MN)。  
+
+```python
+class Solution:
+    def minMoves(self, matrix: List[str]) -> int:
+        M, N = len(matrix), len(matrix[0])
+
+        # build teleport
+        jump = defaultdict(list)
+        for r in range(M):
+            for c in range(N):
+                x = matrix[r][c]
+                if x in ".#":
+                    continue
+                jump[x].append((r, c))
+
+        dist = [[inf] * N for _ in range(M)]
+        dist[0][0] = 0
+        q = deque([(0, 0, 0)])  # cost, r, c
+        while q:
+            cost, r, c = q.popleft()
+            if r == M-1 and c == N-1:
+                return cost
+            if cost > dist[r][c]:
+                continue
+
+            # jump
+            x = matrix[r][c]
+            if x in jump:
+                for (rr, cc) in jump[x]:
+                    if cost < dist[rr][cc]:
+                        dist[rr][cc] = cost
+                        q.appendleft((cost, rr, cc))
+                del jump[x]  # can only jump once
+
+            # move
+            for dx, dy in pairwise([0, 1, 0, -1, 0]):
+                rr, cc = r+dx, c+dy
+                if rr < 0 or rr == M or cc < 0 or cc == N or matrix[rr][cc] == "#":
+                    continue
+                new_cost = cost + 1
+                if new_cost < dist[rr][cc]:
+                    dist[rr][cc] = new_cost  # important pruning
+                    q.append((new_cost, rr, cc))
 
         return -1
 ```
