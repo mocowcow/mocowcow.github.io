@@ -141,8 +141,8 @@ class Solution:
 
         def solve(a, b, c):
             res = tlca.get_distance(a, b)
-            res += tlca.get_distance(a, c)
             res += tlca.get_distance(b, c)
+            res += tlca.get_distance(c, a)
             return res // 2
 
         return [solve(*q) for q in queries]
