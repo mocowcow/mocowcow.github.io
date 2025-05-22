@@ -150,16 +150,13 @@ class Solution:
         for i, x in enumerate(nums):
             uf.union(i, mp[x])
 
-        d = Counter()
-        for i in range(N):
-            d[uf.find(i)] += 1
-
-        return sum(v-1 for v in d.values())
+        return N - uf.component_cnt
 
 
 class UnionFind:
     def __init__(self, n):
         self.parent = [0] * n
+        self.component_cnt = n  # 連通塊數量
         for i in range(n):
             self.parent[i] = i
 
@@ -167,7 +164,8 @@ class UnionFind:
         px = self.find(x)
         py = self.find(y)
         if px != py:
-            self.parent[px] = py
+            self.component_cnt -= 1  # 連通塊減少 1
+            self.parent[px] = py 
 
     def find(self, x):
         if x != self.parent[x]:
