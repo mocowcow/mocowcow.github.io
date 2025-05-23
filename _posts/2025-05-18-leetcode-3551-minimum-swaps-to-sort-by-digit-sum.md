@@ -12,15 +12,17 @@ weekly contest 450。
 
 ## 解法
 
-首先按題目要求排序 nums，將排序後的結果記做 target。  
-逐一檢查每個位置 nums[i]，查看是否與 target[i] 相同：  
+以下將 nums 記做 a。  
+將 a 排序後的結果記做 b。  
+
+逐一檢查每個位置 a[i]，查看是否與 b[i] 相同：  
 
 - 相同，不需操作  
-- 不同，則找到 target[i] 當前位置 j，把 nums[i], nums[j] 交換  
+- 不同，則找到 b[i] 當前位置 j，把 a[i], a[j] 交換  
 
-需要快速查找某個元素 val 當前位於 nums 的位置。  
-建立映射表 pos，其中 pos[val] = j，代表 pos 位於 nums[j]。  
-每次換位 nums[j] 的值會改變，記得要更新映射表。  
+需要快速查找某個元素 x 當前位於 a 的位置。  
+建立映射表 mp_a，其中 mp_a[x] = j，代表 x 位於 a[j]。  
+每次換位 a[j] 的值會改變，記得要更新映射表。  
 
 時間複雜度 O((N log MX) + (N log MX))，其中 MX = max(nums)。  
 空間複雜度 O(N)。  
@@ -28,32 +30,22 @@ weekly contest 450。
 ```python
 class Solution:
     def minSwaps(self, nums: List[int]) -> int:
-        N = len(nums)
+        a = nums
+        N = len(a)
 
-        # expected pos of val after sorting
-        target = [[sum(int(c) for c in str(val)), val] for val in nums]
-        target = [x[1] for x in sorted(target)]
+        b = [[sum(int(c) for c in str(x)), x] for x in a]
+        b = [x for _, x in sorted(b)]
+        mp_a = {x: i for i, x in enumerate(a)}  # 元素 x 當前位於 a 的位置
 
-        # current pos of val
-        pos = {}
-        for i, val in enumerate(nums):
-            pos[val] = i
+        cnt = 0
+        for i, x in enumerate(b):
+            if a[i] != x:
+                j = mp_a[x]  # x 當前位於 a[i] 的位置
+                a[i], a[j] = a[j], a[i]
+                mp_a[a[j]] = j  # a[j] 的元素換位過，記得更新
+                cnt += 1
 
-        # swap val to target pos
-        ans = 0
-        for i in range(N):
-            t = target[i]
-            # swap
-            if nums[i] != t:
-                ans += 1
-                # t at nums[j]
-                j = pos[t]
-                # swap i,j then update mapping
-                nums[i], nums[j] = nums[j], nums[i]
-                pos[nums[i]] = i
-                pos[nums[j]] = j
-
-        return ans
+        return cnt
 ```
 
 本題其實有個經典結論，不需要模擬交換過程。  
@@ -62,7 +54,7 @@ class Solution:
 一個長度 N 的陣列 a，最差情況下需要交換幾次？
 先來看看相對單純的案例：  
 > a = [5,1,2,3,4]  
-> target = [1,2,3,4,5]  
+> b = [1,2,3,4,5]  
 > a[0] 放錯了，正確值在 a[1]，交換 a[0], a[1]  
 > a = [1,5,2,3,4]  
 > a[1] 放錯了，正確值在 a[2]，交換 a[1], a[2]  
@@ -78,7 +70,7 @@ class Solution:
 ---
 
 但有時候初始位置就正確，或是某些位置之間並無關連：  
-> t = [1,2,3,4]  
+> b = [1,2,3,4]  
 > a = [1,2,3,4] 不需要換  
 > a = [1,2,4,3] 需要換 1 次  
 > a = [2,1,4,3] 需要換 2 次  
@@ -93,7 +85,7 @@ class Solution:
 
 ---
 
-t 是排序後的正確位置，而輸入陣列 a 可以透過換位變成 t。  
+b 是排序後的正確位置，而 a 可以透過換位變成 b  
 稱 a 是 t 的**置換**或是**排列** (permutation)。  
 把每個元素指向排序後的正確位置，會生成若干個環，這些環稱做**置換環**。  
 
@@ -111,27 +103,27 @@ dfs 求環大小。
 ```python
 class Solution:
     def minSwaps(self, nums: List[int]) -> int:
-        N = len(nums)
+        a = nums
+        N = len(a)
 
-        # expected pos of val after sorting
-        target = [[sum(int(c) for c in str(val)), val] for val in nums]
-        target = [x[1] for x in sorted(target)]
-        mp = {val: i for i, val in enumerate(target)}
-
-        ans = 0
-        vis = [False] * N
+        b = [[sum(int(c) for c in str(x)), x] for x in a]
+        b = [x for _, x in sorted(b)]
+        mp_b = {x: i for i, x in enumerate(b)}
 
         def dfs(i):
             if vis[i]:
-                return 0
+                return
             vis[i] = True
-            return dfs(mp[nums[i]]) + 1
+            dfs(mp_b[a[i]])
 
+        vis = [False] * N
+        cnt = 0
         for i in range(N):
             if not vis[i]:
-                ans += dfs(i) - 1 # cycle sz - 1
+                cnt += 1
+                dfs(i)
 
-        return ans
+        return N - cnt
 ```
 
 也可以用併查集找連通塊，然後再算大小。  
@@ -139,36 +131,33 @@ class Solution:
 ```python
 class Solution:
     def minSwaps(self, nums: List[int]) -> int:
-        N = len(nums)
+        a = nums
+        N = len(a)
 
-        # expected pos of val after sorting
-        target = [[sum(int(c) for c in str(val)), val] for val in nums]
-        target = [x[1] for x in sorted(target)]
-        mp = {val: i for i, val in enumerate(target)}
+        b = [[sum(int(c) for c in str(x)), x] for x in a]
+        b = [x for _, x in sorted(b)]
+        mp_b = {x: i for i, x in enumerate(b)}
 
         uf = UnionFind(N)
-        for i, x in enumerate(nums):
-            uf.union(i, mp[x])
-
+        for i, x in enumerate(a):
+            uf.union(i, mp_b[x])
+            
         return N - uf.component_cnt
 
-
 class UnionFind:
-    def __init__(self, n):
-        self.parent = [0] * n
-        self.component_cnt = n  # 連通塊數量
-        for i in range(n):
-            self.parent[i] = i
+        def __init__(self, n):
+            self.parent = list(range(n))
+            self.component_cnt = n  # 連通塊數量
 
-    def union(self, x, y):
-        px = self.find(x)
-        py = self.find(y)
-        if px != py:
-            self.component_cnt -= 1  # 連通塊減少 1
-            self.parent[px] = py 
+        def union(self, x, y):
+            px = self.find(x)
+            py = self.find(y)
+            if px != py:
+                self.component_cnt -= 1  # 連通塊減少 1
+                self.parent[px] = py
 
-    def find(self, x):
-        if x != self.parent[x]:
-            self.parent[x] = self.find(self.parent[x])
-        return self.parent[x]
+        def find(self, x):
+            if x != self.parent[x]:
+                self.parent[x] = self.find(self.parent[x])
+            return self.parent[x]
 ```
