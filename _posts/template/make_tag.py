@@ -1,3 +1,5 @@
+import subprocess
+
 d = {
 
     'lc':  'LeetCode',
@@ -62,6 +64,7 @@ while True:
     print(st)
 
 
-print('\n\n\n\n\n')
-print(' '.join(st))
-print('\n\n\n\n\n')
+text = " ".join(st)
+subprocess.run("clip", text=True, input=text, check=True)
+
+print(text)
