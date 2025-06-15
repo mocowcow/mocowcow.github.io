@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3585. Find Weighted Median Node in Tree
-tags        : LeetCode Hard Tree BinaryLifting DP
+tags        : LeetCode Hard Tree BinaryLifting DP BinarySearch
 ---
 weekly contest 454。  
 剩五分鐘前才寫完，但是沒膽交答案。  
