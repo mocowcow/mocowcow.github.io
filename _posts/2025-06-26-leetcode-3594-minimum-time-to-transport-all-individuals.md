@@ -48,36 +48,89 @@ class Solution:
 
         dist = [[[inf]*m for _ in range(2)] for _ in range(1 << n)]
         h = []
-        heappush(h, [0, FULL, 0, 0])  # cost, ppl, dir=0/1, mul_state
+        heappush(h, [0, FULL, 0, 0])  # cost, ppl, dir=0/1, spd
         dist[FULL][0][0] = 0
         while h:
-            cost, ppl, dir, mul_state = heappop(h)
-            if cost > dist[ppl][dir][mul_state]:
+            cost, ppl, dir, spd = heappop(h)
+            if cost > dist[ppl][dir][spd]:
                 continue
 
             if dir == 0:  # at start
                 for mask in range(1, 1 << n):
                     if mask.bit_count() <= k and mask | ppl == ppl:  # at most k ppl
-                        d = mask_time[mask]*mul[mul_state]
+                        d = mask_time[mask]*mul[spd]
                         new_cost = cost + d
                         new_ppl = ppl ^ mask
-                        new_mul_state = (mul_state+floor(d)) % m
-                        if new_cost < dist[new_ppl][1][new_mul_state]:
-                            dist[new_ppl][1][new_mul_state] = new_cost
-                            heappush(h, [new_cost, new_ppl, 1, new_mul_state])
+                        new_spd = (spd+floor(d)) % m
+                        if new_cost < dist[new_ppl][1][new_spd]:
+                            dist[new_ppl][1][new_spd] = new_cost
+                            heappush(h, [new_cost, new_ppl, 1, new_spd])
             else:  # at end
                 if ppl == 0:  # all arrived
                     return cost
                 for i in range(n):
                     mask = 1 << i
                     if mask & ppl == 0:
-                        d = mask_time[mask]*mul[mul_state]
+                        d = mask_time[mask]*mul[spd]
                         new_cost = cost + d
                         new_ppl = ppl ^ mask
-                        new_mul_state = (mul_state+floor(d)) % m
-                        if new_cost < dist[new_ppl][0][new_mul_state]:
-                            dist[new_ppl][0][new_mul_state] = new_cost
-                            heappush(h, [new_cost, new_ppl, 0, new_mul_state])
+                        new_spd = (spd+floor(d)) % m
+                        if new_cost < dist[new_ppl][0][new_spd]:
+                            dist[new_ppl][0][new_spd] = new_cost
+                            heappush(h, [new_cost, new_ppl, 0, new_spd])
+
+        return -1
+```
+
+至多 k 個人的子集可以先預處理，會加速很多。  
+添加至 heap 的邏輯也可以封裝起來。  
+
+```python
+class Solution:
+    def minTime(self, n: int, k: int, m: int, time: List[int], mul: List[float]) -> float:
+        FULL = (1 << n) - 1
+
+        mask_time = [0] * (1 << n)
+        for mask in range(1 << n):
+            for i in range(n):
+                if mask & (1 << i):
+                    mask_time[mask] = max(mask_time[mask], time[i])
+
+        g = [[] for _ in range(1 << n)]
+        for ppl in range(1 << n):
+            for sub in range(1, 1 << n):
+                if sub.bit_count() <= k and sub | ppl == ppl:
+                    g[ppl].append(sub)
+
+        dist = [[[inf]*m for _ in range(2)] for _ in range(1 << n)]
+        h = []
+
+        def push(cost, ppl, dir, mul_state):
+            if cost < dist[ppl][dir][mul_state]:
+                dist[ppl][dir][mul_state] = cost
+                heappush(h, [cost, ppl, dir, mul_state])
+
+        push(0, FULL, 0, 0)
+
+        while h:
+            cost, ppl, dir, spd = heappop(h)
+            if cost > dist[ppl][dir][spd]:
+                continue
+
+            if dir == 0:  # at start
+                for mask in g[ppl]:
+                    d = mask_time[mask]*mul[spd]
+                    new_spd = (spd+floor(d)) % m
+                    push(cost+d, ppl ^ mask, dir ^ 1, new_spd)
+            else:  # at end
+                if ppl == 0:  # all arrived
+                    return cost
+                for i in range(n):
+                    mask = 1 << i
+                    if mask & ppl == 0:
+                        d = mask_time[mask]*mul[spd]
+                        new_spd = (spd+floor(d)) % m
+                        push(cost+d, ppl ^ mask, dir ^ 1, new_spd)
 
         return -1
 ```
