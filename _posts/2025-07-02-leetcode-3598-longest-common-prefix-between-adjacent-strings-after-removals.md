@@ -1,7 +1,7 @@
 ---
 layout      : single
 title       : LeetCode 3598. Longest Common Prefix Between Adjacent Strings After Removals
-tags        : LeetCode Medium Simulation SortedList
+tags        : LeetCode Medium Simulation SortedList PrefixSum
 ---
 weekly contest 456。
 
@@ -65,6 +65,52 @@ class Solution:
                 sl.add(adj[i])
             if i > 0 and i < N-1:
                 sl.remove(gap[i])
+
+        return ans
+
+
+def lcp(s, t):
+    res = 0
+    for c1, c2 in zip(s, t):
+        if c1 != c2:
+            break
+        res += 1
+    return res
+```
+
+其實也可以**前後綴分解**，維護前綴/後綴的最大 lcp 長度。  
+
+若刪除 i，則答案是以下三者取最大：  
+
+- 前綴 [0..i-1] 最大值  
+- 後綴 [i+1..N-1] 最大值  
+- words[i-1] 和 words[i+1] 的 lcp  
+
+時間複雜度 O(L)，其中 L = 字串總長度。  
+空間複雜度 O(N)。  
+
+```python
+class Solution:
+    def longestCommonPrefix(self, words: List[str]) -> List[int]:
+        N = len(words)
+
+        pre = [0] * N
+        suf = [0] * N
+        for i in range(1, N):
+            pre[i] = max(pre[i-1], lcp(words[i], words[i-1]))
+        for i in reversed(range(N-1)):
+            suf[i] = max(suf[i+1], lcp(words[i], words[i+1]))
+
+        ans = []
+        for i in range(N):
+            res = 0
+            if i > 0:
+                res = pre[i-1]
+            if i < N-1:
+                res = max(res, suf[i+1])
+            if i > 0 and i < N-1:
+                res = max(res, lcp(words[i-1], words[i+1]))
+            ans.append(res)
 
         return ans
 
