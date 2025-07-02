@@ -40,7 +40,7 @@ weekly contest 456。
 若依然無法完全合併，才考慮**使用加倍**。  
 找到那些強度小於 limit 的邊，若加倍後可達 limit 且兩個介於不同連通塊則將其連通。  
 
-時間複雜度 O((M + N log N) log MX)，其中 M = len(edges)，MX = 強度上限。  
+時間複雜度 O((N + M log N) log MX)，其中 M = len(edges)，MX = 強度上限。  
 空間複雜度 O(N)。  
 
 ```python
