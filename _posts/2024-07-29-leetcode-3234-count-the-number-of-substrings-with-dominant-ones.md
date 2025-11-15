@@ -48,10 +48,10 @@ weekly contest 408。
 現在我們要枚舉左端點 i 的子字串，然後枚舉右方至多 MX 個 0 的情形。  
 但如果**根本沒有 0** 怎麼辦？  
 例如：  
-> s = "111110"  
+> s = "1111110"  
 > i = 0 時，cnt0 = 0，這時不管加多少 1 都合法  
-> 因此右端點的最小值為 j = 0，最大值為 k = 4  
-> 以 0 為左端點、且 cnt0 = 0 時，共有 4-0+1 個合法子字串  
+> 因此右端點的最小值為 j = 0，最大值為 k = 5  
+> 以 0 為左端點、且 cnt0 = 0 時，共有 5-0+1 個合法子字串  
 
 ![示意圖](/assets/img/3234-1.jpg)
 
@@ -94,16 +94,16 @@ class Solution:
             
             # substring s[i..j] have at least one "0"
             for zidx in range(len(q) - 1):
-                j = q[zidx]
-                # s[j+1..k] might have "1"s if required
-                k = q[zidx + 1] - 1
-                cnt0 = zidx + 1
-                sz = j - i + 1
-                cnt1 = sz - cnt0
-
                 # at most MX 0s
+                cnt0 = zidx + 1
                 if cnt0 > MX:
                     break
+
+                # s[j+1..k] might have "1"s if required
+                j = q[zidx]
+                k = q[zidx + 1] - 1
+                sz = j - i + 1
+                cnt1 = sz - cnt0
 
                 # case1: cnt1 >= cnt0^2
                 # right bound can be [j..k]
